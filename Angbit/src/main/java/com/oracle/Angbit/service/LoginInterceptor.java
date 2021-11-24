@@ -18,7 +18,7 @@ public class LoginInterceptor implements HandlerInterceptor {
                            HttpServletResponse response,
                            Object handler,
                            ModelAndView modelAndView) throws IOException {
-        String id = (String) request.getSession().getAttribute("id");
+        String id = (String) request.getSession().getAttribute("sessionID");
         if (id != null) {
             System.out.println("ID is... -> "+id);
         } else {
