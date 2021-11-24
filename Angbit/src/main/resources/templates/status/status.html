@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Insert title here</title>
+<!-- Common meta tag, Bootstrap, js -->
+<th:block th:replace="common/commonHead"></th:block>
+</head>
+<script th:inline="javascript">
+var wsUri = "wss://api.upbit.com/websocket/v1";	// Upbit websoket 여는 uri
+var output;
+
+// 페이지 로딩 되면 실행되는 initial 함수
+function init() {
+	output = document.getElementById("output");
+	console.log('init() Start...');
+/* 		testWebSocket(); */
+}
+
+function testWebSocket() {
+	websocket = new WebSocket(wsUri);							// websoket 연결 시작 요청
+ 	websocket.binaryType = 'arraybuffer';						// array buffer 데이터로 받겠다
+	//websocket.binaryType = 'Blob';
+	//websocket.binaryType = 'String';
+	websocket.onopen = function(evt) { onOpen(evt) ;};			// websocket.onopen 	= 웹소켓 연결 성공시 수행되는 함수
+	websocket.onclose = function(evt) { onClose(evt) };			// websoket.onclose 	= 웹소켓 연결 닫을때 수행되는 함수
+	websocket.onmessage = function(evt) { onMessage(evt) };		// websoket.onmessage 	= 서버쪽에서 데이터 수신 받을때 수행되는 함수
+	websocket.onerror = function(evt) { onError(evt) };			// websoket.onerror 	= 웹소켓 연결 실패시 수행되는 함수	
+};
+
+function onOpen(evt) {
+	writeToScreen("연결완료");
+	// var msg1 = [{"ticket":"test"},{"type":"ticker","codes":["KRW-BTC", "BTC-BCH"]},{"format":"SIMPLE"}];
+	var msg = [
+		{	"ticket"	:	"test"
+		},
+		{
+			"type"		: 	"ticker",
+			"codes"		: ["KRW-BTC", "KRW-ETH", "KRW-ADA", "KRW-XRP", "KRW-DOT", "KRW-DOGE", "KRW-MANA", 
+				"KRW-LTC", "KRW-SAND", "KRW-VET", "KRW-AXS", "KRW-SOL", "KRW-BCH", "KRW-XLM", "KRW-ETC"]
+		},
+		{
+			"format"	:	"SIMPLE"
+		}
+	];
+	msg = JSON.stringify(msg);
+	doSend(msg);
+
+}
+
+function onClose(evt) {
+ 		websocket.close();
+	writeToScreen("연결해제");
+}
+
+function onMessage(evt) {
+		console.log(evt.data);
+	var enc = new TextDecoder("utf-8");
+	var arr = new Uint8Array(evt.data);
+	var decode = enc.decode(arr);
+	var jason=JSON.parse(decode);
+		console.log(enc.decode(arr));
+		
+ 	/*<![CDATA[*/ 
+	var statusList = /*[[ ${statusList} ]]*/;
+	/*]]*/
+	console.log('statusList.length->'+statusList.length);
+	statusList.forEach((statusList, i)=>
+	{
+	
+		let amt = statusList.coin_amt;
+		let coincode = statusList.coincode;
+		let totPrice = statusList.tot_price;
+
+		console.log(amt);
+		console.log(coincode);
+		if('KRW-'+coincode == jason.cd){
+			var gg = amt * jason.tp
+			console.log(gg);
+			document.getElementById(coincode).innerText = gg.toLocaleString();
+			document.getElementById(coincode+'-loss').innerText = (gg-totPrice).toLocaleString();
+		}
+	})
+}
+
+function onError(evt) {
+	writeToScreen('<span style="color: red;">에러:</span> ' + evt.data);
+}
+
+function doSend(message) {
+	writeToScreen("발신: " + message);
+	websocket.send(message);
+}
+
+function writeToScreen(message)	{
+	var pre = document.createElement("p");
+	pre.style.wordWrap = "break-word";
+	pre.innerHTML = message;
+	output.appendChild(pre);
+}
+window.addEventListener("load", init, false);
+</script>
+
+<link href="css/status.css" rel="stylesheet" type="text/css">
+<body>
+<!-- Common header -->
+<header th:replace="common/header :: header"></header>
+<main>
+<!-- 차트 링크 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<div class="container">
+	<div>
+		<input type="button" value="Connection Open" onclick="testWebSocket()">
+		<input type="button" value="Connection Close" onclick="onClose()">
+		<div id="output"></div>
+	</div>
+	<div class="row my-3" align="center" style="padding-top: 20px;">
+		<h4><b>투자 현황</b></h4>
+	</div>
+	<div class="row my-2">
+		<div class="col-lg-6" style="padding-bottom: 25px; border-right:3px solid orange; text-align:justify">
+			<div class="container">
+	  			<div class="row status_status" th:each="klist:${krwList}">
+	  				<img class="status_img" alt="" src="images/status/total.png">
+	    			<div class="col">총 자산</div>
+	  				<div class="col" align="right" th:text="${#numbers.formatDecimal(klist.krw,1,'COMMA',0,'POINT')+'+총 평가손익 KRW'}"></div>
+	  			</div>
+	   			<div class="row status_status" th:each="klist:${krwList}">
+	   				<img class="status_img" alt="" src="images/status/krw1.png">
+	    			<div class="col">보유 현금</div>
+				    <div class="col" align="right" th:text="${#numbers.formatDecimal(klist.krw-totPrice,1,'COMMA',0,'POINT')+' KRW'}"></div>
+				</div>
+				<hr class="line" style="height: 3px"/>
+				<div class="row status_status">
+	   				<img class="status_img" alt="" src="images/status/coin.png">
+	    			<div class="col" style="margin-bottom: 10px">총 코인 자산</div>
+				</div>
+				<div class="row">
+				    <div class="col status_mid_title">총 매수금액</div>
+				    <div class="col" align="right" style="margin-top: 5px" th:text="${#numbers.formatDecimal(totPrice,1,'COMMA',0,'POINT')+' KRW'}"><span style="font-size: 11px"> KRW</span></div>
+				</div>
+				<div class="row status_mid_details">
+				    <div class="col status_mid_title">총 평가금액</div>
+				    <div class="col" align="right" style="margin-top: 5px">5,039,265<span style="font-size: 11px"> KRW</span></div>
+				</div>
+				<!-- IF문 사용 - 매수금액>평가금액 = FONT-COLOR BLUE / 매수금액<평가금액 = FONT-COLOR RED-->
+				<div class="row status_mid_details">
+				    <div class="col status_mid_title">총 평가손익</div>
+				    <div class="col" align="right" style="margin-top: 5px">3,836<span style="font-size: 11px"> KRW</span></div>
+				</div>
+				<div class="row status_mid_details">
+				    <div class="col status_mid_title">총 평가손익률</div>
+				    <div class="col" align="right" style="margin-top: 5px">0.08<span style="font-size: 11px"> %</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6" align="right">
+				<div class="card-body" align="right">
+					<canvas id="myChart1" style="align-content: center;"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+<!-- 차트 -->
+<script th:inline="javascript">
+data = { 
+		datasets: [{
+			backgroundColor: ['pink','#B5B2FF','#5CD1E5'],
+			data: [50, 20, 30]
+		}],
+		// 라벨의 이름이 툴팁처럼 마우스가 근처에 오면 나타남
+		labels: ['KRW','BTC','DOGE']
+	}; 
+	// 가운데 구멍이 없는 파이형 차트 
+	var ctx1 = document.getElementById("myChart1"); 
+	var myPieChart = new Chart(ctx1, {
+		type: 'pie',
+		data: data,
+		options: {} 
+	}); 
+</script>
+<!-- 코인현황 표 -->
+<hr class="line" style="height: 3px; width: 90%; margin-left: 5%;"/>
+<div class="row my-3" align="center">
+	<h4><b>보유 코인 목록</b></h4>
+</div>
+<table class="table table-hover">
+  <thead class="Status_thead" align="center">
+    <tr>
+      <th class="cell1" scope="col"></th>
+      <th class="cell2" scope="col"><h5><b>보유코인</b></h5></th>
+      <th class="cell2" scope="col"><h5><b>보유수량</b></h5></th>
+      <th class="cell2" scope="col"><h5><b>매수평균가</b></h5></th>
+      <th class="cell2" scope="col"><h5><b>매수금액</b></h5></th>
+      <th class="cell2" scope="col"><h5><b>평가금액</b></h5></th> 
+      <th class="cell2" scope="col"><h5><b>평가손익</b></h5></th>
+    </tr>
+  </thead>
+  <tbody align="center" style="vertical-align:middle;">
+    <tr th:each="slist:${statusList}">
+      <th scope="row" th:switch="${slist.coincode}">
+      	<span th:case="ADA"><img class="table_images" alt="" src="images/status/ada.png"></span>
+      	<span th:case="AXS"><img class="table_images" alt="" src="images/status/axs.png"></span>
+      	<span th:case="BCH"><img class="table_images" alt="" src="images/status/bch.png"></span>
+      	<span th:case="BTC"><img class="table_images" alt="" src="images/status/btc.png"></span>
+      	<span th:case="DOGE"><img class="table_images" alt="" src="images/status/doge.png"></span>
+      	<span th:case="DOT"><img class="table_images" alt="" src="images/status/dot.png"></span>
+      	<span th:case="ETC"><img class="table_images" alt="" src="images/status/etc.png"></span>
+      	<span th:case="ETH"><img class="table_images" alt="" src="images/status/eth.png"></span>
+      	<span th:case="LTC"><img class="table_images" alt="" src="images/status/ltc.png"></span>
+      	<span th:case="MANA"><img class="table_images" alt="" src="images/status/mana.png"></span>
+      	<span th:case="SAND"><img class="table_images" alt="" src="images/status/sand.png"></span>
+      	<span th:case="SOL"><img class="table_images" alt="" src="images/status/sol.png"></span>
+      	<span th:case="VET"><img class="table_images" alt="" src="images/status/vet.png"></span>
+      	<span th:case="XLM"><img class="table_images" alt="" src="images/status/xlm.png"></span>
+      	<span th:case="XRP"><img class="table_images" alt="" src="images/status/xrp.png"></span>
+      </th>
+      <td th:text="${slist.coincode}"></td>
+      <td th:text="${#numbers.formatDecimal(slist.coin_amt,1,'COMMA',2,'POINT')}"></td>
+      <td th:text="${#numbers.formatDecimal(slist.avg_price,1,'COMMA',0,'POINT')}"></td>
+      <td th:id="${slist.coincode}+'-totPrice'" th:text="${#numbers.formatDecimal(slist.tot_price,1,'COMMA',0,'POINT')}"></td>
+      <td th:id="${slist.coincode}"></td>
+      <td th:id="${slist.coincode}+'-loss'"></td>
+    </tr>
+  </tbody>
+</table>
+</main>
+ <footer th:replace="common/footer :: footer"></footer>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+</html>

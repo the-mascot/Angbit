@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>index</title>
+<!-- Common meta tag, Bootstrap, js -->
+<th:block th:replace="common/commonHead"></th:block>
+
+
+<!-- Custom styles for this page -->
+<link th:href="@{css/mypage.css}" rel="stylesheet">
+
+<!-- Jquery -->
+<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
+
+</head>
+<body>
+<!-- Common header -->
+<header th:replace="common/header :: header"></header>
+<main>
+	<div class="container container-custom">
+		<div class="user-profile-header">내 정보</div>
+		<div class="user-profile-body">
+			<div class="u-p-table">
+				<div class="u-p-t-row">
+					<div class="u-p-t-th">이메일</div>
+					<div class="u-p-t-td u-p-email" th:text="${mi.getId()}"></div>
+				</div>
+				<div class="u-p-t-row">
+					<div class="u-p-t-th">닉네임</div>
+					<div class="u-p-t-td u-p-nickname-container">
+						<div class="u-p-nickname-input-container">
+							<input class="u-p-nickname-input form-control" maxlength="12"
+								   onkeyup="validateNickname()" disabled id="nickname"
+								   name="nickname" th:value="${mi.getNickname()}">
+							<div class="u-p-nickname-btn-container">
+								<button type="submit" class="btn btn-sm u-p-nickname-edit-btn">변경</button>
+								<button class="btn btn-sm u-p-nickname-edit-submit-btn"
+										style="display: none" disabled>저장</button>
+								<button
+										class="btn btn-sm u-p-nickname-edit-cancel-btn btn-secondary"
+										style="display: none">취소</button>
+							</div>
+						</div>
+						<div class="u-p-nickname-success"></div>
+
+						<div class="u-p-nickname-error u-p-nickname-regex-error"></div>
+
+						<div class="u-p-nickname-error u-p-nickname-redundant-error"></div>
+
+						<div class="u-p-nickname-notice">
+							<i class="bi bi-exclamation-triangle"></i>
+							닉네임 변경은 7일에 한번 가능합니다.
+						</div>
+					</div>
+				</div>
+				<div class="u-p-t-row-3">
+					<div class="u-p-t-row">
+						<div class="u-p-t-th">신규 비밀번호</div>
+						<div class="u-p-t-td u-p-password-container">
+							<div class="u-p-password-input-container">
+								<input type="password" class="u-p-password-input form-control" maxlength="12"
+									   onkeyup="validatePassword()" id="password"
+									   name="password">
+								<div class="u-p-password-btn-container">
+									<button type="submit" class="btn btn-sm u-p-password-edit-btn" disabled="disabled">변경</button>
+								</div>
+							</div>
+							<div class="u-p-password-success"></div>
+
+							<div class="u-p-password-error u-p-password-regex-error"></div>
+
+							<div class="u-p-password-error u-p-password-pwchk-error"></div>
+
+							<div class="u-p-password-notice">
+								<i class="bi bi-exclamation-triangle"></i>
+								8~15자의 영문 대소문자, 숫자, 특수문자를 사용해야 합니다.
+							</div>
+						</div>
+					</div>
+					<div class="u-p-t-row">
+						<div class="u-p-t-th">비밀번호 확인</div>
+						<div class="u-p-t-td"><input type="password" class="u-p-pwchk-input form-control" maxlength="12"
+													 onkeyup="validatePwchk()" id="pwchk"
+													 name="pwchk"></div>
+					</div>
+				</div>
+				<div class="u-p-t-row">
+					<div class="u-p-t-th">가입일</div>
+					<div class="u-p-t-td u-p-created-date" th:text="${#dates.format(mi.joindate, 'yyyy년 MM월 dd일 ')}"></div>
+				</div>
+				<div class="u-p-t-row">
+					<div class="u-p-t-th">최종 수정일</div>
+					<div class="u-p-t-td u-p-updated-date" th:text="${#dates.format(mi.finaldate, 'yyyy년 MM월 dd일 HH:mm')}"></div>
+				</div>
+				<div class="u-p-t-row">
+					<div class="u-p-t-th">회원 탈퇴</div>
+					<div class="u-p-t-td u-p-withdraw-btn-container">
+						<button type="submit" class="btn btn-sm u-p-withdraw-btn"
+								onclick="modal()">탈퇴하기</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 마이페이지 끝 -->
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #ff797c;">
+					<h5 class="modal-title" id="exampleModalLabel">탈퇴 전 유의사항</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body" style="font-size: 17.5px;">
+					<p>사용하고 계신 아이디는 탈퇴할 경우 재사용 및 복구가 불가능합니다.</p>
+					<br>
+					<p>탈퇴 후 회원 정보 및 거래내역 등은 모두 삭제되며,<br>
+						삭제된 데이터는 복구되지 않습니다.</p>
+					<br>
+					<p>탈퇴 후에도 등록된 게시글은 유지되며 삭제를 원하는 게시글은<br>
+						반드시 탈퇴 전 비공개 처리, 혹은 삭제 처리를 해주시기 바랍니다.</p>
+					<br>
+					<p>정말 탈퇴하시겠습니까?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-danger" onclick="alert('회원 탈퇴 되었습니다. 이용해주셔서 감사합니다.')">탈퇴</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+
+		/* 모달 호출 */
+		function modal() {
+			event.preventDefault();
+			$('#exampleModal').modal('show');
+		};
+
+		/* nickname 선택자 */
+		const nicknameInput = document.querySelector(".u-p-nickname-input");
+		const submitBtn = document.querySelector(".u-p-nickname-edit-submit-btn");
+		const currentNickname = nicknameInput.value;
+
+		/* pw 선택자 */
+		const passwordInput = document.querySelector(".u-p-password-input");
+		const pwsubmitBtn = document.querySelector(".u-p-password-edit-btn");
+		const pwchkInput = document.querySelector(".u-p-pwchk-input");
+
+		function validateNickname(){
+			const lblError = document.querySelector(".u-p-nickname-regex-error");
+			const redundantError = document.querySelector(".u-p-nickname-redundant-error");
+
+			lblError.innerHTML = "";
+			redundantError.innerHTML = "";
+			submitBtn.disabled = false
+			/*const expr = /^[0-9:.\-$-()_&a-zA-Z가-힣]{3,8}(?<![-(.])$/;*/
+			const expr = /^[0-9:.\-_a-zA-Z가-힣]{3,8}$/;
+
+			if (!expr.test(nicknameInput.value)) {
+				submitBtn.disabled = true;
+				lblError.innerHTML = "✋ 글자수 제한(3~8자)을 충족하지 않거나, 사용할 수 없는 문자가 포함되었습니다.";
+			}else if(nicknameInput.value === currentNickname){
+				submitBtn.disabled = true;
+			}
+		}
+
+		function editNicknameBtn() {
+			toggleBtns();
+			$(".u-p-nickname-input").focus();
+		}
+
+		function submitExec(){
+			if (confirm("닉네임을 변경하시겠습니까?\n변경 후 7일 이내에는 다시 변경하실 수 없습니다.")){
+				const nickname = getNicknameFromInput();
+				updateNickname(nickname)
+						.then(newNickname => setNewNicknameToPage(newNickname))
+						.then(toggleBtns)
+						.then(showSuccessAlert);
+			}
+		}
+
+		function getNicknameFromInput(){
+			console.log("변경할 닉네임? : "+nicknameInput.value);
+			return nicknameInput.value;
+		}
+
+		/* 닉네임 변경 AJAX */
+		async function updateNickname(nickname){
+            const newNickname = await fetch("/nickChange", {
+                method: "post",
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    nickname : nickname
+                })
+            })
+            try{
+                return newNickname.text();
+            } catch (error){
+                alert(JSON.stringify(error));
+            }
+        }
+
+		function setNewNicknameToPage(newNickname){
+			const mainHeaderNicknameSpan = document.querySelector(".main-header-profile-nickname");
+			const nicknameEditBtnContainer = document.querySelector(".u-p-nickname-btn-container");
+			mainHeaderNicknameSpan.innerText = newNickname;
+			nicknameEditBtnContainer.remove();
+		}
+
+		function initInput(){
+			nicknameInput.value = currentNickname;
+			const errorInputs = document.querySelectorAll(".u-p-nickname-error")
+			for (let i = 0; i < errorInputs.length; i++) {
+				let item = errorInputs.item(i);
+				item.innerHTML = "";
+			}
+			toggleBtns();
+		}
+
+		function toggleBtns() {
+			let input = $(".u-p-nickname-input"),
+					submitBtn = $(".u-p-nickname-edit-submit-btn"),
+					cancelBtn = $(".u-p-nickname-edit-cancel-btn"),
+					editBtn = $(".u-p-nickname-edit-btn"),
+					editBtnCondition = editBtn.prop('disabled'),
+					pwsubmitBtn = $(".u-p-password-edit-btn"),
+					inputCondition = input.prop('disabled');
+
+			cancelBtn.toggle();
+			submitBtn.toggle();
+			editBtn.toggle();
+			pwsubmitBtn.toggle();
+			input.prop('disabled', !inputCondition);
+			editBtn.prop('disabled', !editBtnCondition);
+		}
+
+		function showSuccessAlert(){
+			const alertDiv = document.querySelector(".u-p-nickname-success");
+			alertDiv.innerHTML = "<i class=\"far fa-check-circle\"></i> 변경되었습니다."
+		}
+
+		document.querySelector(".u-p-nickname-edit-btn").addEventListener("click", editNicknameBtn)
+		document.querySelector(".u-p-nickname-edit-cancel-btn").addEventListener("click", initInput)
+		submitBtn.addEventListener("click", submitExec)
+
+		/*-- 기존 JS --*/
+
+
+
+		function validatePassword(){
+			const plblError = document.querySelector(".u-p-password-regex-error");
+
+			plblError.innerHTML = "";
+			pwsubmitBtn.disabled = false;
+			/*const expr = /^[0-9:.\-$-()_&a-zA-Z가-힣]{3,8}(?<![-(.])$/;*/
+			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/;
+
+			if (!exprpw.test(passwordInput.value)) {
+				pwsubmitBtn.disabled = true;
+				plblError.innerHTML = "✋ 글자수 제한(8~15자)을 충족하지 않거나, 사용할 수 없는 문자가 포함되었습니다.";
+			}
+		}
+
+		function validatePassword(){
+			const plblError = document.querySelector(".u-p-password-regex-error");
+
+			plblError.innerHTML = "";
+			/* pwsubmitBtn.disabled = false; */
+			/*const expr = /^[0-9:.\-$-()_&a-zA-Z가-힣]{3,8}(?<![-(.])$/;*/
+			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/;
+
+			if (!exprpw.test(passwordInput.value)) {
+				pwsubmitBtn.disabled = true;
+				plblError.innerHTML = "✋ 글자수 제한(8~15자)을 충족하지 않거나, 사용할 수 없는 문자가 포함되었습니다.";
+			}
+		}
+
+		function validatePwchk(){
+			const chkError = document.querySelector(".u-p-password-pwchk-error");
+
+			chkError.innerHTML = "";
+			/* pwsubmitBtn.disabled = false; */
+			/*const expr = /^[0-9:.\-$-()_&a-zA-Z가-힣]{3,8}(?<![-(.])$/;*/
+			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/;
+
+			if (passwordInput.value != pwchkInput.value) {
+				pwsubmitBtn.disabled = true;
+				chkError.innerHTML = "❌ 입력하신 비밀번호가 일치하지 않습니다.";
+			} else if (passwordInput.value == pwchkInput.value) {
+				chkError.innerHTML = "<span style='color: blue;'>✔️ 비밀번호가 일치합니다.</span>";
+				pwsubmitBtn.disabled = false;
+			}
+		}
+
+	</script>
+</main>
+
+<footer th:replace="common/footer :: footer"></footer>
+
+
+
+<!-- Bootstrap Bundle with Popper -->
+<script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js}" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+</body>
+</html>

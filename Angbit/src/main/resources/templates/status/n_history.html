@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Insert title here</title>
+<!-- Common meta tag, Bootstrap, js -->
+<th:block th:replace="@{common/commonHead}"></th:block>
+</head>
+<body>
+<!-- Common header -->
+<header th:replace="common/header :: header"></header>
+<main>
+
+<div class="row my-3" align="center" style="padding-top: 25px">
+	<h4><b>미체결 현황</b></h4>
+</div>
+<table class="table table-hover" style="width: 90%; margin: auto;">
+  <thead class="yhistory_thead" align="center" style="background-color: orange;">
+    <tr>
+      <th scope="col" width="4.6%"></th>
+      <th scope="col" width="14.6%"><h5><b>코인명</b></h5></th>
+      <th scope="col" width="14.6%"><h5><b>거래종류</b></h5></th>
+      <th scope="col" width="14.6%"><h5><b>주문량</b></h5></th>
+      <th scope="col" width="14.6%"><h5><b>주문단가</b></h5></th>
+      <th scope="col" width="14.6%"><h5><b>주문금액</b></h5></th> 
+      <th scope="col" width="14.6%"><h5><b>주문시간</b></h5></th>
+      <th width="7.8%">&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody align="center" style="vertical-align:middle;">
+    <tr th:each="nlist:${nList}">
+      <th scope="row" th:switch="${nlist.coincode}">
+      	<span th:case="ADA"><img class="table_images" alt="" src="images/status/ada.png"></span>
+      	<span th:case="AXS"><img class="table_images" alt="" src="images/status/axs.png"></span>
+      	<span th:case="BCH"><img class="table_images" alt="" src="images/status/bch.png"></span>
+      	<span th:case="BTC"><img class="table_images" alt="" src="images/status/btc.png"></span>
+      	<span th:case="DOGE"><img class="table_images" alt="" src="images/status/doge.png"></span>
+      	<span th:case="DOT"><img class="table_images" alt="" src="images/status/dot.png"></span>
+      	<span th:case="ETC"><img class="table_images" alt="" src="images/status/etc.png"></span>
+      	<span th:case="ETH"><img class="table_images" alt="" src="images/status/eth.png"></span>
+      	<span th:case="LTC"><img class="table_images" alt="" src="images/status/ltc.png"></span>
+      	<span th:case="MANA"><img class="table_images" alt="" src="images/status/mana.png"></span>
+      	<span th:case="SAND"><img class="table_images" alt="" src="images/status/sand.png"></span>
+      	<span th:case="SOL"><img class="table_images" alt="" src="images/status/sol.png"></span>
+      	<span th:case="VET"><img class="table_images" alt="" src="images/status/vet.png"></span>
+      	<span th:case="XLM"><img class="table_images" alt="" src="images/status/xlm.png"></span>
+      	<span th:case="XRP"><img class="table_images" alt="" src="images/status/xrp.png"></span>
+      </th>
+      <td th:text="${nlist.coincode}">비트코인<br>(BTC)</td>
+      <td th:if="${nlist.trd_div}==1" style="color: blue;">매도 대기</td>
+      <td th:if="${nlist.trd_div}==0" style="color: red;">매수 대기</td>
+      <td th:text="${nlist.trd_amt}"></td>
+      <td th:text="${#numbers.formatDecimal(nlist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
+      <td th:text="${#numbers.formatDecimal(nlist.trd_price,1,'COMMA',0,'POINT')}"></td>
+      <td th:text="${#dates.format(nlist.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
+      <td><button th:onclick="location.href='status/delete?trd_num=${trd_num}'" style="border: 0; outline: 0; background-color: orange; border-radius: 6px" >삭제</button></td>
+    </tr>
+  </tbody>
+</table>
+</main>
+ <footer th:replace="common/footer :: footer"></footer>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+</html>
