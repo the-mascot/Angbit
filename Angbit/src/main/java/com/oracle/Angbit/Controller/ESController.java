@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import com.oracle.Angbit.model.common.CoinInfo;
+import com.oracle.Angbit.model.invest.MemberCoin;
 import com.oracle.Angbit.service.invest.InvestService;
 
 
@@ -37,7 +39,7 @@ public class ESController {
 	@GetMapping("/")
 	public String home() {
 		
-		System.out.println("AngController home Start...");
+		System.out.println("ESController home Start...");
 		
 		return "/index";
 	}
@@ -45,7 +47,7 @@ public class ESController {
 	@GetMapping("invest")
 	public String invest(Model model) {
 		
-		System.out.println("AngController invest Start...");
+		System.out.println("ESController invest Start...");
 		List<CoinInfo> coinInfoList =  ivs.coinInfoList();
 		model.addAttribute("coinInfoList", coinInfoList);
 		return "/invest/invest";
@@ -55,9 +57,9 @@ public class ESController {
 	@GetMapping("invest/investApi")
 	public void investApi(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		System.out.println("AngController investApi Start...");
+		System.out.println("ESController investApi Start...");
 		String currCoin = request.getParameter("currCoin");
-		System.out.println("AngController investApi currCoin->"+currCoin);
+		System.out.println("ESController investApi currCoin->"+currCoin);
 		
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
@@ -76,18 +78,15 @@ public class ESController {
 			String tradeStr		= tradeResponse.getBody();	
 			String jsonStr = orderbookStr.substring(0, (orderbookStr.length()-1)) + ',' + tickerStr.substring(1, (tickerStr.length()-1)) + "," + tradeStr + "]";
 			
-			System.out.println(jsonStr);
-			
 			JSONParser parser = new JSONParser();
 			JSONArray json = (JSONArray) parser.parse(jsonStr);
-			System.out.println("json 객체->"+json);
+			System.out.println("ESController investApi json 객체->"+json);
 			
 			PrintWriter out = response.getWriter();
 			out.print(json);
-			
-			
-		} catch (Exception e1) {
-			e1.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("ESController investApi Exception->"+e.getMessage());
+			e.printStackTrace();
 		}
 
 	}
@@ -96,16 +95,41 @@ public class ESController {
 	@GetMapping("invest/coinInfoAjax")
 	public CoinInfo coinInfoAjax(String coincode) {
 		
-	//	String coincode = request.getParameter("coincode");
-		System.out.println("code"+coincode);
+		System.out.println("ESController coinInfoAjax Start...");
+		System.out.println("ESController coinInfoAjax coincode->"+coincode);
 		
-		//String coincode = (String) model.getAttribute("coincode");
 		JSONParser paser = new JSONParser();
 		CoinInfo coinInfo = ivs.coinInfo(coincode);
 		
 		return coinInfo;
 	}
 	
+	@GetMapping("test")
+	public String test() {
+		
+		System.out.println("ESController home Start...");
+		
+		return "/invest/NewFile";
+	}
+	
+	
+	@ResponseBody
+	@GetMapping("invest/orderInfo")
+	public MemberCoin orderInfo(HttpServletRequest request, HttpServletResponse response, String coincode) {
+		
+		System.out.println("ESController orderInfo Start...");
+		HttpSession session = request.getSession();
+		
+		session.setAttribute("sessionID", "dmstn1812@naver.com");
+		
+		MemberCoin paraMemberCoin = new MemberCoin();
+		paraMemberCoin.setId((String) session.getAttribute("sessionID"));
+		paraMemberCoin.setCoincode(coincode);
+		
+		MemberCoin memberCoin = ivs.memberCoin(paraMemberCoin);
+		
+		return memberCoin;
+	}
 	
 	
 }
