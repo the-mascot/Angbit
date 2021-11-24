@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
@@ -40,7 +41,7 @@ public class SHController {
     @Autowired
     private myInfoService mis;
 
-    @RequestMapping("/myPage")
+    @RequestMapping("/myInfo")
     public String myPageForm(Model model) {
         System.out.println("myPageForm Called.");
         return "myInfo/myInfo";
@@ -136,9 +137,29 @@ public class SHController {
     @PostMapping("logintest")
     public String loginTest(Model model, HttpServletRequest request, HttpServletResponse response) {
         logger.info("SHController LoginTest() Called.");
-        int result = mis.loginTest(model);
+        String id = request.getParameter("id");
+        String pw = request.getParameter("pw");
+
+        int result = mis.loginTest(id, pw);
+        System.out.println("Controller result ?" + result);
+        if (result==1) {
+            HttpSession session = request.getSession();
+            session.setAttribute("id", id);
+        }  else {
+            model.addAttribute("msg", "아이디 혹은 비밀번호가 틀립니다.");
+            request.setAttribute("msg", "아이디 혹은 비밀번호가 틀립니다.");
+            return "redirect:gologin";
+        }
 
         return "redirect:myInfo";
+    }
+
+    @RequestMapping("logout")
+    public String logoutTest(HttpServletRequest request, HttpServletResponse response, Model model) {
+        HttpSession session = request.getSession();
+        session.removeAttribute("id");
+        session.invalidate();
+        return "redirect:chart";
     }
 
 

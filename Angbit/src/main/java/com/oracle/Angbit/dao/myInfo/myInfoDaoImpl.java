@@ -13,7 +13,18 @@ public class myInfoDaoImpl implements myInfoDao {
 
 	@Override
 	public int loginTest(MemberInfo mi) {
+		System.out.println("dao id"+mi.getId());
+		System.out.println("dao id"+mi.getPassword());
+
 		MemberInfo getmi = session.selectOne("loginTest", mi);
-		return 0;
+		int result;
+
+		if (getmi!=null) {
+			result = 1;
+		} else {
+			result = 0;
+		}
+
+		return result;
 	}
 }

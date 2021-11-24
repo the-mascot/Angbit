@@ -6,7 +6,5 @@ import org.springframework.ui.Model;
 import java.util.List;
 
 public interface myInfoService {
-
-
-	int loginTest(Model model);
+	int loginTest(String id, String pw);
 }

@@ -18,10 +18,14 @@ public class myInfoServiceImpl implements myInfoService {
 	private myInfoDao midao;
 
 	@Override
-	public int loginTest(Model model) {
+	public int loginTest(String id, String pw) {
 		MemberInfo mi = new MemberInfo();
-		mi.setId((String) model.getAttribute("id"));
-		mi.setPassword((String) model.getAttribute("pw"));
+		mi.setId(id);
+		mi.setPassword(pw);
+
+		System.out.println("service id"+mi.getId());
+		System.out.println("service id"+mi.getPassword());
+
 		int result = midao.loginTest(mi);
 		return result;
 	}
