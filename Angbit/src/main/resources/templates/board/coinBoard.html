@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>코인게시판</title>
+<link href="styles.css" rel="stylesheet" >
+</head>
+<body>
+<!-- 헤더 -->
+<header th:replace="common/header :: header"></header>
+
+<!-- 몸통 -->
+<table id="datatablesSimple" border="1">
+       <thead>
+           <tr>
+               <th>순번</th>
+               <th>제목</th>
+               <th>작성일</th>
+               <th>조회수</th>
+               <th>글쓴이</th>
+           </tr>
+       </thead>
+       <tbody>
+           <tr th:each="blist : ${boardList}">
+               <td th:text="${blist.b_num}"></td>
+               <td th:text="${blist.title}"></td>
+               <td th:text="${blist.uploaddate}"></td>
+               <td th:text="${blist.views}"></td>
+               <!-- <td th:text="${memberList.nickname}"></td> -->
+           </tr>
+       </tbody>
+       
+</table>
+
+
+</body>
+</html>

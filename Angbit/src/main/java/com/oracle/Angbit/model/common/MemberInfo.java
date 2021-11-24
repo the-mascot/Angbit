@@ -12,4 +12,9 @@ public class MemberInfo {
 	private String nickname;
 	private int krw;
 	
+	
+	// 조회용
+		private String search;   private String keyword;
+		private String pageNum;  
+		private int start; 		 private int end;
 }
