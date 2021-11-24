@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="StatusDao">
+	<select id="StatusList" parameterType="Coin" resultType="Coin">
+		select * from coin where id='slspqkqh@naver.com' order by coincode asc
+	</select>
+	<select id="KrwList" parameterType="MemberInfo" resultType="MemberInfo">
+		select krw from memberinfo where id='slspqkqh@naver.com' 
+	</select>
+	<select id="YList" parameterType="Trade" resultType="Trade">
+		select * from trade where id='slspqkqh@naver.com' and trd_stu=1 order by trd_date desc
+	</select>
+	<select id="NList" parameterType="Trade" resultType="Trade">
+		select * from trade where id='slspqkqh@naver.com' and trd_stu=0 order by trd_date desc
+	</select>
+<!-- 	<select id="login" resultType="MemberInfo"> -->
+<!-- 		select id, password from memberinfo where id=#{id} and password=#{password} -->
+<!-- 	</select> -->
+</mapper>

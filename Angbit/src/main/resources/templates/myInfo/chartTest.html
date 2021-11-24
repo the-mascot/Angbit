@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>index</title>
+	<!-- Common meta tag, Bootstrap, js -->
+	<th:block th:replace="common/commonHead"></th:block>
+
+
+	<!-- Custom styles for this page -->
+	<link th:href="@{css/invest.css}" rel="stylesheet">
+
+	<!-- Jquery -->
+	<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
+	<script th:src="@{https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js}"></script>
+	<style type="text/css">
+		/*body {*/
+		/*	font-family: 'Trebuchet MS', Roboto, Ubuntu, sans-serif;*/
+		/*	background: #f9fafb;*/
+		/*	-webkit-font-smoothing: antialiased;*/
+		/*	-moz-osx-font-smoothing: grayscale;*/
+		/*}*/
+
+		.floating-tooltip-2 {
+			width: 96px;
+			height: 300px;
+			position: absolute;
+			display: none;
+			padding: 8px;
+			box-sizing: border-box;
+			font-size: 12px;
+			color: #20262E;
+			background-color: rgba(255, 255, 255, 0.23);
+			text-align: left;
+			z-index: 1000;
+			top: 12px;
+			left: 12px;
+			pointer-events: none;
+			border-radius: 4px 4px 0px 0px;
+			border-bottom: none;
+			box-shadow: 0 2px 5px 0 rgba(117, 134, 150, 0.45);
+		}
+	</style>
+
+</head>
+<body>
+<!-- Common header -->
+<header th:replace="common/header :: header"></header>
+
+<main>
+	<div class="chart" id="chart" style="overflow:visible!important;"></div>
+	<section class="section1">
+		<button onclick="chartApi()">차트1번</button>
+		<button onclick="chartApi2()">차트2번</button>
+		<button onclick="testJSON3()">눌러3</button>
+		<div id="container" style="height: 400px; min-width: 310px"></div>
+
+	</section>
+
+</main>
+
+<footer th:replace="common/footer :: footer"></footer>
+
+
+
+<!--&lt;!&ndash; Bootstrap Bundle with Popper &ndash;&gt;-->
+<!--<script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js}" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>-->
+
+<script type="text/javascript">
+
+	// 차트 데이터
+	function chartApi() {
+
+		currCoin = 'BTC-KRW';
+		// sendData = "currCoin="+currCoin;
+		console.log('currCoin->'+currCoin);
+
+		$.ajax({
+			type		:	'GET',
+			url			:	'chartApi',
+			data		:	currCoin,
+			contentType : 	'application/text; charset=UTF-8',
+			dataType 	: 	'json',
+			success		:	function(data) {
+
+				var chart = LightweightCharts.createChart(document.getElementById('chart'), {
+					width: 600,
+					height: 300,
+					layout: {
+						backgroundColor: '#ffffff',
+						textColor: 'rgba(33, 56, 77, 1)',
+					},
+					localization: {
+						locale: 'cn-CN',
+					},
+					grid: {
+						vertLines: {
+							color: 'rgba(197, 203, 206, 0.7)',
+						},
+						horzLines: {
+							color: 'rgba(197, 203, 206, 0.7)',
+						},
+					},
+					timeScale: {
+						timeVisible: true,
+						secondsVisible: false,
+					},
+				});
+
+				var lineSeries = chart.addCandlestickSeries();
+
+
+				let chardat = [];
+				for (var i=0; i<Object.keys(data).length; i++) {
+					chardat.push(data[i]);
+				}
+				chardat = chardat.filter(function() { return true; });
+				rechardat = [...chardat].reverse();
+				console.log(chardat);
+				console.log(typeof chardat);
+				console.log(Array.isArray(chardat))
+
+				lineSeries.setData(rechardat);
+
+
+			},
+			error		:	function(e) {
+				console.log("error : ",e);
+			}
+		})
+
+	};
+
+
+	// 차트 2번 테스트
+	function chartApi2() {
+
+		currCoin = 'BTC-KRW';
+		// sendData = "currCoin="+currCoin;
+		console.log('currCoin->'+currCoin);
+
+		$.ajax({
+			type		:	'GET',
+			url			:	'chartApi',
+			data		:	currCoin,
+			contentType : 	'application/text; charset=UTF-8',
+			dataType 	: 	'json',
+			success		:	function(data) {
+
+				var width = 600;
+				var height = 300;
+
+				var chart = LightweightCharts.createChart(document.getElementById('chart'), {
+					width: width,
+					height: height,
+					layout: {
+						backgroundColor: '#ffffff',
+						textColor: 'rgba(33, 56, 77, 1)',
+					},
+					localization: {
+						locale: 'cn-CN',
+					},
+					grid: {
+						vertLines: {
+							color: 'rgba(197, 203, 206, 0.7)',
+						},
+						horzLines: {
+							color: 'rgba(197, 203, 206, 0.7)',
+						},
+					},
+					timeScale: {
+						timeVisible: true,
+						secondsVisible: false,
+					},
+					crosshair: {
+						horzLine: {
+							visible: false,
+							labelVisible: false
+						},
+						vertLine: {
+							visible: true,
+							style: 0,
+							width: 2,
+							color: 'rgba(32, 38, 46, 0.1)',
+							labelVisible: false,
+						}
+					},
+				});
+
+				var lineSeries = chart.addCandlestickSeries();
+
+
+				let chardat = [];
+				for (var i=0; i<Object.keys(data).length; i++) {
+					chardat.push(data[i]);
+				}
+				chardat = chardat.filter(function() { return true; });
+				rechardat = [...chardat].reverse();
+				console.log(chardat);
+				console.log(typeof chardat);
+				console.log(Array.isArray(chardat))
+
+				lineSeries.setData(rechardat);
+
+				function businessDayToString(businessDay) {
+					return new Date(Date.UTC(businessDay.year, businessDay.month - 1, businessDay.day, 0, 0, 0)).toLocaleDateString();
+				}
+
+				var toolTipWidth = 96;
+				var toolTipHeight = 80;
+				var toolTipMargin = 15;
+				var priceScaleWidth = 50;
+
+				var toolTip = document.createElement('div');
+				toolTip.className = 'floating-tooltip-2';
+				document.getElementById('chart').appendChild(toolTip);
+				// toolTip.innerHTML = '<div style="color: rgba(0, 120, 255, 0.9)">⬤ AERO</div>' +
+				// 		'<div style="font-size: 24px; margin: 4px 0px; color: #20262E">' + (Math.round(100 * 100) / 100).toFixed(2) + '</div>' +
+				// 		'<div>' + '오늘 날짜' + '</div>';
+
+				// update tooltip
+				chart.subscribeCrosshairMove(function(param) {
+					if (!param.time || param.point.x < 0 || param.point.x > width || param.point.y < 0 || param.point.y > height) {
+						toolTip.style.display = 'none';
+						return;
+					}
+
+					var dateStr = LightweightCharts.isBusinessDay(param.time)
+							? businessDayToString(param.time)
+							: new Date(param.time * 1000).toLocaleDateString();
+
+					toolTip.style.display = 'block';
+					console.log(Object.keys(param));
+					console.log(Object.values(param));
+					var price = param.seriesPrices.get(lineSeries);
+					toolTip.innerHTML = '<div style="color: rgba(0, 120, 255, 0.9)">⬤ AERO</div>' +
+							'<div style="font-size: 24px; margin: 4px 0px; color: #20262E">' + (Math.round(price * 100) / 100).toFixed(2) + '</div>' +
+							'<div>' + dateStr + '</div>';
+
+					var left = param.point.x;
+
+
+					if (left > width - toolTipWidth - toolTipMargin) {
+						left = width - toolTipWidth;
+					} else if (left < toolTipWidth / 2) {
+						left = priceScaleWidth;
+					}
+
+					toolTip.style.left = left + 'px';
+					toolTip.style.top = 0 + 'px';
+				});
+
+			},
+			error		:	function(e) {
+				console.log("error : ",e);
+			}
+		})
+
+	};
+
+
+
+</script>
+</body>
+</html>
