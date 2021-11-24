@@ -36,7 +36,7 @@ public class GMController {
 			return "/status/status";
 		}
 		
-		@GetMapping("/status/y_history")
+		@GetMapping("/status_y_history")
 		public String statusYHistory(Trade trade, Model model) {
 			System.out.println("AngController StatusYHistory Start...");
 			List<Trade> tradeList = ss.yStatus(trade);
@@ -45,7 +45,7 @@ public class GMController {
 
 		}
 		
-		@GetMapping("/status/n_history")
+		@GetMapping("/status_n_history")
 		public String statusNHistory(Trade trade, Model model) {
 			System.out.println("AngController StatusNHistory Start...");
 			List<Trade> tradeList = ss.nStatus(trade);
