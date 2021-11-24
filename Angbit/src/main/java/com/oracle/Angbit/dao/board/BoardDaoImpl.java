@@ -10,13 +10,14 @@ import com.oracle.Angbit.model.common.Board;
 import com.oracle.Angbit.model.common.MemberInfo;
 
 
+
 @Repository
 public class BoardDaoImpl implements BoardDao {
 
 	@Autowired
 	private SqlSession session;
 	
-	
+//게시판 양식 가져오기	
 	@Override
 	public List<Board> BoardList() {
 		System.out.println("BoardDaoImpl BoardList Start...");
@@ -33,7 +34,7 @@ public class BoardDaoImpl implements BoardDao {
 		return boardList;
 	}
 
-
+//nickname 가져오기
 	@Override
 	public List<MemberInfo> MemberList() {
 		System.out.println("BoardDaoImpl MemberList Start...");
@@ -50,4 +51,49 @@ public class BoardDaoImpl implements BoardDao {
 		return memberList;
 	}
 
+//삭제기능
+	@Override
+	public int Delete(int empno) {
+		System.out.println("BoardDaoImpl Delete Start...");
+		int result = 0;
+		try {
+			result  = session.delete("delete",empno);
+			System.out.println("BoardDaoImpl delete result->"+result);
+		} catch (Exception e) {
+			System.out.println("BoardDaoImpl delete Exception->"+e.getMessage());
+		}
+		return result;
+	}
+
+	@Override
+	public int total() {
+		int tot = 0;
+		System.out.println("BoardDaoImpl total Start ..." );
+		try {
+			//    Mapper    ------>   Map ID (Naming Rule)
+			tot = session.selectOne("dyEmpTotal");
+		} catch (Exception e) {
+			System.out.println("BoardDaoImpl total Exception->"+e.getMessage());
+		}
+		
+		return tot;
+	}
+
+	
+	@Override
+	public List<MemberInfo> pgMemberList(MemberInfo memberInfo) {
+		List<MemberInfo> pgmemberList = null;
+		System.out.println("BoardDaoImpl pgMemberList Start ..." );
+		try {
+			//                             Naming Rule 
+			pgmemberList = session.selectList("tkEmpListAll", memberInfo);
+		} catch (Exception e) {
+			System.out.println("BoardDaoImpl pgMemberList Exception->"+e.getMessage());
+		}
+		return pgmemberList;
+	}
+
+	
+	
+	
 }
