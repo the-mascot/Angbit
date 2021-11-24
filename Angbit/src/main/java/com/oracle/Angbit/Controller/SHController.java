@@ -2,6 +2,7 @@ package com.oracle.Angbit.Controller;
 
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.service.invest.InvestService;
+import com.oracle.Angbit.service.myInfo.myInfoService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
@@ -35,6 +37,8 @@ public class SHController {
 
     @Autowired
     private InvestService ivs;
+    @Autowired
+    private myInfoService mis;
 
     @RequestMapping("/myPage")
     public String myPageForm(Model model) {
@@ -123,5 +127,19 @@ public class SHController {
 
 
     } // 11-24 11:26 PUSH
+
+    @RequestMapping("gologin")
+    public String goLogin() {
+        return "myInfo/loginForm";
+    }
+
+    @PostMapping("logintest")
+    public String loginTest(Model model, HttpServletRequest request, HttpServletResponse response) {
+        logger.info("SHController LoginTest() Called.");
+        int result = mis.loginTest(model);
+
+        return "redirect:myInfo";
+    }
+
 
 }
