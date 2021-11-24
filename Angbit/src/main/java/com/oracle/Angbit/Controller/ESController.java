@@ -53,18 +53,6 @@ public class ESController {
 	}
 
 
-	@RequestMapping("/myPage")
-	public String myPageForm(Model model) {
-		System.out.println("myPageForm Called.");
-		return "/myPage/myPage";
-	}
-
-	@RequestMapping("/chart")
-	public String chartTest(Model model) {
-		System.out.println("chartTest Called.");
-		return "/invest/char3";
-	}
-	
 	
 	
 	
