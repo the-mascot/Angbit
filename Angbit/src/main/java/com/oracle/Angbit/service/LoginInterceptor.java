@@ -18,24 +18,28 @@ public class LoginInterceptor implements HandlerInterceptor {
                            HttpServletResponse response,
                            Object handler,
                            ModelAndView modelAndView) throws IOException {
-        String id = (String) request.getSession().getAttribute("sessionID");
-        if (id != null) {
-            System.out.println("ID is... -> "+id);
-        } else {
-            System.out.println("ID is null. Please Login.");
-            response.sendRedirect("gologin");
-        }
+        System.out.println("postHandle called.");
     }
 
     public boolean preHandle(HttpServletRequest request,
                           HttpServletResponse response,
-                          Object handler) {
+                          Object handler) throws IOException {
         //선수행
         System.out.println("preHandle Interceptor Called.");
         HandlerMethod method = (HandlerMethod)handler;
         Method methodObj = method.getMethod();
         System.out.println("Bean : "+method.getBean());
         System.out.println("Method : "+methodObj);
-        return true;
+        String id = (String) request.getSession().getAttribute("sessionID");
+        if (id != null) {
+            System.out.println("ID is... -> "+id);
+            return true;
+        } else {
+            System.out.println("ID is null. Please Login.");
+            response.sendRedirect("gologin");
+            return false;
+        }
+
+
     }
 }
