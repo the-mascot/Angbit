@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
@@ -73,9 +74,9 @@ public class SHController {
     public void chartApi(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         System.out.println("AngController chartAPI Start...");
-//		String currCoin = request.getParameter("currCoin"); // 캔들 호출된 코인명
+		String currCoin = request.getParameter("currCoin"); // 캔들 호출된 코인명
 //		String currCoin = (String) request.getAttribute("currCoin");
-        String currCoin = "KRW-BTC"; // 캔들 호출된 코인명
+//        String currCoin = "KRW-BTC"; // 캔들 호출된 코인명
         System.out.println("AngController chartApi currCoin->"+currCoin); // 코인명 콘솔 출력
 
         RestTemplate restTemplate = new RestTemplate(); // ?
@@ -176,6 +177,34 @@ public class SHController {
         session.invalidate();
         return "redirect:chart";
     }
+
+    @ResponseBody
+    @PostMapping("nickChange")
+    public void nickChange(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        System.out.println("nickChange Start...");
+
+        StringBuffer json = new StringBuffer();
+        String line = null;
+
+        try {
+            BufferedReader reader = request.getReader();
+            while((line = reader.readLine()) != null) {
+                json.append(line);
+            }
+
+        }catch(Exception e) {
+            System.out.println("Error reading JSON string: " + e.toString());
+        }
+        System.out.println("json tostring!"+json.toString());
+
+        String nickname = "";
+        JSONObject nickChange = new JSONObject();
+        nickChange.put("nickname", nickname);
+        PrintWriter out = response.getWriter();
+        out.print(nickChange);
+    }
+
 
 
 }

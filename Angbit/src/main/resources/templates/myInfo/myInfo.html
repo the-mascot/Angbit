@@ -181,12 +181,13 @@
 		}
 
 		function getNicknameFromInput(){
+			console.log("변경할 닉네임? : "+nicknameInput.value);
 			return nicknameInput.value;
 		}
 
 		/* 닉네임 변경 AJAX */
-		/* async function updateNickname(nickname){
-            const newNickname = await fetch("/api/user/nickname", {
+		async function updateNickname(nickname){
+            const newNickname = await fetch("/nickChange", {
                 method: "post",
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
@@ -200,7 +201,7 @@
             } catch (error){
                 alert(JSON.stringify(error));
             }
-        } */
+        }
 
 		function setNewNicknameToPage(newNickname){
 			const mainHeaderNicknameSpan = document.querySelector(".main-header-profile-nickname");
