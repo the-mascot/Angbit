@@ -103,34 +103,4 @@ public class GMController {
 				e.printStackTrace();
 			}
 		}
-		
-		@GetMapping("test")
-		public String test() {
-			
-			System.out.println("AngController home Start...");
-			
-			return "/status/tickerApi";
-		}
-		
-		// 로그인 폼
-		@GetMapping("/loginForm")
-		public String loginForm() {
-			System.out.println("LoginForm Start...");
-			return "/common/loginForm";
-		}
-		// 로그인
-		@GetMapping("/login")
-		public String login(MemberInfo memberInfo, HttpServletRequest request, Model model) {
-			System.out.println("AngController login start...");
-			HttpSession session = request.getSession();
-			MemberInfo member = ss.memberLogin(memberInfo);
-			
-			if(member == null) {
-				session.setAttribute("member", null);
-				model.addAttribute("member", member);
-			} else {
-				session.setAttribute("member", member);
-			}
-			return "redirect:";
-		}
 	}
