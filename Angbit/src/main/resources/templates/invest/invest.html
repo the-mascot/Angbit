@@ -328,11 +328,9 @@
 				type		:	'POST',
 				url			:	'invest/orderInfo',
 				data		:	sendDataOI,
-	 			contentType : 	'application/json; charset=UTF-8',
-			    dataType 	: 	'json',
 				success		:	function(data) {
 					console.log('data->'+data)
-					upApiData(data);
+					
 				},
 				error		:	function(e) {
 					console.log("error : ",e);

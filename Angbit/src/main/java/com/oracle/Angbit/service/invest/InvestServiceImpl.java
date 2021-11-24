@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.oracle.Angbit.dao.invest.InvestDao;
 import com.oracle.Angbit.model.common.CoinInfo;
+import com.oracle.Angbit.model.invest.MemberCoin;
 
 @Service
 public class InvestServiceImpl implements InvestService {
@@ -30,6 +31,15 @@ public class InvestServiceImpl implements InvestService {
 		CoinInfo coinInfo = ivdao.coinInfo(coincode);
 		
 		return coinInfo;
+	}
+
+	@Override
+	public MemberCoin memberCoin(MemberCoin paraMemberCoin) {
+
+		System.out.println("InvestServiceImpl memberCoin Start...");
+		MemberCoin memberCoin = ivdao.memberCoin(paraMemberCoin);
+		
+		return null;
 	}
 	
 	
