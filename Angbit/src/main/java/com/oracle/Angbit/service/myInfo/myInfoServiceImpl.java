@@ -29,4 +29,10 @@ public class myInfoServiceImpl implements myInfoService {
 		int result = midao.loginTest(mi);
 		return result;
 	}
+
+	@Override
+	public MemberInfo getMyInfo(String id) {
+		System.out.println("MemberInfoService getMyInfo() Called.");
+		return midao.getMyInfo(id);
+	}
 }

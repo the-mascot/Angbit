@@ -5,4 +5,7 @@
 	<select id="loginTest" parameterType="MemberInfo" resultType="MemberInfo">
 		SELECT * FROM memberinfo WHERE ID=#{id} AND PASSWORD=#{password}
 	</select>
+	<select id="getMyInfo" resultType="MemberInfo">
+		SELECT * FROM memberinfo WHERE ID=#{id}
+	</select>
 </mapper>

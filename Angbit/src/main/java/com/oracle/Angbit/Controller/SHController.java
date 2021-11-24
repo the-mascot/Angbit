@@ -1,6 +1,7 @@
 package com.oracle.Angbit.Controller;
 
 import com.oracle.Angbit.model.common.CoinInfo;
+import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.service.invest.InvestService;
 import com.oracle.Angbit.service.myInfo.myInfoService;
 import org.json.simple.JSONArray;
@@ -42,8 +43,17 @@ public class SHController {
     private myInfoService mis;
 
     @RequestMapping("/myInfo")
-    public String myPageForm(Model model) {
+    public String myPageForm(Model model, HttpServletRequest request) {
         System.out.println("myPageForm Called.");
+        HttpSession session = request.getSession();
+        String id = (String) session.getAttribute("sessionID");
+        System.out.println("myInfo ID? "+id);
+        MemberInfo mi = mis.getMyInfo(id);
+        System.out.println("mi ID"+mi.getId());
+        System.out.println("mi PW"+mi.getPassword());
+        System.out.println("mi NICK"+mi.getNickname());
+        System.out.println("mi JOIN"+mi.getJoindate());
+        System.out.println("mi FINAL"+mi.getFinaldate());
         return "myInfo/myInfo";
     }
 
@@ -153,7 +163,7 @@ public class SHController {
             return "forward:gologin";
         }
 
-        return "redirect:myInfo";
+        return "forward:myInfo";
     }
 
     @RequestMapping("logout")

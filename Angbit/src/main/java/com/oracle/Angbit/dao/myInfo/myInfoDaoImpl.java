@@ -27,4 +27,11 @@ public class myInfoDaoImpl implements myInfoDao {
 
 		return result;
 	}
+
+	@Override
+	public MemberInfo getMyInfo(String id) {
+		System.out.println("getMyInfo DAO ID : "+id);
+		MemberInfo mi = session.selectOne("getMyInfo", id);
+		return mi;
+	}
 }
