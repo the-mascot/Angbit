@@ -1,16 +1,27 @@
 package com.oracle.Angbit.Controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 import com.oracle.Angbit.model.common.Coin;
 import com.oracle.Angbit.model.common.MemberInfo;
@@ -55,9 +66,50 @@ public class GMController {
 			return "/status/n_history";
 		}
 		
-		@GetMapping("/status/delete")
+		@GetMapping("/status_delete")
 		public String statusDelete(int trd_num, Model model) {
-			return "redirect:statusList";
+			return "redirect:status_n_history";
+		}
+		
+		@ResponseBody
+		@GetMapping("/status_tickerApi")
+		public void tickerApi(HttpServletRequest request, HttpServletResponse response) throws IOException {
+			
+			System.out.println("GMController tickerApi Start...");
+			String currCoin = request.getParameter("currCoin");
+			System.out.println("GMController investApi currCoin->"+currCoin);
+			
+			RestTemplate restTemplate = new RestTemplate();
+			HttpHeaders headers = new HttpHeaders();
+			headers.set("Accept", "application/json");
+			HttpEntity<?> entity = new HttpEntity<>(headers);
+			
+			String tickerUrl 	= "https://api.upbit.com/v1/ticker?markets="+currCoin;
+			ResponseEntity<String> tickerResponse 	= restTemplate.exchange(tickerUrl, HttpMethod.GET, entity, String.class);
+			try {
+				String tickerStr 	= tickerResponse.getBody();
+				String jsonStr = tickerStr.substring(1, (tickerStr.length()-1));
+				
+				System.out.println(jsonStr);
+				
+				JSONParser parser = new JSONParser();
+				JSONArray json = (JSONArray) parser.parse(jsonStr);
+				System.out.println("json 객체->"+json);
+				
+				PrintWriter out = response.getWriter();
+				out.print(json);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		@GetMapping("test")
+		public String test() {
+			
+			System.out.println("AngController home Start...");
+			
+			return "/status/tickerApi";
 		}
 		
 		// 로그인 폼
