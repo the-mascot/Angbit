@@ -48,12 +48,15 @@ public class SHController {
         HttpSession session = request.getSession();
         String id = (String) session.getAttribute("sessionID");
         System.out.println("myInfo ID? "+id);
+
         MemberInfo mi = mis.getMyInfo(id);
         System.out.println("mi ID"+mi.getId());
         System.out.println("mi PW"+mi.getPassword());
         System.out.println("mi NICK"+mi.getNickname());
         System.out.println("mi JOIN"+mi.getJoindate());
         System.out.println("mi FINAL"+mi.getFinaldate());
+
+        model.addAttribute("mi", mi);
         return "myInfo/myInfo";
     }
 

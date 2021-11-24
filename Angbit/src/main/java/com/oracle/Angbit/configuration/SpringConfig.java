@@ -4,7 +4,10 @@ import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 
 import com.oracle.Angbit.service.LoginInterceptor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -19,7 +22,6 @@ public class SpringConfig implements WebMvcConfigurer {
 		this.em = em;
 	}
 
-	//InterCeptor
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/myInfo");
 	}
