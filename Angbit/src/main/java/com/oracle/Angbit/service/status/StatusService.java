@@ -11,6 +11,7 @@ public interface StatusService {
 	List<MemberInfo> krwStatus(MemberInfo member);
 	List<Trade> yStatus(Trade trade);
 	List<Trade> nStatus(Trade trade);
+	int totpriceStatus();
 	MemberInfo memberLogin(MemberInfo member);
 
 }
