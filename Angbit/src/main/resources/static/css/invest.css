@@ -1,0 +1,225 @@
+@charset "UTF-8";
+
+section {
+	padding-top: 7px;
+	float: left;
+	z-index: 999;
+}
+
+main::after {
+ 	display:block; 
+	clear:both; 
+	content:"";
+}
+
+.section1 {
+	width: 70%;
+}
+
+/* Coin List Table */
+
+
+#coinlist-card {
+	width: 400px;
+	
+}
+
+#coinlist-table tr {
+	height: 50px;
+}
+
+#coinlist-table td {
+	font-size: 13px;
+
+}
+
+#coinlist-table th {
+	
+}
+
+.coinlist-price {
+	font-family: 'Noto Sans KR', sans-serif; 
+	width: 90px; 
+	height: 40px;
+}
+
+/* 코인 타이틀 */
+.coinTitle-card {
+	width: 990px;
+ 	height: 150px;
+
+}
+
+
+
+#coinTitle-coinname {
+	font-family: 'Noto Sans KR', sans-serif;
+	font-size: 20px;
+	margin-right: 5px;
+}
+
+#coinTitle-coincode {
+	font-size: 14px;
+}
+
+#coinTitle-tp {
+	font-family: 'Noto Sans KR', sans-serif;
+	font-size: 25px;
+}
+
+.coinTitle-table th {
+	background-color: #00000008;
+	width: 25%;
+}
+
+.coinTitle-table td {
+	width: 25%;
+}
+
+.coinTitle-coinsumr {
+	font-family: 'Gowun Batang', serif;
+}
+
+/* 스크롤바 설정*/
+.coinTitle-card::-webkit-scrollbar{
+    width: 6px;
+}
+
+/* 스크롤바 막대 설정*/
+.coinTitle-card::-webkit-scrollbar-thumb{
+    height: 17%;
+    background-color: rgba(0, 0, 0, 0.2);
+    /* 스크롤바 둥글게 설정    */
+    border-radius: 10px;    
+}
+
+/* 스크롤바 뒷 배경 설정*/
+.coinTitle-card::-webkit-scrollbar-track{
+    background-color: rgba(0,0,0,0);
+}
+
+/* OrderBook Table */
+#orderbook-div {
+	width: 495px;
+	height: 600px;
+	overflow: auto;
+}
+
+#orderbook-table tr, td {
+	height: 45px;
+	font-size: 14px;
+}
+
+.orderbook-ap, .orderbook-bp {
+	font-family: 'Noto Sans KR', sans-serif; 
+	font-size: 13px;
+}
+
+.orderbook-td-ap, .orderbook-td-bp {
+	background-color: #0d6efd0d !important;
+}
+
+.as {
+	text-align: right;
+	padding-right: 2px;
+}
+
+.orderbook-td-info {
+	font-size: 13px;
+}
+
+/* Trade table */
+#trade-table tr, td, th {
+	height: 26px !important;
+	padding: 5px !important;
+}
+
+#trade-table td {
+	font-size: 12px;
+}
+
+#trade-table tr {
+	vertical-align: middle;
+}
+
+#trade-table th {
+	
+}
+
+/* 스크롤바 설정*/
+.orderbook-div::-webkit-scrollbar{
+    width: 6px;
+}
+
+/* 스크롤바 막대 설정*/
+.orderbook-div::-webkit-scrollbar-thumb{
+    height: 17%;
+    background-color: rgba(0, 0, 0, 0.2);
+    /* 스크롤바 둥글게 설정    */
+    border-radius: 10px;    
+}
+
+/* 스크롤바 뒷 배경 설정*/
+.orderbook-div::-webkit-scrollbar-track{
+    background-color: rgba(0,0,0,0);
+}
+
+/* 코인차트 */
+.coinChart {
+	width: 990px;
+	height: 452px;
+}
+
+/* orderSection */
+.orderSection {
+	width: 990px;
+}
+
+.order-card {
+	width: 480px;
+	height: 520px;
+}
+
+.order-form {
+	width: 280px;
+	height: 38px;
+	text-align: right;
+}
+
+.order-form-amt-butn {
+	width: 60px;
+}
+
+.order-form-reset {
+	width: 100px;
+	height: 45px;
+	font-family: 'Noto Sans KR', sans-serif; 
+}
+
+.order-form-submit {
+	width: 280px;
+	height: 45px;
+	font-family: 'Noto Sans KR', sans-serif; 
+	color: white;
+}
+
+/* 링크 */
+a:link {
+	text-decoration: none;
+	color: black;
+}
+
+a:visited {
+	text-decoration: none;
+	color: black;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: black;
+}
+
+a:active {
+	text-decoration: none;
+	color: black;
+}

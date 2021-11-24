@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="InvestDao">
+	<select id="coinInfoList" resultType="CoinInfo">
+		select coincode, coinname from coininfo
+	</select>
+	<select id="coinInfo" parameterType="String" resultType="CoinInfo">
+		select * from coininfo where coincode=#{coincode}
+	</select>
+</mapper>

@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>index</title>
+<!-- Common meta tag, Bootstrap, js -->
+<th:block th:replace="common/commonHead"></th:block>
+
+
+<!-- Custom styles for this page -->
+<link th:href="@{css/invest.css}" rel="stylesheet">
+
+<!-- Jquery -->
+<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
+
+<script type="text/javascript">
+
+
+		var wsUri = "wss://api.upbit.com/websocket/v1";	// Upbit websoket 여는 uri
+		var output;
+		var currCoin = null;	// 현재 위치한 코인 페이지
+		var currCoincode = null;
+		var pcp = null;
+		
+		// 페이지 로딩 되면 실행되는 initial 함수
+		function init() {
+			output = document.getElementById("output");
+			console.log('init() Start...');
+			investApi(event);
+	/* 		testWebSocket(); */
+		}
+		
+		function testWebSocket() {
+			websocket = new WebSocket(wsUri);							// websoket 연결 시작 요청
+		 	websocket.binaryType = 'arraybuffer';						// array buffer 데이터로 받겠다
+			//websocket.binaryType = 'Blob';
+			//websocket.binaryType = 'String';
+			websocket.onopen = function(evt) { onOpen(evt) ;};			// websocket.onopen 	= 웹소켓 연결 성공시 수행되는 함수
+			websocket.onclose = function(evt) { onClose(evt) };			// websoket.onclose 	= 웹소켓 연결 닫을때 수행되는 함수
+			websocket.onmessage = function(evt) { onMessage(evt) };		// websoket.onmessage 	= 서버쪽에서 데이터 수신 받을때 수행되는 함수
+			websocket.onerror = function(evt) { onError(evt) };			// websoket.onerror 	= 웹소켓 연결 실패시 수행되는 함수	
+		};
+
+
+		function onOpen(evt) {
+			writeToScreen("연결완료");
+			// var msg1 = [{"ticket":"test"},{"type":"ticker","codes":["KRW-BTC", "BTC-BCH"]},{"format":"SIMPLE"}];
+			var msg = [
+				{
+					"ticket"	:	"UNIQUE_TICKET",
+				},
+				{
+					"type"		: 	"ticker",
+					"codes"		: ["KRW-BTC", "KRW-ETH", "KRW-ADA", "KRW-XRP", "KRW-DOT", "KRW-DOGE", "KRW-MANA", 
+						"KRW-LTC", "KRW-SAND", "KRW-VET", "KRW-AXS", "KRW-SOL", "KRW-BCH", "KRW-XLM", "KRW-ETC"]
+				},
+				{
+					"type"		:	"trade",
+					"codes"		:	["KRW-BTC", "KRW-ETH", "KRW-ADA", "KRW-XRP", "KRW-DOT", "KRW-DOGE", "KRW-MANA", 
+						"KRW-LTC", "KRW-SAND", "KRW-VET", "KRW-AXS", "KRW-SOL", "KRW-BCH", "KRW-XLM", "KRW-ETC"]
+				},
+				{
+					"type"		:	"orderbook",
+					"codes"		:	["KRW-BTC.10", "KRW-ETH.10", "KRW-ADA.10", "KRW-XRP.10", "KRW-DOT.10", "KRW-DOGE.10", "KRW-MANA.10", 
+						"KRW-LTC.10", "KRW-SAND.10", "KRW-VET.10", "KRW-AXS.10", "KRW-SOL.10", "KRW-BCH.10", "KRW-XLM.10", "KRW-ETC.10"]
+				},
+				{
+					"format"	:	"SIMPLE"
+				}
+			];
+			msg = JSON.stringify(msg);
+			doSend(msg);
+
+		}
+  
+		function onClose(evt) {
+ 	 		websocket.close();
+			writeToScreen("연결해제");
+		}
+
+		function onMessage(evt) {
+			
+ 			console.log(evt.data);
+			var enc = new TextDecoder("utf-8");
+			var arr = new Uint8Array(evt.data);
+			var decode = enc.decode(arr);
+			var jason=JSON.parse(decode);
+ 			console.log(enc.decode(arr));
+			
+ 			switch(jason['ty']) {
+ 			case 'ticker':	// 현재가 응답
+				var code = jason['cd'];
+ 				flashit(code, jason['tp']);			// 코인 목록에서 체결시 반짝임 표시
+ 				changeHilight(code, jason['c']);	// 전일대비에 따라 글시 색 변경
+
+ 				upCoinList(jason);					// 코인 리스트 데이터 갱신
+ 				
+ 				break;
+
+ 			case 'orderbook':	// 호가 응답
+
+ 				if(currCoin == jason['cd']) {
+ 					console.log('pcp->'+pcp);
+ 					for(var i = 0; i < jason['obu'].length; i++) {
+ 						askSize = jason['obu'][i].as.toFixed(3);
+ 						bidSize = jason['obu'][i].bs.toFixed(3);
+ 						var as 	= askSize.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+ 						var bs 	= bidSize.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+ 						var ap 	= jason['obu'][i].ap;
+ 						var bp 	= jason['obu'][i].bp;	
+ 						
+ 						document.getElementById('as-'+i).innerText = as;
+ 						document.getElementById('ap-'+i).innerText = ap.toLocaleString();
+ 						document.getElementById('bp-'+i).innerText = bp.toLocaleString();
+ 						document.getElementById('bs-'+i).innerText = bs;
+ 						document.getElementById('apPercent-'+i).innerText = ((ap-pcp)/pcp*100).toFixed(2)+'%'; 
+ 						document.getElementById('bpPercent-'+i).innerText = ((bp-pcp)/pcp*100).toFixed(2)+'%';
+ 						
+ 						if(pcp < ap) {
+ 							document.getElementById('ap-'+i).style.color 		= "red";
+ 							document.getElementById('apPercent-'+i).style.color	= "red";
+ 						} else if(pcp > ap) {
+ 							document.getElementById('ap-'+i).style.color 		= "blue";
+ 							document.getElementById('apPercent-'+i).style.color	= "blue";
+ 						} else if(pcp == ap) {
+ 							document.getElementById('ap-'+i).style.color 		= "black";
+ 							document.getElementById('apPercent-'+i).style.color	= "black";
+ 						}
+ 						
+ 						if(pcp < bp) {
+ 							document.getElementById('bp-'+i).style.color 		= "red";
+ 							document.getElementById('bpPercent-'+i).style.color	= "red";
+ 						} else if (pcp > bp) {
+ 							document.getElementById('bp-'+i).style.color 		= "blue";
+ 							document.getElementById('bpPercent-'+i).style.color	= "blue";
+ 						} else if (pcp == bp) {
+ 							document.getElementById('bp-'+i).style.color 		= "black";
+ 							document.getElementById('bpPercent-'+i).style.color	= "black";
+ 						} 
+ 						
+ 					}
+ 				}
+ 				break;
+
+ 			case 'trade':	// 체결 응답
+ 				if(currCoin == jason['cd']) {
+ 					
+ 					for(var i=0; i<10; i++) {
+ 						if(document.getElementById('ap-'+i).innerText == jason['tp'].toLocaleString()) {
+ 							document.getElementById('orderbook-td-ap-'+i).style.border = "2px solid black";
+ 						} else {
+ 							document.getElementById('orderbook-td-ap-'+i).style.border = "0px";
+ 						}
+ 						
+	 					if(document.getElementById('bp-'+i).innerText == jason['tp'].toLocaleString()) {
+								document.getElementById('orderbook-td-bp-'+i).style.border = "2px solid black";
+							} else {
+								document.getElementById('orderbook-td-bp-'+i).style.border = "0px";
+							}
+ 					}
+ 					
+ 	 				for(var i=9; i>0; i--) {
+	 					document.getElementById('trd-tp-'+i).innerText = document.getElementById('trd-tp-'+(i-1)).innerText;
+	 					document.getElementById('trd-tv-'+i).innerText = document.getElementById('trd-tv-'+(i-1)).innerText;
+	 					document.getElementById('trd-tp-'+i).style.color = document.getElementById('trd-tp-'+(i-1)).style.color;
+	 					document.getElementById('trd-tv-'+i).style.color = document.getElementById('trd-tv-'+(i-1)).style.color;
+	 				} 
+
+	 				if(jason.tv >= 100) {
+	 					document.getElementById('trd-tv-0').innerText = Math.round(jason['tv']).toLocaleString();
+	 				} else {
+	 					document.getElementById('trd-tv-0').innerText = jason['tv'].toFixed(3);
+	 				}
+	 				
+	 				if(jason.ab == 'ASK') {
+	 					document.getElementById('trd-tv-0').style.color = "blue";
+	 				} else {
+	 					document.getElementById('trd-tv-0').style.color = "red";
+	 				}
+	 				
+	 				document.getElementById('trd-tp-0').innerText = jason['tp'].toLocaleString();
+ 				}
+ 				
+ 				
+ 				break;
+
+ 			}
+ 			
+        }
+
+		function onError(evt) {
+			writeToScreen('<span style="color: red;">에러:</span> ' + evt.data);
+		}
+
+		function doSend(message) {
+			writeToScreen("발신: " + message);
+			websocket.send(message);
+		}
+
+		function writeToScreen(message)	{
+			var pre = document.createElement("p");
+			pre.style.wordWrap = "break-word";
+			pre.innerHTML = message;
+			output.appendChild(pre);
+		}
+		window.addEventListener("load", init, false);
+		
+		function flashit(code, tp){
+			var trade_price = tp.toLocaleString();
+			console.log(trade_price);
+			if(document.getElementById(code+'-price').innerText < trade_price) {
+				document.getElementById(code+'-price').style.border = "1px solid red";
+			} if(document.getElementById(code+'-price').innerText > trade_price) {
+				document.getElementById(code+'-price').style.border = "1px solid blue";
+			} if(document.getElementById(code+'-price').innerText == trade_price) {
+				document.getElementById(code+'-price').style.border = "none";
+			}
+		}
+		
+		function changeHilight(code, change) {
+			if(change=='RISE') {
+				document.getElementById(code+'-price').style.color = "red";
+				document.getElementById(code+'-cPercent').style.color = "red";
+				document.getElementById(code+'-cPrice').style.color = "red";
+			} else if(change=='EVEN') {
+				document.getElementById(code+'-price').style.color = "black";
+				document.getElementById(code+'-cPercent').style.color = "black";
+				document.getElementById(code+'-cPrice').style.color = "black";
+			} else if(change=='FALL') {
+				document.getElementById(code+'-price').style.color = "blue";
+				document.getElementById(code+'-cPercent').style.color = "blue";
+				document.getElementById(code+'-cPrice').style.color = "blue";
+			}
+	
+			if(code == currCoin) {
+				if(change=='RISE') {
+					document.getElementById('coinTitle-tp').style.color = "red";
+					document.getElementById('coinTitle-scr').style.color = "red";
+					document.getElementById('coinTitle-scp').style.color = "red";
+				} else if(change=='EVEN') {
+					document.getElementById('coinTitle-tp').style.color = "black";
+					document.getElementById('coinTitle-scr').style.color = "black";
+					document.getElementById('coinTitle-scp').style.color = "black";
+				} else if(change=='FALL') {
+					document.getElementById('coinTitle-tp').style.color = "blue";
+					document.getElementById('coinTitle-scr').style.color = "blue";
+					document.getElementById('coinTitle-scp').style.color = "blue";
+				}
+			}
+			
+
+		}
+		
+		// 코인 리스트 Soket 업데이트
+		function upCoinList(jason) {
+			var code = jason['cd'];
+			var trade_price = jason['tp'].toLocaleString();
+
+			//var price24h = Math.round(jason['atp24h']).toLocaleString();
+			
+			var price24h = (Math.round(jason['atp24h']/1000000)*1000000).toLocaleString();
+
+			var subPrice24h = price24h.substring(0, (price24h.length-8));
+			
+			document.getElementById(code+'-price').innerText = trade_price;
+			document.getElementById(code+'-cPercent').innerText = (jason['scr']*100).toFixed(2)+'%';
+			document.getElementById(code+'-cPrice').innerText = (jason['scp'].toLocaleString()); 
+			document.getElementById(code+'-price24h').innerText = subPrice24h+'백만';
+
+			if(currCoin == jason['cd']) {
+				// orderbook-info 업데이트
+				if(jason.atv24h >= 100) {
+					document.getElementById('orderbook-atv24h').innerText = Math.round(jason.atv24h).toLocaleString()
+					document.getElementById('orderbook-atv24h-unit').innerText = currCoincode;
+				} else {
+					document.getElementById('orderbook-atv24h').innerText = jason.atv24h.toFixed(3)
+					document.getElementById('orderbook-atv24h-unit').innerText = currCoincode;
+				}
+				
+				document.getElementById('orderbook-atp24h').innerText = subPrice24h;
+			
+				document.getElementById('orderbook-h52wp').innerText = jason.h52wp.toLocaleString();
+				document.getElementById('orderbook-h52wdt').innerText = '('+jason.h52wdt+')';
+				document.getElementById('orderbook-l52wp').innerText = jason.l52wp.toLocaleString();
+				document.getElementById('orderbook-l52wdt').innerText = '('+jason.l52wdt+')';
+				document.getElementById('orderbook-hp').innerText = jason.hp.toLocaleString();
+				document.getElementById('orderbook-lp').innerText = jason.lp.toLocaleString();
+			
+				// coinTitle 업데이트
+				document.getElementById('coinTitle-tp').innerText = trade_price;
+				document.getElementById('coinTitle-scr').innerText = (jason['scr']*100).toFixed(2)+'%';
+				document.getElementById('coinTitle-scp').innerText = (jason['scp'].toLocaleString());
+	
+			}
+			
+		}
+		
+		// Rest API 요청
+		function investApi(e, id) {
+			e.preventDefault();
+			if(id != null) {
+				currCoincode = id
+				currCoin = 'KRW-'+id;
+			} else {
+				currCoincode = 'BTC';
+				currCoin = 'KRW-BTC';
+			}
+			sendData = "currCoin="+currCoin;
+			console.log('currCoin->'+sendData);
+			
+			$.ajax({
+				type		:	'GET',
+				url			:	'invest/investApi',
+				data		:	sendData,
+	 			contentType : 	'application/json; charset=UTF-8',
+			    dataType 	: 	'json',
+				success		:	function(data) {
+					console.log('data->'+data)
+					upApiData(data);
+				},
+				error		:	function(e) {
+					console.log("error : ",e);
+				}
+			});
+			
+			sendDataOI = 'coincode='+currCoincode;
+			$.ajax({
+				type		:	'POST',
+				url			:	'invest/orderInfo',
+				data		:	sendDataOI,
+	 			contentType : 	'application/json; charset=UTF-8',
+			    dataType 	: 	'json',
+				success		:	function(data) {
+					console.log('data->'+data)
+					upApiData(data);
+				},
+				error		:	function(e) {
+					console.log("error : ",e);
+				}
+			})
+			
+		};
+		
+		// API 정보 업데이트
+		function upApiData(jason) {
+			
+			document.getElementById('coinTitle-coinname').innerText = document.getElementById(currCoincode).innerText;
+			document.getElementById('coinTitle-coincode').innerText = currCoin;
+			
+			// 체결 테이블 업데이트			
+			for(var i = 0; i < jason[2].length; i++) {
+				var tv = jason[2][i]['trade_volume'];	// 체결 량
+
+				// 거래량 숫자 포멧팅
+				if(tv > 100) {
+ 					document.getElementById('trd-tv-'+i).innerText = Math.round(tv).toLocaleString();
+ 				} else {
+ 					document.getElementById('trd-tv-'+i).innerText = tv.toFixed(3);
+ 				}
+				
+				document.getElementById('trd-tp-'+i).innerText = jason[2][i]['trade_price'].toLocaleString();	// 체결 가격 콤마 넣고 업데이트
+				
+				// 거래량 색 변경
+				if(jason[2][i].ask_bid == 'ASK') {
+ 					document.getElementById('trd-tv-'+i).style.color = "blue";
+ 				} else {
+ 					document.getElementById('trd-tv-'+i).style.color = "red";
+ 				}
+				
+			}
+			
+			pcp = jason[1].prev_closing_price;	// pcp(prev_closing_price) : 전일종가
+
+ 			// 10호가 업데이트
+			for(var i = 0; i < 10; i++) {
+				var askSize = jason[0]['orderbook_units'][i].ask_size.toFixed(3);					// 해당 호가 매도 잔량
+				var bidSize = jason[0]['orderbook_units'][i].bid_size.toFixed(3);					// 해당 호가 매수 잔량
+				var as		= askSize.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");	// 콤마 넣기
+				var bs 		= bidSize.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");	// 콤마 넣기
+				var ap 		= jason[0]['orderbook_units'][i].ask_price;								// 매도 호가
+				var bp 		= jason[0]['orderbook_units'][i].bid_price;								// 매수 호가
+				
+				document.getElementById('as-'+i).innerText = as;
+				document.getElementById('bs-'+i).innerText = bs;
+				document.getElementById('ap-'+i).innerText = ap.toLocaleString();
+				document.getElementById('bp-'+i).innerText = bp.toLocaleString();
+				document.getElementById('apPercent-'+i).innerText = ((ap-pcp)/pcp*100).toFixed(2)+'%'; 
+				document.getElementById('bpPercent-'+i).innerText = ((bp-pcp)/pcp*100).toFixed(2)+'%';
+				document.getElementById('orderbook-pcp').innerText = pcp.toLocaleString();
+				
+				
+				// 10호가 전일대비로 Text CSS 변경
+
+				if(pcp < ap) {
+					document.getElementById('ap-'+i).style.color 		= "red";
+					document.getElementById('apPercent-'+i).style.color	= "red";
+				} else if(pcp > ap) {
+					document.getElementById('ap-'+i).style.color 		= "blue";
+					document.getElementById('apPercent-'+i).style.color	= "blue";
+				} else if(pcp == ap) {
+					document.getElementById('ap-'+i).style.color 		= "black";
+					document.getElementById('apPercent-'+i).style.color	= "black";
+				}
+				
+				if(pcp < bp) {
+					document.getElementById('bp-'+i).style.color 		= "red";
+					document.getElementById('bpPercent-'+i).style.color	= "red";
+				} else if (pcp > bp) {
+					document.getElementById('bp-'+i).style.color 		= "blue";
+					document.getElementById('bpPercent-'+i).style.color	= "blue";
+				} else if (pcp == bp) {
+					document.getElementById('bp-'+i).style.color 		= "black";
+					document.getElementById('bpPercent-'+i).style.color	= "black";
+				} 
+			}
+			
+			// orderbook-info 업데이트
+			if(jason[1].acc_trade_volume_24h >= 100) {
+				document.getElementById('orderbook-atv24h').innerText = Math.round(jason[1].acc_trade_volume_24h).toLocaleString();
+				document.getElementById('orderbook-atv24h-unit').innerText = currCoincode;
+			} else {
+				document.getElementById('orderbook-atv24h').innerText = jason[1].acc_trade_volume_24h.toFixed(3);
+				document.getElementById('orderbook-atv24h-unit').innerText = currCoincode;
+			}
+			
+			var price24h = (Math.round(jason[1].acc_trade_price_24h/1000000)*1000000).toLocaleString();
+			var subPrice24h = price24h.substring(0, (price24h.length-8));
+			document.getElementById('orderbook-atp24h').innerText = subPrice24h;
+			
+			document.getElementById('orderbook-h52wp').innerText = jason[1].highest_52_week_price.toLocaleString();
+			document.getElementById('orderbook-h52wdt').innerText = '('+jason[1].highest_52_week_date+')';
+			document.getElementById('orderbook-l52wp').innerText = jason[1].lowest_52_week_price.toLocaleString();
+			document.getElementById('orderbook-l52wdt').innerText = '('+jason[1].lowest_52_week_date+')';
+			document.getElementById('orderbook-hp').innerText = jason[1].high_price.toLocaleString();
+			document.getElementById('orderbook-lp').innerText = jason[1].low_price.toLocaleString();
+			
+			
+			// coinTitle 업데이트
+			if(document.getElementById('coinTitle-value-a').className == 'nav-link active') {
+				document.getElementById('coinTitle-tp').innerText = jason[1].trade_price.toLocaleString();
+				document.getElementById('coinTitle-scr').innerText = (jason[1].signed_change_rate*100).toFixed(2)+'%';
+				document.getElementById('coinTitle-scp').innerText = (jason[1].signed_change_price.toLocaleString());
+				
+				if(jason[1].change=='RISE') {
+					document.getElementById('coinTitle-tp').style.color = "red";
+					document.getElementById('coinTitle-scr').style.color = "red";
+					document.getElementById('coinTitle-scp').style.color = "red";
+				} else if(jason[1].change=='EVEN') {
+					document.getElementById('coinTitle-tp').style.color = "black";
+					document.getElementById('coinTitle-scr').style.color = "black";
+					document.getElementById('coinTitle-scp').style.color = "black";
+				} else if(jason[1].change=='FALL') {
+					document.getElementById('coinTitle-tp').style.color = "blue";
+					document.getElementById('coinTitle-scr').style.color = "blue";
+					document.getElementById('coinTitle-scp').style.color = "blue";
+				}
+			} else {
+				coinInfoLoad(event);
+			}
+			
+		}
+		
+		$(document).ready(function(){ 
+			$('#coinTitle-coinInfo-a').on('click', function coinInfoAjax(e) {
+				e.preventDefault();
+				coinInfoLoad = coinInfoAjax;
+				$('#coinTitle-coinInfo-a').attr('class', 'nav-link active');
+				$('#coinTitle-value-a').attr('class', 'nav-link');
+				$('.coinTitle-card').css('height', '500px');
+				$('.coinTitle-card').css('overflow', 'scroll');
+				
+				var coincode = 'coincode='+currCoincode;
+				console.log(coincode);
+				$.ajax({
+					type		:	'GET',
+					url			:	'invest/coinInfoAjax',
+					data		:	coincode,
+					contentType : 	'application/json; charset=UTF-8',
+				    dataType 	: 	'json',
+					success		:	function(json) {
+						$('#coinTitle-body').html("<p class='fs-4 fw-bold mb-1'>"+currCoin+"</p><div class='d-flex justify-content-center'><table class='coinTitle-table table table-bordered mt-3 mb-5'><tr><th>최초발행</th><td>"+json.issuedate+"</td><th>시가총액</th><td>"+json.coingap+"</td></tr><tr><th>총 발행한도</th><td>"+json.issuelimit+"</td><td colspan='2'></td></tr></table></div><p class='fs-2 fw-bold mb-3'>코인소개</p><p class='coinTitle-coinsumr'>"+json.coinsumr+"</p>");
+					},
+					error		:	function(e) {
+						console.log("error : ",e);
+					}
+				});
+			});
+			
+			$('#coinTitle-value-a').on('click', function(e) {
+				e.preventDefault();
+				$('.coinTitle-card').css('overflow', 'auto');
+				$('.coinTitle-card').css('height', '150px');
+				$('#coinTitle-coinInfo-a').attr('class', 'nav-link');
+				$('#coinTitle-value-a').attr('class', 'nav-link active');
+				$('#coinTitle-body').html("<div id='coinTitle-tp'></div><span class='text-secondary' style='font-size: 13px;'>전일대비</span><span class='ms-2 me-2' id='coinTitle-scr'></span><span id='coinTitle-scp'></span>")
+				investApi(event);
+				
+			});
+			
+		});
+		
+</script>
+</head>
+<body>
+<!-- Common header -->
+<header th:replace="common/header :: header"></header>
+
+<main class="clearfix">
+	<div>
+		<input type="button" value="Connection Open" onclick="testWebSocket()">
+		<input type="button" value="Connection Close" onclick="onClose()">
+		<div id="output"></div>
+	</div>
+	<section class="section1">
+
+		<div class="d-flex justify-content-center mt-5">
+			<div class="coinTitle-card card">
+				<div class="card-header">
+					<div class="d-flex justify-content-between">
+						<div>
+							<span id="coinTitle-coinname"></span>
+							<span class="pt-2" id="coinTitle-coincode"></span>
+						</div>
+						<div>
+						    <ul class="nav nav-tabs card-header-tabs">
+						    	<li class="nav-item">
+						        	<a class="nav-link active" href="#" id="coinTitle-value-a">시세</a>
+						      	</li>
+						      	<li class="nav-item">
+						        	<a class="nav-link" href="#" id="coinTitle-coinInfo-a">정보</a>
+						      	</li>
+						    </ul>
+						</div>						
+					</div>
+				</div>
+				<div class="card-body" id="coinTitle-body">
+				 <div id="coinTitle-tp"></div>
+					<span class="text-secondary" style="font-size: 13px;">전일대비</span><span class="ms-2 me-2" id="coinTitle-scr"></span><span id="coinTitle-scp"></span>
+				</div> 
+			</div>
+		</div>
+		
+		<div class="d-flex justify-content-center mt-3 mb-3">
+			<div class="coinChart card" id="coinChart">
+				차트 구간입니다 승훈아 가능하니??....
+			</div>
+		</div>
+		<div class="orderSection d-flex justify-content-between mx-auto">
+		<div class="orderbook-div card" id="orderbook-div">
+			<table class="table table-bordered table-responsive" id="orderbook-table">
+				<tr>
+					<td class="as" id="as-9" width="33%"></td>
+					<td class="orderbook-td-ap" id="orderbook-td-ap-9" style="width: 33%"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-9"></div><div class="col-5 text-center px-0" id="apPercent-9"></div></div></td>
+
+					<td width="33%"></td>
+				</tr>
+				<tr>
+					<td class="as" id="as-8" width="33%"></td>
+
+					<td class="orderbook-td-ap" id="orderbook-td-ap-8"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-8"></div><div class="col-5 text-center px-0" id="apPercent-8"></div></div></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="as" id="as-7" width="33%"></td>
+					<td class="orderbook-td-ap" id="orderbook-td-ap-7"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-7"></div><div class="col-5 text-center px-0" id="apPercent-7"></div></div></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="as" id="as-6" width="33%"></td>
+					<td class="orderbook-td-ap" id="orderbook-td-ap-6"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-6"></div><div class="col-5 text-center px-0" id="apPercent-6"></div></div></td>
+					<td rowspan="2">
+						<div class="orderbook-td-info d-flex justify-content-between">
+							<div class="text-secondary mb-1">거래량</div><div><span id="orderbook-atv24h"></span><span class="ms-1 text-secondary" id="orderbook-atv24h-unit"></span></div></div>
+						<div class="orderbook-td-info d-flex justify-content-between">
+							<div class="text-secondary mb-1">거래대금</div><div><span id="orderbook-atp24h"></span><span class="ms-1 text-secondary">백만원</span></div></div>
+						<div class="orderbook-td-info d-flex flex-row-reverse">
+							<div class="text-secondary">(최근24시간)</div></div>
+					</td>
+				</tr>
+				<tr>
+					<td class="as" id="as-5" width="33%"></td>
+					<td class="orderbook-td-ap" id="orderbook-td-ap-5"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-5"></div><div class="col-5 text-center px-0" id="apPercent-5"></div></div></td>
+				</tr>
+				<tr>
+					<td class="as" id="as-4" width="33%"></td>
+					<td class="orderbook-td-ap" id="orderbook-td-ap-4"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-4"></div><div class="col-5 text-center px-0" id="apPercent-4"></div></div></td>
+					<td rowspan="3">
+						<div class="orderbook-td-info d-flex justify-content-between">
+							<div class="text-secondary mb-1">5주 최고</div><div id="orderbook-h52wp"></div></div>
+						<div class="orderbook-td-info d-flex flex-row-reverse">
+							<div id="orderbook-h52wdt"></div></div>
+						<div class="orderbook-td-info d-flex justify-content-between">
+							<div class="text-secondary mb-1">5주 최저</div><div id="orderbook-l52wp"></div></div>
+						<div class="orderbook-td-info d-flex flex-row-reverse">
+							<div id="orderbook-l52wdt"></div></div>
+					</td>
+				</tr>
+				<tr>
+					<td class="as" id="as-3" width="33%"></td>
+					<td class="orderbook-td-ap" id="orderbook-td-ap-3"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-3"></div><div class="col-5 text-center px-0" id="apPercent-3"></div></div></td>
+				</tr>
+				<tr>
+					<td class="as" id="as-2" width="33%"></td>
+					<td class="orderbook-td-ap" id="orderbook-td-ap-2"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-2"></div><div class="col-5 text-center px-0" id="apPercent-2"></div></div></td>
+				</tr>
+				<tr>
+					<td class="as" id="as-1" width="33%"></td>
+					<td class="orderbook-td-ap" id="orderbook-td-ap-1"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-1"></div><div class="col-5 text-center px-0" id="apPercent-1"></div></div></td>
+					<td rowspan="2">
+						<div class="orderbook-td-info d-flex justify-content-between">
+							<div class="text-secondary mb-1">전일종가</div><div id="orderbook-pcp"></div></div>
+						<div class="orderbook-td-info d-flex justify-content-between">
+							<div class="text-secondary mb-1">당일고가</div><div id="orderbook-hp"></div></div>
+						<div class="orderbook-td-info d-flex justify-content-between">
+							<div class="text-secondary mb-1">전일저가</div><div id="orderbook-lp"></div></div>
+					</td>
+				</tr>
+				<tr>
+					<td class="as" id="as-0" width="33%"></td>
+					<td class="orderbook-td-ap" id="orderbook-td-ap-0"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-0"></div><div class="col-5 text-center px-0" id="apPercent-0"></div></div></td>
+
+				</tr>
+				<tr>
+					<td class="px-0 py-0" rowspan="10" colspan="1">
+					<div style="font-size: 11px;">
+		
+						<table class="table text-center" id="trade-table">
+								<tr style="background-color: #0d6efd0d;">
+									<td>체결가</td><td>체결량</td>
+								</tr>
+								<tr th:each="i : ${#numbers.sequence(0, 9)}">
+									<td th:id="'trd-tp-'+${i}"></td><td th:id="'trd-tv-'+${i}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>						
+					</td>
+
+					<td class="orderbook-td-bp" id="orderbook-td-bp-0"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-0"></div><div class="col-5 text-center px-0" id="bpPercent-0"></div></div></td>
+					<td id="bs-0"></td>
+				</tr>
+				<tr>
+					<td class="orderbook-td-bp" id="orderbook-td-bp-1"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-1"></div><div class="col-5 text-center px-0" id="bpPercent-1"></div></div></td>
+					<td id="bs-1"></td>
+				</tr>
+				<tr>
+					<td class="orderbook-td-bp" id="orderbook-td-bp-2"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-2"></div><div class="col-5 text-center px-0" id="bpPercent-2"></div></div></td>
+					<td id="bs-2"></td>
+				</tr>
+				<tr>
+					<td class="orderbook-td-bp" id="orderbook-td-bp-3"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-3"></div><div class="col-5 text-center px-0" id="bpPercent-3"></div></div></td>
+					<td id="bs-3"></td>
+				</tr>
+				<tr>
+					<td class="orderbook-td-bp" id="orderbook-td-bp-4"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-4"></div><div class="col-5 text-center px-0" id="bpPercent-4"></div></div></td>
+					<td id="bs-4"></td>
+				</tr>
+				<tr>
+					<td class="orderbook-td-bp" id="orderbook-td-bp-5"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-5"></div><div class="col-5 text-center px-0" id="bpPercent-5"></div></div></td>
+					<td id="bs-5"></td>
+				</tr>
+				<tr>
+					<td class="orderbook-td-bp" id="orderbook-td-bp-6"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-6"></div><div class="col-5 text-center px-0" id="bpPercent-6"></div></div></td>
+					<td id="bs-6"></td>
+				</tr>
+				<tr>
+					<td class="orderbook-td-bp" id="orderbook-td-bp-7"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-7"></div><div class="col-5 text-center px-0" id="bpPercent-7"></div></div></td>
+					<td id="bs-7"></td>
+				</tr>
+				<tr>
+					<td class="orderbook-td-bp" id="orderbook-td-bp-8"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-8"></div><div class="col-5 text-center px-0" id="bpPercent-8"></div></div></td>
+					<td id="bs-8"></td>
+				</tr>
+				<tr>
+					<td class="orderbook-td-bp" id="orderbook-td-bp-9"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-9"></div><div class="col-5 text-center px-0" id="bpPercent-9"></div></div></td>
+
+					<td id="bs-9"></td>
+				</tr>
+			</table>
+			
+		</div>
+	
+			<div class="order-card card">
+				<div class="card-header">
+					<ul class="nav nav-tabs card-header-tabs">
+				    	<li class="nav-item">
+				        	<a class="nav-link active fw-bold" href="#" id="order-limits-a">매수</a>
+				      	</li>
+				      	<li class="nav-item">
+				        	<a class="nav-link fw-bold" href="#" id="order-maketorder-a">매도</a>
+				      	</li>
+			    </ul>
+			</div>
+			<div class="card-body">
+				<form action="" method="post">
+					<div class="d-flex justify-content-between mb-5">
+						<div>주문구분</div>
+						<div>
+							<input type="radio" class="form-check-input" name="trd_method" value="limits" checked="checked">지정가
+							<input type="radio" class="form-check-input" name="trd_method" value="market">시장가
+						</div>
+					</div>
+					<div class="d-flex justify-content-between mb-3">
+						<div>주문가능</div><div><p class="mb-1">0.0000000</p><p class="mb-0">0KRW</p></div>
+					</div>
+					<div class="d-flex justify-content-between mb-3">
+						<div>매수가격</div><input type="number" class="order-form form-control" name="trd_unit_price">
+					</div>
+					<div class="d-flex justify-content-between mb-3">
+						<div>주문수량</div>
+						<div>
+							<input type="text" class="order-form form-control" name="trd_amt" value="0">
+							<div class="d-flex justify-content-between mt-1">
+								<input type="button" class="order-form-amt-butn form-control" value="10%">
+								<input type="button" class="order-form-amt-butn form-control" value="25%">
+								<input type="button" class="order-form-amt-butn form-control" value="50%">
+								<input type="button" class="order-form-amt-butn form-control" value="100%">
+							</div>
+						</div>
+					</div>
+					<div class="d-flex justify-content-between mb-3">
+					<div>주문총액(KRW)</div><input type="text" class="order-form form-control" name="trd_price" value="0" readonly="readonly">
+					</div>
+					<p class="text-end" style="font-size: 14px;">최소주문금액 : 5,000 KRW / 수수료 : 없음</p>
+					<div class="d-flex justify-content-center">
+						<input type="reset" class="order-form-reset form-control me-3" value="초기화"><input type="submit" class="order-form-submit form-control bg-danger" value="매 수">
+					</div>
+				</form>
+			</div>
+			</div>
+		</div>
+	</section>
+	<section class="section2">
+	    <div class="card mt-5" id="coinlist-card">
+
+	    	<div class="card-header">
+	    		<input type="text" class="form-control" placeholder="코인명/심볼검색" style="font-size: 14px;">
+	    	</div>
+	        <div class="card-body">
+            	<div class="table-responsive">
+                	<table class="table table-hover" id="coinlist-table">
+	                    <thead>
+	                        <tr>
+	                            <th>코인명</th>
+	                            <th>현재가</th>
+	                            <th class="text-end">전일대비</th>
+	                            <th class="text-end">거래대금</th>
+	                        </tr>
+	                    </thead>
+	                    <tbody>
+	                    	<tr th:each="list : ${coinInfoList}" th:with="code=${list.coincode}">
+								<td class="pt-1">
+
+									<a th:href="@{#}" class="coinlist-a text-dark" th:id="${code}" th:text="${list.coinname}" onclick="investApi(event, id)" style="font-family: 'Noto Sans KR', sans-serif;"></a>
+
+		            	 			<p th:text="${code}" class="mb-0"></p>             	
+		                         </td>
+		                         <td class="pt-1" style="width: 98px;">
+		                         	<div th:id="'KRW-'+${code}+'-price'" class="coinlist-price"></div>
+		                         </td>
+		                         <td class="pt-1">
+		                         	<p class="text-end mb-0" th:id="'KRW-'+${code}+'-cPercent'"></p>
+		                         	<p class="text-end mb-0" th:id="'KRW-'+${code}+'-cPrice'"></p>
+		                         </td>
+		                         <td class="pt-1">
+		                         	<p class="text-end" th:id="'KRW-'+${code}+'-price24h'"></p>
+		                         </td>
+							</tr>
+	                    </tbody>
+	                </table>
+	            </div>
+	        </div>
+	    </div>
+	</section>
+
+</main>
+
+<footer th:replace="common/footer :: footer"></footer>
+
+
+
+<!-- Bootstrap Bundle with Popper -->
+<script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js}" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+</body>
+</html>

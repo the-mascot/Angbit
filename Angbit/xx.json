@@ -1,0 +1,248 @@
+[
+	{
+		"market": "KRW-BTC",
+		"timestamp": 1637073585672,
+		"total_ask_size": 3.61482899,
+		"total_bid_size": 0.68002749,
+		"orderbook_units": [
+			{
+				"ask_price": 7.5394E7,
+				"bid_price": 7.539E7,
+				"ask_size": 0.00895296,
+				"bid_size": 0.00776467
+			},
+			{
+				"ask_price": 7.54E7,
+				"bid_price": 7.5388E7,
+				"ask_size": 2.20649339,
+				"bid_size": 0.00238751
+			},
+			{
+				"ask_price": 7.5402E7,
+				"bid_price": 7.5385E7,
+				"ask_size": 0.00007407,
+				"bid_size": 0.43461747
+			},
+			{
+				"ask_price": 7.5404E7,
+				"bid_price": 7.5369E7,
+				"ask_size": 0.03943944,
+				"bid_size": 0.00043979
+			},
+			{
+				"ask_price": 7.5405E7,
+				"bid_price": 7.535E7,
+				"ask_size": 0.10353226,
+				"bid_size": 0.1278619
+			},
+			{
+				"ask_price": 7.5407E7,
+				"bid_price": 7.5349E7,
+				"ask_size": 0.06574336,
+				"bid_size": 0.00038332
+			},
+			{
+				"ask_price": 7.5409E7,
+				"bid_price": 7.5345E7,
+				"ask_size": 0.02188805,
+				"bid_size": 0.00058987
+			},
+			{
+				"ask_price": 7.541E7,
+				"bid_price": 7.5336E7,
+				"ask_size": 0.37311197,
+				"bid_size": 0.04221946
+			},
+			{
+				"ask_price": 7.5416E7,
+				"bid_price": 7.533E7,
+				"ask_size": 0.00073665,
+				"bid_size": 0.00142418
+			},
+			{
+				"ask_price": 7.542E7,
+				"bid_price": 7.5326E7,
+				"ask_size": 0.02081896,
+				"bid_size": 0.00038344
+			},
+			{
+				"ask_price": 7.5421E7,
+				"bid_price": 7.532E7,
+				"ask_size": 0.15814099,
+				"bid_size": 0.01802081
+			},
+			{
+				"ask_price": 7.5422E7,
+				"bid_price": 7.5319E7,
+				"ask_size": 0.60136989,
+				"bid_size": 0.03866738
+			},
+			{
+				"ask_price": 7.5423E7,
+				"bid_price": 7.5307E7,
+				"ask_size": 0.00013259,
+				"bid_size": 0.001585
+			},
+			{
+				"ask_price": 7.5425E7,
+				"bid_price": 7.5305E7,
+				"ask_size": 0.01431447,
+				"bid_size": 0.00329914
+			},
+			{
+				"ask_price": 7.5426E7,
+				"bid_price": 7.5304E7,
+				"ask_size": 0.00007994,
+				"bid_size": 0.00038355
+			}
+		]
+	},
+	{
+		"market": "KRW-BTC",
+		"trade_date": "20211116",
+		"trade_time": "143945",
+		"trade_date_kst": "20211116",
+		"trade_time_kst": "233945",
+		"trade_timestamp": 1637073585000,
+		"opening_price": 77600000.0,
+		"high_price": 77602000.0,
+		"low_price": 73325000.0,
+		"trade_price": 75394000.0,
+		"prev_closing_price": 77602000.00000000,
+		"change": "FALL",
+		"change_price": 2208000.00000000,
+		"change_rate": 0.0284528749,
+		"signed_change_price": -2208000.00000000,
+		"signed_change_rate": -0.0284528749,
+		"trade_volume": 0.0042123,
+		"acc_trade_price": 812175495902.743120000,
+		"acc_trade_price_24h": 982470169771.35038000,
+		"acc_trade_volume": 10820.32133935,
+		"acc_trade_volume_24h": 13004.98210102,
+		"highest_52_week_price": 82700000.00000000,
+		"highest_52_week_date": "2021-11-09",
+		"lowest_52_week_price": 17555000.00000000,
+		"lowest_52_week_date": "2020-11-16",
+		"timestamp": 1637073585729
+	},
+	[{
+		"market": "KRW-BTC",
+		"trade_date_utc": "2021-11-16",
+		"trade_time_utc": "14:39:45",
+		"timestamp": 1637073585000,
+		"trade_price": 75400000.00000000,
+		"trade_volume": 0.01934190,
+		"prev_closing_price": 77602000.00000000,
+		"change_price": -2202000.00000000,
+		"ask_bid": "BID",
+		"sequential_id": 1637073585000012
+	},
+	{
+		"market": "KRW-BTC",
+		"trade_date_utc": "2021-11-16",
+		"trade_time_utc": "14:39:45",
+		"timestamp": 1637073585000,
+		"trade_price": 75394000.00000000,
+		"trade_volume": 0.00895296,
+		"prev_closing_price": 77602000.00000000,
+		"change_price": -2208000.00000000,
+		"ask_bid": "BID",
+		"sequential_id": 1637073585000011
+	},
+	{
+		"market": "KRW-BTC",
+		"trade_date_utc": "2021-11-16",
+		"trade_time_utc": "14:39:45",
+		"timestamp": 1637073585000,
+		"trade_price": 75394000.00000000,
+		"trade_volume": 0.00421230,
+		"prev_closing_price": 77602000.00000000,
+		"change_price": -2208000.00000000,
+		"ask_bid": "ASK",
+		"sequential_id": 1637073585000010
+	},
+	{
+		"market": "KRW-BTC",
+		"trade_date_utc": "2021-11-16",
+		"trade_time_utc": "14:39:45",
+		"timestamp": 1637073585000,
+		"trade_price": 75394000.00000000,
+		"trade_volume": 0.00718672,
+		"prev_closing_price": 77602000.00000000,
+		"change_price": -2208000.00000000,
+		"ask_bid": "ASK",
+		"sequential_id": 1637073585000009
+	},
+	{
+		"market": "KRW-BTC",
+		"trade_date_utc": "2021-11-16",
+		"trade_time_utc": "14:39:45",
+		"timestamp": 1637073585000,
+		"trade_price": 75394000.00000000,
+		"trade_volume": 0.00132636,
+		"prev_closing_price": 77602000.00000000,
+		"change_price": -2208000.00000000,
+		"ask_bid": "ASK",
+		"sequential_id": 1637073585000008
+	},
+	{
+		"market": "KRW-BTC",
+		"trade_date_utc": "2021-11-16",
+		"trade_time_utc": "14:39:45",
+		"timestamp": 1637073585000,
+		"trade_price": 75400000.00000000,
+		"trade_volume": 0.01326259,
+		"prev_closing_price": 77602000.00000000,
+		"change_price": -2202000.00000000,
+		"ask_bid": "BID",
+		"sequential_id": 1637073585000007
+	},
+	{
+		"market": "KRW-BTC",
+		"trade_date_utc": "2021-11-16",
+		"trade_time_utc": "14:39:45",
+		"timestamp": 1637073585000,
+		"trade_price": 75400000.00000000,
+		"trade_volume": 0.00100000,
+		"prev_closing_price": 77602000.00000000,
+		"change_price": -2202000.00000000,
+		"ask_bid": "BID",
+		"sequential_id": 1637073585000006
+	},
+	{
+		"market": "KRW-BTC",
+		"trade_date_utc": "2021-11-16",
+		"trade_time_utc": "14:39:45",
+		"timestamp": 1637073585000,
+		"trade_price": 75394000.00000000,
+		"trade_volume": 0.00095795,
+		"prev_closing_price": 77602000.00000000,
+		"change_price": -2208000.00000000,
+		"ask_bid": "ASK",
+		"sequential_id": 1637073585000005
+	},
+	{
+		"market": "KRW-BTC",
+		"trade_date_utc": "2021-11-16",
+		"trade_time_utc": "14:39:45",
+		"timestamp": 1637073585000,
+		"trade_price": 75390000.00000000,
+		"trade_volume": 0.00263941,
+		"prev_closing_price": 77602000.00000000,
+		"change_price": -2212000.00000000,
+		"ask_bid": "ASK",
+		"sequential_id": 1637073585000004
+	},
+	{
+		"market": "KRW-BTC",
+		"trade_date_utc": "2021-11-16",
+		"trade_time_utc": "14:39:45",
+		"timestamp": 1637073585000,
+		"trade_price": 75400000.00000000,
+		"trade_volume": 0.01420000,
+		"prev_closing_price": 77602000.00000000,
+		"change_price": -2202000.00000000,
+		"ask_bid": "BID",
+		"sequential_id": 1637073585000003
+	}
+]]
