@@ -11,6 +11,7 @@ public interface StatusDao {
 	List<MemberInfo> listKrw(MemberInfo member);
 	List<Trade> listY(Trade trade);
 	List<Trade> listN(Trade trade);
+	int priceTot();
 	MemberInfo memberLogin(MemberInfo member);
 
 }

@@ -56,6 +56,13 @@ public class StatusDaoImpl implements StatusDao {
 		return nList;
 	}
 
+	@Override
+	public int priceTot() {
+		System.out.println("StatusDaoImpl priceTot start...");
+		int result = session.selectOne("TotPrice");
+		return result;
+	}
+
 
 
 }

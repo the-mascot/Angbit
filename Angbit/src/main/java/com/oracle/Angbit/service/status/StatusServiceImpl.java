@@ -51,6 +51,13 @@ public class StatusServiceImpl implements StatusService {
 		return listN;
 	}
 
+	@Override
+	public int totpriceStatus() {
+		System.out.println("StatusServiceImpl totpriceStatus start...");
+		int result = sd.priceTot();
+		return result;
+	}
+
 
 
 }
