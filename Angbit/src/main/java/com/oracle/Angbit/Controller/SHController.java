@@ -130,7 +130,9 @@ public class SHController {
     } // 11-24 11:26 PUSH
 
     @RequestMapping("gologin")
-    public String goLogin() {
+    public String goLogin(Model model) {
+        System.out.println("msg?"+model.getAttribute("msg"));
+//        model.addAttribute("msg", model.getAttribute("msg"));
         return "myInfo/loginForm";
     }
 
@@ -144,11 +146,11 @@ public class SHController {
         System.out.println("Controller result ?" + result);
         if (result==1) {
             HttpSession session = request.getSession();
-            session.setAttribute("id", id);
+            session.setAttribute("sessionID", id);
         }  else {
             model.addAttribute("msg", "아이디 혹은 비밀번호가 틀립니다.");
-            request.setAttribute("msg", "아이디 혹은 비밀번호가 틀립니다.");
-            return "redirect:gologin";
+//            request.setAttribute("msg", "아이디 혹은 비밀번호가 틀립니다.");
+            return "forward:gologin";
         }
 
         return "redirect:myInfo";
