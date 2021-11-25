@@ -326,11 +326,11 @@
 			
 			sendDataOI = 'coincode='+currCoincode;
 			$.ajax({
-				type		:	'POST',
+				type		:	'GET',
 				url			:	'invest/orderInfo',
 				data		:	sendDataOI,
 				success		:	function(data) {
-					console.log('data->'+data)
+					upOrderInfoData(data);
 					
 				},
 				error		:	function(e) {
@@ -456,9 +456,13 @@
 					document.getElementById('coinTitle-scp').style.color = "blue";
 				}
 			} else {
-				coinInfoLoad(event);
+				 coinInfoLoad(event);
 			}
 			
+		}
+		
+		function upOrderInfoData(data) {
+			document.getElementById('order-avaliableKRW').innerText = data.krw.toLocaleString();
 		}
 		
 		$(document).ready(function(){ 
@@ -785,7 +789,7 @@
 						</div>
 					</div>
 					<div class="d-flex justify-content-between mb-3">
-						<div>주문가능</div><div><p class="mb-1">0.0000000</p><p class="mb-0">0KRW</p></div>
+						<div>주문가능</div><div><span class="mb-1" id="order-avaliableKRW"></span><span class="ms-1 mb-0">KRW</span></div>
 					</div>
 					<div class="d-flex justify-content-between mb-3">
 						<div>매수가격</div><input type="number" class="order-form form-control" name="trd_unit_price">
