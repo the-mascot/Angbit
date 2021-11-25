@@ -13,6 +13,9 @@
 	<select id="NList" parameterType="Trade" resultType="Trade">
 		select * from trade where id='slspqkqh@naver.com' and trd_stu=0 order by trd_date desc
 	</select>
+	<select id="TotPrice" resultType="int">
+		select sum(tot_price) from coin where id='slspqkqh@naver.com'
+	</select>
 <!-- 	<select id="login" resultType="MemberInfo"> -->
 <!-- 		select id, password from memberinfo where id=#{id} and password=#{password} -->
 <!-- 	</select> -->

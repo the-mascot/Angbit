@@ -52,7 +52,8 @@
 	<section class="section1">
 		<button onclick="chartApi()">차트1번</button>
 		<button onclick="chartApi2()">차트2번</button>
-		<button onclick="testJSON3()">눌러3</button>
+		<button onclick="location.href='gologin'">눌러3</button>
+		<button onclick="location.href='logout'">로그아웃</button>
 		<div id="container" style="height: 400px; min-width: 310px"></div>
 
 	</section>
@@ -93,21 +94,61 @@
 					localization: {
 						locale: 'cn-CN',
 					},
-					grid: {
-						vertLines: {
-							color: 'rgba(197, 203, 206, 0.7)',
-						},
-						horzLines: {
-							color: 'rgba(197, 203, 206, 0.7)',
-						},
-					},
+					// grid: {
+					// 	vertLines: {
+					// 		color: 'rgba(197, 203, 206, 0.7)',
+					// 	},
+					// 	horzLines: {
+					// 		color: 'rgba(197, 203, 206, 0.7)',
+					// 	},
+					// },
 					timeScale: {
 						timeVisible: true,
 						secondsVisible: false,
 					},
+					timeScale: {
+						barSpacing: 3,
+						fixLeftEdge: true,
+						visible: true,
+					},
+					priceScale : {
+						autoScale : true ,
+						invertScale : true ,
+						alignLabels : false ,
+						borderVisible : false ,
+						borderColor : '#555ffd ' ,
+						scaleMargins : {
+							top : 0 ,
+							bottom : 0 ,
+						} ,
+					},
 				});
 
-				var lineSeries = chart.addCandlestickSeries();
+				var lineSeries = chart.addCandlestickSeries({
+					title: '빠스',
+					upColor: '#FF4646',
+					downColor: '#64D6FF',
+					borderVisible: false,
+					wickVisible: true,
+					borderColor: '#000000',
+					wickColor: '#000000',
+					borderUpColor: '#FF3232',
+					borderDownColor: '#5ACCFF',
+					wickUpColor: '#FF3232',
+					wickDownColor: '#5ACCFF',
+				});
+
+
+				function handleCrosshairMoved(param) {
+					if (!param.point) {
+						return;
+					}
+
+					console.log(`A user moved the crosshair to (${param.point.x}, ${param.point.y}) point, the time is ${param.time}`);
+				}
+
+				chart.subscribeCrosshairMove(handleCrosshairMoved);
+				chart.unsubscribeCrosshairMove(handleCrosshairMoved);
 
 
 				let chardat = [];
@@ -121,6 +162,7 @@
 				console.log(Array.isArray(chardat))
 
 				lineSeries.setData(rechardat);
+
 
 
 			},

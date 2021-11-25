@@ -23,7 +23,7 @@
 			<div class="u-p-table">
 				<div class="u-p-t-row">
 					<div class="u-p-t-th">이메일</div>
-					<div class="u-p-t-td u-p-email">newclass@choongang.kr</div>
+					<div class="u-p-t-td u-p-email" th:text="${mi.getId()}"></div>
 				</div>
 				<div class="u-p-t-row">
 					<div class="u-p-t-th">닉네임</div>
@@ -31,7 +31,7 @@
 						<div class="u-p-nickname-input-container">
 							<input class="u-p-nickname-input form-control" maxlength="12"
 								   onkeyup="validateNickname()" disabled id="nickname"
-								   name="nickname" value="김나쁜">
+								   name="nickname" th:value="${mi.getNickname()}">
 							<div class="u-p-nickname-btn-container">
 								<button type="submit" class="btn btn-sm u-p-nickname-edit-btn">변경</button>
 								<button class="btn btn-sm u-p-nickname-edit-submit-btn"
@@ -86,11 +86,11 @@
 				</div>
 				<div class="u-p-t-row">
 					<div class="u-p-t-th">가입일</div>
-					<div class="u-p-t-td u-p-created-date">2021년 08월 29일 05:06</div>
+					<div class="u-p-t-td u-p-created-date" th:text="${#dates.format(mi.joindate, 'yyyy년 MM월 dd일 ')}"></div>
 				</div>
 				<div class="u-p-t-row">
 					<div class="u-p-t-th">최종 수정일</div>
-					<div class="u-p-t-td u-p-updated-date">2021년 10월 20일 11:18</div>
+					<div class="u-p-t-td u-p-updated-date" th:text="${#dates.format(mi.finaldate, 'yyyy년 MM월 dd일 HH:mm')}"></div>
 				</div>
 				<div class="u-p-t-row">
 					<div class="u-p-t-th">회원 탈퇴</div>
@@ -181,12 +181,13 @@
 		}
 
 		function getNicknameFromInput(){
+			console.log("변경할 닉네임? : "+nicknameInput.value);
 			return nicknameInput.value;
 		}
 
 		/* 닉네임 변경 AJAX */
-		/* async function updateNickname(nickname){
-            const newNickname = await fetch("/api/user/nickname", {
+		async function updateNickname(nickname){
+            const newNickname = await fetch("/nickChange", {
                 method: "post",
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
@@ -200,7 +201,7 @@
             } catch (error){
                 alert(JSON.stringify(error));
             }
-        } */
+        }
 
 		function setNewNicknameToPage(newNickname){
 			const mainHeaderNicknameSpan = document.querySelector(".main-header-profile-nickname");

@@ -5,6 +5,101 @@
 <!-- Common meta tag, Bootstrap, js -->
 <th:block th:replace="common/commonHead"></th:block>
 </head>
+<script th:inline="javascript">
+var wsUri = "wss://api.upbit.com/websocket/v1";	// Upbit websoket 여는 uri
+var output;
+
+// 페이지 로딩 되면 실행되는 initial 함수
+function init() {
+	output = document.getElementById("output");
+	console.log('init() Start...');
+/* 		testWebSocket(); */
+}
+
+function testWebSocket() {
+	websocket = new WebSocket(wsUri);							// websoket 연결 시작 요청
+ 	websocket.binaryType = 'arraybuffer';						// array buffer 데이터로 받겠다
+	//websocket.binaryType = 'Blob';
+	//websocket.binaryType = 'String';
+	websocket.onopen = function(evt) { onOpen(evt) ;};			// websocket.onopen 	= 웹소켓 연결 성공시 수행되는 함수
+	websocket.onclose = function(evt) { onClose(evt) };			// websoket.onclose 	= 웹소켓 연결 닫을때 수행되는 함수
+	websocket.onmessage = function(evt) { onMessage(evt) };		// websoket.onmessage 	= 서버쪽에서 데이터 수신 받을때 수행되는 함수
+	websocket.onerror = function(evt) { onError(evt) };			// websoket.onerror 	= 웹소켓 연결 실패시 수행되는 함수	
+};
+
+function onOpen(evt) {
+	writeToScreen("연결완료");
+	// var msg1 = [{"ticket":"test"},{"type":"ticker","codes":["KRW-BTC", "BTC-BCH"]},{"format":"SIMPLE"}];
+	var msg = [
+		{	"ticket"	:	"test"
+		},
+		{
+			"type"		: 	"ticker",
+			"codes"		: ["KRW-BTC", "KRW-ETH", "KRW-ADA", "KRW-XRP", "KRW-DOT", "KRW-DOGE", "KRW-MANA", 
+				"KRW-LTC", "KRW-SAND", "KRW-VET", "KRW-AXS", "KRW-SOL", "KRW-BCH", "KRW-XLM", "KRW-ETC"]
+		},
+		{
+			"format"	:	"SIMPLE"
+		}
+	];
+	msg = JSON.stringify(msg);
+	doSend(msg);
+
+}
+
+function onClose(evt) {
+ 		websocket.close();
+	writeToScreen("연결해제");
+}
+
+function onMessage(evt) {
+		console.log(evt.data);
+	var enc = new TextDecoder("utf-8");
+	var arr = new Uint8Array(evt.data);
+	var decode = enc.decode(arr);
+	var jason=JSON.parse(decode);
+		console.log(enc.decode(arr));
+		
+ 	/*<![CDATA[*/ 
+	var statusList = /*[[ ${statusList} ]]*/;
+	/*]]*/
+	console.log('statusList.length->'+statusList.length);
+	statusList.forEach((statusList, i)=>
+	{
+	
+		let amt = statusList.coin_amt;
+		let coincode = statusList.coincode;
+		let totPrice = statusList.tot_price;
+
+		console.log(amt);
+		console.log(coincode);
+		if('KRW-'+coincode == jason.cd){
+			var gg = amt * jason.tp
+			console.log(gg);
+			document.getElementById(coincode).innerText = gg.toLocaleString();
+			document.getElementById(coincode+'-loss').innerText = (gg-totPrice).toLocaleString();
+		}
+	})
+}
+
+function onError(evt) {
+	writeToScreen('<span style="color: red;">에러:</span> ' + evt.data);
+}
+
+function doSend(message) {
+	writeToScreen("발신: " + message);
+	websocket.send(message);
+}
+
+function writeToScreen(message)	{
+	var pre = document.createElement("p");
+	pre.style.wordWrap = "break-word";
+	pre.innerHTML = message;
+	output.appendChild(pre);
+}
+window.addEventListener("load", init, false);
+</script>
+
 <link href="css/status.css" rel="stylesheet" type="text/css">
 <body>
 <!-- Common header -->
@@ -13,6 +108,11 @@
 <!-- 차트 링크 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <div class="container">
+	<div>
+		<input type="button" value="Connection Open" onclick="testWebSocket()">
+		<input type="button" value="Connection Close" onclick="onClose()">
+		<div id="output"></div>
+	</div>
 	<div class="row my-3" align="center" style="padding-top: 20px;">
 		<h4><b>투자 현황</b></h4>
 	</div>
@@ -27,7 +127,7 @@
 	   			<div class="row status_status" th:each="klist:${krwList}">
 	   				<img class="status_img" alt="" src="images/status/krw1.png">
 	    			<div class="col">보유 현금</div>
-				    <div class="col" align="right" th:text="${#numbers.formatDecimal(klist.krw,1,'COMMA',0,'POINT')+'-총매수금액  KRW'}"></div>
+				    <div class="col" align="right" th:text="${#numbers.formatDecimal(klist.krw-totPrice,1,'COMMA',0,'POINT')+' KRW'}"></div>
 				</div>
 				<hr class="line" style="height: 3px"/>
 				<div class="row status_status">
@@ -36,7 +136,7 @@
 				</div>
 				<div class="row">
 				    <div class="col status_mid_title">총 매수금액</div>
-				    <div class="col" align="right" style="margin-top: 5px">5,035,429<span style="font-size: 11px"> KRW</span></div>
+				    <div class="col" align="right" style="margin-top: 5px" th:text="${#numbers.formatDecimal(totPrice,1,'COMMA',0,'POINT')+' KRW'}"><span style="font-size: 11px"> KRW</span></div>
 				</div>
 				<div class="row status_mid_details">
 				    <div class="col status_mid_title">총 평가금액</div>
@@ -117,9 +217,9 @@ data = {
       <td th:text="${slist.coincode}"></td>
       <td th:text="${#numbers.formatDecimal(slist.coin_amt,1,'COMMA',2,'POINT')}"></td>
       <td th:text="${#numbers.formatDecimal(slist.avg_price,1,'COMMA',0,'POINT')}"></td>
-      <td th:text="${#numbers.formatDecimal(slist.tot_price,1,'COMMA',0,'POINT')}"></td>
-      <td th:text="${#numbers.formatDecimal(slist.coin_amt,1,'COMMA',2,'POINT')}+' * 현재가'"></td>
-      <td th:text="${'평가금액-'+#numbers.formatDecimal(slist.tot_price,1,'COMMA',0,'POINT')}+' KRW'"><br>0.47%</td>
+      <td th:id="${slist.coincode}+'-totPrice'" th:text="${#numbers.formatDecimal(slist.tot_price,1,'COMMA',0,'POINT')}"></td>
+      <td th:id="${slist.coincode}"></td>
+      <td th:id="${slist.coincode}+'-loss'"></td>
     </tr>
   </tbody>
 </table>

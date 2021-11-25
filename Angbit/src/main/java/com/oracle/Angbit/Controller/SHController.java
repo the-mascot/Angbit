@@ -1,7 +1,9 @@
 package com.oracle.Angbit.Controller;
 
 import com.oracle.Angbit.model.common.CoinInfo;
+import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.service.invest.InvestService;
+import com.oracle.Angbit.service.myInfo.myInfoService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -15,12 +17,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
@@ -35,10 +40,24 @@ public class SHController {
 
     @Autowired
     private InvestService ivs;
+    @Autowired
+    private myInfoService mis;
 
-    @RequestMapping("/myPage")
-    public String myPageForm(Model model) {
+    @RequestMapping("/myInfo")
+    public String myPageForm(Model model, HttpServletRequest request) {
         System.out.println("myPageForm Called.");
+        HttpSession session = request.getSession();
+        String id = (String) session.getAttribute("sessionID");
+        System.out.println("myInfo ID? "+id);
+
+        MemberInfo mi = mis.getMyInfo(id);
+        System.out.println("mi ID"+mi.getId());
+        System.out.println("mi PW"+mi.getPassword());
+        System.out.println("mi NICK"+mi.getNickname());
+        System.out.println("mi JOIN"+mi.getJoindate());
+        System.out.println("mi FINAL"+mi.getFinaldate());
+
+        model.addAttribute("mi", mi);
         return "myInfo/myInfo";
     }
 
@@ -55,9 +74,9 @@ public class SHController {
     public void chartApi(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         System.out.println("AngController chartAPI Start...");
-//		String currCoin = request.getParameter("currCoin"); // 캔들 호출된 코인명
+		String currCoin = request.getParameter("currCoin"); // 캔들 호출된 코인명
 //		String currCoin = (String) request.getAttribute("currCoin");
-        String currCoin = "KRW-BTC"; // 캔들 호출된 코인명
+//        String currCoin = "KRW-BTC"; // 캔들 호출된 코인명
         System.out.println("AngController chartApi currCoin->"+currCoin); // 코인명 콘솔 출력
 
         RestTemplate restTemplate = new RestTemplate(); // ?
@@ -123,5 +142,69 @@ public class SHController {
 
 
     } // 11-24 11:26 PUSH
+
+    @RequestMapping("gologin")
+    public String goLogin(Model model) {
+        System.out.println("msg?"+model.getAttribute("msg"));
+//        model.addAttribute("msg", model.getAttribute("msg"));
+        return "myInfo/loginForm";
+    }
+
+    @PostMapping("logintest")
+    public String loginTest(Model model, HttpServletRequest request, HttpServletResponse response) {
+        logger.info("SHController LoginTest() Called.");
+        String id = request.getParameter("id");
+        String pw = request.getParameter("pw");
+
+        int result = mis.loginTest(id, pw);
+        System.out.println("Controller result ?" + result);
+        if (result==1) {
+            HttpSession session = request.getSession();
+            session.setAttribute("sessionID", id);
+        }  else {
+            model.addAttribute("msg", "아이디 혹은 비밀번호가 틀립니다.");
+//            request.setAttribute("msg", "아이디 혹은 비밀번호가 틀립니다.");
+            return "forward:gologin";
+        }
+
+        return "forward:myInfo";
+    }
+
+    @RequestMapping("logout")
+    public String logoutTest(HttpServletRequest request, HttpServletResponse response, Model model) {
+        HttpSession session = request.getSession();
+        session.removeAttribute("id");
+        session.invalidate();
+        return "redirect:chart";
+    }
+
+    @ResponseBody
+    @PostMapping("nickChange")
+    public void nickChange(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        System.out.println("nickChange Start...");
+
+        StringBuffer json = new StringBuffer();
+        String line = null;
+
+        try {
+            BufferedReader reader = request.getReader();
+            while((line = reader.readLine()) != null) {
+                json.append(line);
+            }
+
+        }catch(Exception e) {
+            System.out.println("Error reading JSON string: " + e.toString());
+        }
+        System.out.println("json tostring!"+json.toString());
+
+        String nickname = "";
+        JSONObject nickChange = new JSONObject();
+        nickChange.put("nickname", nickname);
+        PrintWriter out = response.getWriter();
+        out.print(nickChange);
+    }
+
+
 
 }

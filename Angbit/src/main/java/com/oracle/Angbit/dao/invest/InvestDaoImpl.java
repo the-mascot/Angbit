@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.oracle.Angbit.model.common.CoinInfo;
+import com.oracle.Angbit.model.invest.MemberCoin;
 
 @Repository
 public class InvestDaoImpl implements InvestDao {
@@ -46,6 +47,22 @@ public class InvestDaoImpl implements InvestDao {
 		}
 		
 		return coinInfo;
+	}
+
+	@Override
+	public MemberCoin memberCoin(MemberCoin paraMemberCoin) {
+
+		System.out.println("InvestDaoImpl memberCoin Start...");
+		MemberCoin memberCoin = new MemberCoin();
+		
+		try {
+			memberCoin = seesion.selectOne("memberCoin", paraMemberCoin);
+		} catch (Exception e) {
+			System.out.println("InvestDaoImpl memberCoin Exception->"+e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return memberCoin;
 	}
 
 }

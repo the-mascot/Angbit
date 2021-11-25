@@ -11,4 +11,8 @@ public interface BoardDao {
 
 	List<Board> BoardList();
 	List<MemberInfo> MemberList();
+	int Delete(int empno);
+	int total();
+	List<MemberInfo> pgMemberList(MemberInfo memberInfo);
+	
 }

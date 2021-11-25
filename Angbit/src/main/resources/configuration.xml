@@ -3,7 +3,10 @@
 <configuration>
 	<typeAliases>
 		<typeAlias alias="CoinInfo" type="com.oracle.Angbit.model.common.CoinInfo"/>
+		<typeAlias alias="Board" type="com.oracle.Angbit.model.common.Board"/>
 		<typeAlias alias="Coin" type="com.oracle.Angbit.model.common.Coin"/>
 		<typeAlias alias="Trade" type="com.oracle.Angbit.model.common.Trade"/>
+		<typeAlias alias="MemberCoin" type="com.oracle.Angbit.model.invest.MemberCoin"/>
+
 	</typeAliases>
 </configuration>
