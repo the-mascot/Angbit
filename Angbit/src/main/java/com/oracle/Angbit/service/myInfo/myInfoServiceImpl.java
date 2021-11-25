@@ -35,4 +35,15 @@ public class myInfoServiceImpl implements myInfoService {
 		System.out.println("MemberInfoService getMyInfo() Called.");
 		return midao.getMyInfo(id);
 	}
+
+	@Override
+	public int nickChange(MemberInfo mi) {
+		System.out.println("MemberInfoService nickChange() Called.");
+		return midao.nickChange(mi);
+	}
+
+	@Override
+	public boolean chkNick(MemberInfo mi) {
+		return midao.chkNick(mi);
+	}
 }

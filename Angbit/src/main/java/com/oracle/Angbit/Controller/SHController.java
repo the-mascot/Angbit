@@ -16,10 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
@@ -173,32 +170,25 @@ public class SHController {
     }
 
     @ResponseBody
-    @PostMapping("nickChange")
+    @PostMapping(value = "nickChange", produces = "application/text;charset=utf8")
     public void nickChange(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println("API nickChange called.");
+        int result;
+        MemberInfo mi = new MemberInfo();
+        mi.setNickname(request.getParameter("nickname"));
+        mi.setId((String)request.getSession().getAttribute("sessionID"));
 
-        System.out.println("nickChange Start...");
-
-        StringBuffer json = new StringBuffer();
-        String line = null;
-
-        try {
-            BufferedReader reader = request.getReader();
-            while((line = reader.readLine()) != null) {
-                json.append(line);
-            }
-
-        }catch(Exception e) {
-            System.out.println("Error reading JSON string: " + e.toString());
+        if(mis.chkNick(mi)==true) {
+            result = 0;
+        } else {
+            System.out.println("닉네임 변경 실행");
+            result = mis.nickChange(mi);
         }
-        System.out.println("json tostring!"+json.toString());
-
-        String nickname = "";
-        JSONObject nickChange = new JSONObject();
-        nickChange.put("nickname", nickname);
+        // String 리턴시 한글 깨짐 방지
+//        response.setContentType("text/html; charset=UTF-8");
+//        response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
-        out.print(nickChange);
+        out.print(result);
     }
-
-
 
 }

@@ -34,4 +34,22 @@ public class myInfoDaoImpl implements myInfoDao {
 		MemberInfo mi = session.selectOne("getMyInfo", id);
 		return mi;
 	}
+
+	@Override
+	public boolean chkNick(MemberInfo mi) {
+		boolean chk = session.selectOne("chkNick", mi);
+		System.out.println("닉네임 존재 확인결과 : "+chk);
+		// True시 존재하는 닉네임
+		return chk;
+	}
+
+	@Override
+	public int nickChange(MemberInfo mi) {
+		System.out.println("nickChange DAO");
+		int result = session.update("nickChange", mi);
+		System.out.println("닉변후 result ->"+result);
+		return result;
+	}
+
+
 }

@@ -137,30 +137,22 @@
 			$('#exampleModal').modal('show');
 		};
 
-		/* nickname 선택자 */
 		const nicknameInput = document.querySelector(".u-p-nickname-input");
 		const submitBtn = document.querySelector(".u-p-nickname-edit-submit-btn");
 		const currentNickname = nicknameInput.value;
 
-		/* pw 선택자 */
-		const passwordInput = document.querySelector(".u-p-password-input");
-		const pwsubmitBtn = document.querySelector(".u-p-password-edit-btn");
-		const pwchkInput = document.querySelector(".u-p-pwchk-input");
 
-		function validateNickname(){
+		function validateNickname() {
 			const lblError = document.querySelector(".u-p-nickname-regex-error");
-			const redundantError = document.querySelector(".u-p-nickname-redundant-error");
 
 			lblError.innerHTML = "";
-			redundantError.innerHTML = "";
 			submitBtn.disabled = false
-			/*const expr = /^[0-9:.\-$-()_&a-zA-Z가-힣]{3,8}(?<![-(.])$/;*/
 			const expr = /^[0-9:.\-_a-zA-Z가-힣]{3,8}$/;
 
 			if (!expr.test(nicknameInput.value)) {
 				submitBtn.disabled = true;
 				lblError.innerHTML = "✋ 글자수 제한(3~8자)을 충족하지 않거나, 사용할 수 없는 문자가 포함되었습니다.";
-			}else if(nicknameInput.value === currentNickname){
+			} else if (nicknameInput.value === currentNickname) {
 				submitBtn.disabled = true;
 			}
 		}
@@ -171,42 +163,43 @@
 		}
 
 		function submitExec(){
-			if (confirm("닉네임을 변경하시겠습니까?\n변경 후 7일 이내에는 다시 변경하실 수 없습니다.")){
-				const nickname = getNicknameFromInput();
-				updateNickname(nickname)
-						.then(newNickname => setNewNicknameToPage(newNickname))
-						.then(toggleBtns)
-						.then(showSuccessAlert);
+				if (confirm("닉네임을 변경하시겠습니까?\n변경 후 7일 이내에는 다시 변경하실 수 없습니다.")){
+					const nickname = getNicknameFromInput();
+					const redundantError = document.querySelector(".u-p-nickname-redundant-error");
+					redundantError.innerHTML = "";
+
+					$.ajax({
+						type: 'POST',
+						url: 'nickChange',
+						data: {"nickname" : nickname},
+						// contentType: 'application/text; charset=UTF-8',
+						dataType: 'text',
+						success: function (data) {
+							console.log("변경 완료 : "+data)
+							if (data==1) {
+								setNewNicknameToPage(data);
+								toggleBtns();
+								showSuccessAlert();
+							} else if (data==0) {
+								submitBtn.disabled = true;
+								redundantError.innerHTML = "이미 존재하는 닉네임입니다."
+							}
+
+						},
+						error: function (e) {
+							console.log("error : ", e);
+						}
+					});
+				}
 			}
-		}
 
 		function getNicknameFromInput(){
-			console.log("변경할 닉네임? : "+nicknameInput.value);
 			return nicknameInput.value;
 		}
 
-		/* 닉네임 변경 AJAX */
-		async function updateNickname(nickname){
-            const newNickname = await fetch("/nickChange", {
-                method: "post",
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify({
-                    nickname : nickname
-                })
-            })
-            try{
-                return newNickname.text();
-            } catch (error){
-                alert(JSON.stringify(error));
-            }
-        }
-
 		function setNewNicknameToPage(newNickname){
-			const mainHeaderNicknameSpan = document.querySelector(".main-header-profile-nickname");
+			console.log(newNickname);
 			const nicknameEditBtnContainer = document.querySelector(".u-p-nickname-btn-container");
-			mainHeaderNicknameSpan.innerText = newNickname;
 			nicknameEditBtnContainer.remove();
 		}
 
@@ -226,13 +219,11 @@
 					cancelBtn = $(".u-p-nickname-edit-cancel-btn"),
 					editBtn = $(".u-p-nickname-edit-btn"),
 					editBtnCondition = editBtn.prop('disabled'),
-					pwsubmitBtn = $(".u-p-password-edit-btn"),
 					inputCondition = input.prop('disabled');
 
 			cancelBtn.toggle();
 			submitBtn.toggle();
 			editBtn.toggle();
-			pwsubmitBtn.toggle();
 			input.prop('disabled', !inputCondition);
 			editBtn.prop('disabled', !editBtnCondition);
 		}
@@ -248,28 +239,16 @@
 
 		/*-- 기존 JS --*/
 
-
+		const passwordInput = document.querySelector(".u-p-password-input");
+		const pwchkInput = document.querySelector(".u-p-pwchk-input");
+		const pwsubmitBtn = document.querySelector(".u-p-password-edit-btn");
 
 		function validatePassword(){
 			const plblError = document.querySelector(".u-p-password-regex-error");
 
 			plblError.innerHTML = "";
 			pwsubmitBtn.disabled = false;
-			/*const expr = /^[0-9:.\-$-()_&a-zA-Z가-힣]{3,8}(?<![-(.])$/;*/
-			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/;
 
-			if (!exprpw.test(passwordInput.value)) {
-				pwsubmitBtn.disabled = true;
-				plblError.innerHTML = "✋ 글자수 제한(8~15자)을 충족하지 않거나, 사용할 수 없는 문자가 포함되었습니다.";
-			}
-		}
-
-		function validatePassword(){
-			const plblError = document.querySelector(".u-p-password-regex-error");
-
-			plblError.innerHTML = "";
-			/* pwsubmitBtn.disabled = false; */
-			/*const expr = /^[0-9:.\-$-()_&a-zA-Z가-힣]{3,8}(?<![-(.])$/;*/
 			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/;
 
 			if (!exprpw.test(passwordInput.value)) {
@@ -282,8 +261,7 @@
 			const chkError = document.querySelector(".u-p-password-pwchk-error");
 
 			chkError.innerHTML = "";
-			/* pwsubmitBtn.disabled = false; */
-			/*const expr = /^[0-9:.\-$-()_&a-zA-Z가-힣]{3,8}(?<![-(.])$/;*/
+
 			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/;
 
 			if (passwordInput.value != pwchkInput.value) {
