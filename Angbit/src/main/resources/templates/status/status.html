@@ -66,18 +66,36 @@ function onMessage(evt) {
 	console.log('statusList.length->'+statusList.length);
 	statusList.forEach((statusList, i)=>
 	{
-	
 		let amt = statusList.coin_amt;
 		let coincode = statusList.coincode;
 		let totPrice = statusList.tot_price;
 
-		console.log(amt);
-		console.log(coincode);
+		console.log("amt -> "+amt);
+		console.log("coincode -> "+coincode);
+		console.log("totPrice -> "+totPrice);
+		
 		if('KRW-'+coincode == jason.cd){
 			var gg = amt * jason.tp
-			console.log(gg);
+			console.log("gg -> "+gg);
+			
 			document.getElementById(coincode).innerText = gg.toLocaleString();
-			document.getElementById(coincode+'-loss').innerText = (gg-totPrice).toLocaleString();
+			var coinloss = document.getElementById(coincode+'-loss').innerText = (gg-totPrice).toLocaleString();
+			console.log("coinloss -> "+coinloss);
+		}
+			if(coinloss < '0') {
+				document.getElementById(coincode+'-loss').style.color = "blue";
+				document.getElementById(coincode+'-loss').style.fontWeight = "700";
+			} else if(coinloss > '0'){
+				document.getElementById(coincode+'-loss').style.color = "red";
+				document.getElementById(coincode+'-loss').style.fontWeight = "700";
+			}
+			
+		var sumtot = 0;
+		
+		for(var i = 0; i<totPrice.length; i++){
+			sumtot += i;
+			document.getElementById(totPrice+'-tot').innerText = sumtot;
+			console.log("sumtot -> "+sumtot);
 		}
 	})
 }
