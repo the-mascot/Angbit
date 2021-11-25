@@ -43,6 +43,7 @@ public class GMController {
 			List<Coin> statusList1 = ss.listStatus(coin);
 			int result = ss.totpriceStatus();
 			System.out.println(coin);
+
 			model.addAttribute("statusList", statusList1);
 			model.addAttribute("krwList", member1);
 			model.addAttribute("totPrice", result);
