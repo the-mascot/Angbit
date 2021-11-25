@@ -104,15 +104,6 @@ public class ESController {
 		return coinInfo;
 	}
 	
-	@GetMapping("test")
-	public String test() {
-		
-		System.out.println("ESController home Start...");
-		
-		return "/invest/NewFile";
-	}
-	
-	
 	@ResponseBody
 	@GetMapping("invest/orderInfo")
 	public MemberCoin orderInfo(HttpServletRequest request, HttpServletResponse response, String coincode) {
