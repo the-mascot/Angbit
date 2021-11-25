@@ -48,10 +48,10 @@ public class DYController {
 	  memberInfo.setStart(pg.getStart()); // 1 
 	  memberInfo.setEnd(pg.getEnd()); //10 
 	  System.out.println("EmpController empList start......"); 
-	  List<MemberInfo> listEmp = bs.pgMemberList(memberInfo);
+	  List<MemberInfo> pgMemberList = bs.pgMemberList(memberInfo);
 	  
 	  model.addAttribute("total", total); 
-	  model.addAttribute("listEmp", listEmp);
+	  model.addAttribute("pgMemberList", pgMemberList);
 	  model.addAttribute("pg", pg);
 	  
 	  return "memlist"; 
