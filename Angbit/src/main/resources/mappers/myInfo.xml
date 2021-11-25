@@ -26,4 +26,10 @@
 		WHERE password=#{password} and id=#{id}
 		GROUP BY id
 	</select>
+	<update id="widraw">
+		UPDATE memberinfo SET member_stu=1 WHERE id=#{id}
+	</update>
+	<select id="chkWidraw" resultType="boolean">
+		SELECT member_stu FROM memberinfo WHERE id=#{id}
+	</select>
 </mapper>

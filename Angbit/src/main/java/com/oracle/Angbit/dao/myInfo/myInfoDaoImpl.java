@@ -66,4 +66,17 @@ public class myInfoDaoImpl implements myInfoDao {
 		// True시 사용중인 password
 		return chk;
 	}
+
+	@Override
+	public void widraw(String id) {
+		session.update("widraw", id);
+	}
+
+	@Override
+	public boolean chkWidraw(String id) {
+		boolean chk = session.selectOne("chkWidraw", id);
+		System.out.println("회원 탈퇴? "+chk);
+		// True시 탈퇴 O
+		return chk;
+	}
 }

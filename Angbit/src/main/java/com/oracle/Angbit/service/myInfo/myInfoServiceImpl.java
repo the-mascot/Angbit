@@ -56,4 +56,9 @@ public class myInfoServiceImpl implements myInfoService {
 	public boolean chkPw(MemberInfo mi) {
 		return midao.chkPw(mi);
 	}
+
+	@Override
+	public void widraw(String id) {
+		midao.widraw(id);
+	}
 }

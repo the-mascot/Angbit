@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 
 import com.oracle.Angbit.service.LoginInterceptor;
+import com.oracle.Angbit.service.myInfo.WidrawInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +24,10 @@ public class SpringConfig implements WebMvcConfigurer {
 	}
 
 	public void addInterceptors(InterceptorRegistry registry) {
+		// 세션 아이디 체크 인터셉터(로그인 여부)
 		registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/myInfo");
+		// 회원 상태 확인 인터셉터(로그인 시)
+		registry.addInterceptor(new WidrawInterceptor()).addPathPatterns("/gologin");
 	}
 	
 }

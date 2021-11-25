@@ -207,6 +207,15 @@ public class SHController {
         out.print(result);
     }
 
+    @PostMapping("widraw")
+    public String widraw(HttpServletRequest request, Model model) {
+        System.out.println("widrawal Request.");
+        String id = (String)request.getSession().getAttribute("sessionID");
+        mis.widraw(id);
+        request.getSession().invalidate();
+        return "myInfo/loginForm";
+    }
+
 }
 
 
