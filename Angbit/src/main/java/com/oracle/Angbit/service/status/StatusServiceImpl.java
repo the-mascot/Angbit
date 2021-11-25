@@ -24,39 +24,55 @@ public class StatusServiceImpl implements StatusService {
 	}
 
 	@Override
-	public List<Coin> listStatus(Coin coin) {
+	public List<Coin> listStatus(String id) {
 		System.out.println("StatusServiceImpl listStatus start...");
-		List<Coin> listStatus = sd.listStatus(coin);
+		List<Coin> listStatus = sd.listStatus(id);
 		return listStatus;
 	}
 
 	@Override
-	public List<MemberInfo> krwStatus(MemberInfo member) {
+	public List<MemberInfo> krwStatus(String id) {
 		System.out.println("StatuasServiceImpl krwStatus start...");
-		List<MemberInfo> listKrw = sd.listKrw(member);
+		List<MemberInfo> listKrw = sd.listKrw(id);
 		return listKrw;
 	}
 
 	@Override
-	public List<Trade> yStatus(Trade trade) {
+	public List<Trade> yStatus(String id) {
 		System.out.println("StatusServiceImpl yStatus start...");
-		List<Trade> listY = sd.listY(trade); 
+		List<Trade> listY = sd.listY(id); 
 		return listY;
 	}
 
 	@Override
-	public List<Trade> nStatus(Trade trade) {
+	public List<Trade> nStatus(String id) {
 		System.out.println("StatusServiceImpl nStatus start...");
-		List<Trade> listN = sd.listN(trade);
+		List<Trade> listN = sd.listN(id);
 		return listN;
 	}
 
 	@Override
-	public int totpriceStatus() {
+	public int totpriceStatus(String id) {
 		System.out.println("StatusServiceImpl totpriceStatus start...");
-		int result = sd.priceTot();
+		int result = sd.priceTot(id);
 		return result;
 	}
+
+	@Override
+	public List<Trade> comBuyList(String id) {
+		System.out.println("StatusServiceImpl comBuyList start...");
+		List<Trade> cbuyList = sd.buyComList(id);
+		return cbuyList;
+	}
+
+	@Override
+	public List<Trade> comSellList(String id) {
+		System.out.println("StatusServiceImpl comSellList start...");
+		List<Trade> csellList = sd.sellComList(id);
+		return csellList;
+	}
+	
+
 
 
 

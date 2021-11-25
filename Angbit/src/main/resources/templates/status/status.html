@@ -73,7 +73,7 @@ function onMessage(evt) {
 		console.log("amt -> "+amt);
 		console.log("coincode -> "+coincode);
 		console.log("totPrice -> "+totPrice);
-		
+			
 		if('KRW-'+coincode == jason.cd){
 			var gg = amt * jason.tp
 			console.log("gg -> "+gg);
@@ -92,11 +92,11 @@ function onMessage(evt) {
 			
 		var sumtot = 0;
 		
-		for(var i = 0; i<totPrice.length; i++){
+		for(var i = 0; i<statusList.length; i++){
 			sumtot += i;
 			document.getElementById(totPrice+'-tot').innerText = sumtot;
-			console.log("sumtot -> "+sumtot);
 		}
+			console.log("sumtot -> "+sumtot);
 	})
 }
 
@@ -156,9 +156,9 @@ window.addEventListener("load", init, false);
 				    <div class="col status_mid_title">총 매수금액</div>
 				    <div class="col" align="right" style="margin-top: 5px" th:text="${#numbers.formatDecimal(totPrice,1,'COMMA',0,'POINT')+' KRW'}"><span style="font-size: 11px"> KRW</span></div>
 				</div>
-				<div class="row status_mid_details">
+				<div class="row status_mid_details" th:with="slist=${statusList}">
 				    <div class="col status_mid_title">총 평가금액</div>
-				    <div class="col" align="right" style="margin-top: 5px">5,039,265<span style="font-size: 11px"> KRW</span></div>
+				    <div th:id="slist.totPrice+'-tot'" class="col" align="right" style="margin-top: 5px">5,039,265<span style="font-size: 11px"> KRW</span></div>
 				</div>
 				<!-- IF문 사용 - 매수금액>평가금액 = FONT-COLOR BLUE / 매수금액<평가금액 = FONT-COLOR RED-->
 				<div class="row status_mid_details">
@@ -233,7 +233,7 @@ data = {
       	<span th:case="XRP"><img class="table_images" alt="" src="images/status/xrp.png"></span>
       </th>
       <td th:text="${slist.coincode}"></td>
-      <td th:text="${#numbers.formatDecimal(slist.coin_amt,1,'COMMA',2,'POINT')}"></td>
+      <td th:text="${#numbers.formatDecimal(slist.coin_amt,1,'COMMA',8,'POINT')}"></td>
       <td th:text="${#numbers.formatDecimal(slist.avg_price,1,'COMMA',0,'POINT')}"></td>
       <td th:id="${slist.coincode}+'-totPrice'" th:text="${#numbers.formatDecimal(slist.tot_price,1,'COMMA',0,'POINT')}"></td>
       <td th:id="${slist.coincode}"></td>

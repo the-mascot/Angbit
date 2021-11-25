@@ -7,11 +7,13 @@ import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.model.common.Trade;
 
 public interface StatusService {
-	List<Coin> listStatus(Coin coin);
-	List<MemberInfo> krwStatus(MemberInfo member);
-	List<Trade> yStatus(Trade trade);
-	List<Trade> nStatus(Trade trade);
-	int totpriceStatus();
+	List<Coin> listStatus(String id);
+	List<MemberInfo> krwStatus(String id);
+	List<Trade> yStatus(String id);
+	List<Trade> nStatus(String id);
+	int totpriceStatus(String id);
+	List<Trade> comBuyList(String id);
+	List<Trade> comSellList(String id);
 	MemberInfo memberLogin(MemberInfo member);
 
 }
