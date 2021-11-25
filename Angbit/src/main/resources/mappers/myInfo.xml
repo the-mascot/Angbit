@@ -9,12 +9,21 @@
 		SELECT * FROM memberinfo WHERE ID=#{id}
 	</select>
 	<update id="nickChange" parameterType="MemberInfo">
-		UPDATE memberinfo SET nickname=#{nickname} WHERE id=#{id}
+		UPDATE memberinfo SET nickname=#{nickname}, finaldate=sysdate WHERE id=#{id}
 	</update>
 	<select id="chkNick" parameterType="MemberInfo" resultType="boolean">
 		SELECT NVL(MAX(COUNT(1)), 0)
 		FROM memberinfo
 		WHERE nickname=#{nickname}
 		GROUP BY nickname
+	</select>
+	<update id="pwChange" parameterType="MemberInfo">
+		UPDATE memberinfo SET password=#{password}, finaldate=sysdate WHERE id=#{id}
+	</update>
+	<select id="chkPw" parameterType="MemberInfo" resultType="boolean">
+		SELECT NVL(MAX(COUNT(1)), 0)
+		FROM memberinfo
+		WHERE password=#{password} and id=#{id}
+		GROUP BY id
 	</select>
 </mapper>

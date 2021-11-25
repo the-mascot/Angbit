@@ -46,4 +46,14 @@ public class myInfoServiceImpl implements myInfoService {
 	public boolean chkNick(MemberInfo mi) {
 		return midao.chkNick(mi);
 	}
+
+	@Override
+	public int pwChange(MemberInfo mi) {
+		return midao.pwChange(mi);
+	}
+
+	@Override
+	public boolean chkPw(MemberInfo mi) {
+		return midao.chkPw(mi);
+	}
 }

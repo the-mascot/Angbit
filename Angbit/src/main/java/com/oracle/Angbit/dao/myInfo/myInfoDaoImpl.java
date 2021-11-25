@@ -51,5 +51,19 @@ public class myInfoDaoImpl implements myInfoDao {
 		return result;
 	}
 
+	@Override
+	public int pwChange(MemberInfo mi) {
+		System.out.println("pwChange DAO");
+		int result = session.update("pwChange", mi);
+		System.out.println("변경 성공?"+result);
+		return result;
+	}
 
+	@Override
+	public boolean chkPw(MemberInfo mi) {
+		boolean chk = session.selectOne("chkPw", mi);
+		System.out.println("기존 비밀번호? "+chk);
+		// True시 사용중인 password
+		return chk;
+	}
 }

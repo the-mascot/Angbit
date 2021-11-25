@@ -11,4 +11,6 @@ public interface myInfoService {
     MemberInfo getMyInfo(String id);
     int nickChange(MemberInfo mi);
     boolean chkNick(MemberInfo mi);
+    int pwChange(MemberInfo mi);
+    boolean chkPw(MemberInfo mi);
 }

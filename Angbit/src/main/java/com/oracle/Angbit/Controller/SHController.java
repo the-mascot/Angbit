@@ -184,11 +184,32 @@ public class SHController {
             System.out.println("닉네임 변경 실행");
             result = mis.nickChange(mi);
         }
-        // String 리턴시 한글 깨짐 방지
-//        response.setContentType("text/html; charset=UTF-8");
-//        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        out.print(result);
+    }
+
+    @ResponseBody
+    @PostMapping(value = "pwChange", produces = "application/text;charset=utf8")
+    public void pwChange(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println("API pwChange called.");
+        int result;
+        MemberInfo mi = new MemberInfo();
+        mi.setPassword(request.getParameter("password"));
+        mi.setId((String)request.getSession().getAttribute("sessionID"));
+
+        if(mis.chkPw(mi)==true) {
+            result = 0;
+        } else {
+            System.out.println("닉네임 변경 실행");
+            result = mis.pwChange(mi);
+        }
         PrintWriter out = response.getWriter();
         out.print(result);
     }
 
 }
+
+
+// AJAX String 리턴시 한글 깨짐 방지(PrintWriter 객체보다 상위로 선언)
+//        response.setContentType("text/html; charset=UTF-8");
+//        response.setCharacterEncoding("UTF-8");

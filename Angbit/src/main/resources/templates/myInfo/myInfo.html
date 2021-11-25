@@ -71,6 +71,8 @@
 
 							<div class="u-p-password-error u-p-password-pwchk-error"></div>
 
+							<div class="u-p-password-error u-p-password-used-error"></div>
+
 							<div class="u-p-password-notice">
 								<i class="bi bi-exclamation-triangle"></i>
 								8~15자의 영문 대소문자, 숫자, 특수문자를 사용해야 합니다.
@@ -245,34 +247,84 @@
 
 		function validatePassword(){
 			const plblError = document.querySelector(".u-p-password-regex-error");
+			$('.u-p-password-used-error').empty();
 
 			plblError.innerHTML = "";
-			pwsubmitBtn.disabled = false;
+			// pwsubmitBtn.disabled = false;
 
 			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/;
 
 			if (!exprpw.test(passwordInput.value)) {
-				pwsubmitBtn.disabled = true;
+				// pwsubmitBtn.disabled = true;
 				plblError.innerHTML = "✋ 글자수 제한(8~15자)을 충족하지 않거나, 사용할 수 없는 문자가 포함되었습니다.";
 			}
 		}
 
-		function validatePwchk(){
+		function validatePwchk() {
 			const chkError = document.querySelector(".u-p-password-pwchk-error");
+			$('.u-p-password-used-error').empty();
 
 			chkError.innerHTML = "";
 
 			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/;
 
+			if (!exprpw.test(passwordInput.value)) {
+			}
 			if (passwordInput.value != pwchkInput.value) {
 				pwsubmitBtn.disabled = true;
 				chkError.innerHTML = "❌ 입력하신 비밀번호가 일치하지 않습니다.";
-			} else if (passwordInput.value == pwchkInput.value) {
-				chkError.innerHTML = "<span style='color: blue;'>✔️ 비밀번호가 일치합니다.</span>";
-				pwsubmitBtn.disabled = false;
+			} else if (exprpw.test(pwchkInput.value)) {
+
+				if (passwordInput.value == pwchkInput.value) {
+					chkError.innerHTML = "<span style='color: blue;'>✔️ 비밀번호가 일치합니다.</span>";
+					pwsubmitBtn.disabled = false;
+				}
 			}
 		}
 
+		/*비밀번호 변경 AJAX*/
+		function pwSubmitExec(){
+			const chkError = document.querySelector(".u-p-password-pwchk-error");
+			const plblError = document.querySelector(".u-p-password-regex-error");
+			if (confirm("비밀번호를 변경하시겠습니까?")){
+				const password = getPasswordFromInput();
+				const usedError = document.querySelector(".u-p-password-used-error");
+				$.ajax({
+					type: 'POST',
+					url: 'pwChange',
+					data: {"password" : password},
+					dataType: 'text',
+					success: function (data) {
+						console.log("변경 완료 : "+data)
+						if (data==1) {
+							pwchkInput.value = "";
+							passwordInput.value = "";
+							$('.u-p-password-pwchk-error').empty();
+							$('.u-p-password-regex-error').empty();
+							$('.u-p-password-used-error').empty();
+							usedError.innerHTML = "<span style='color: blue;'>✔️ 비밀번호 변경에 성공했습니다.</span>";
+						} else {
+							submitBtn.disabled = true;
+							pwchkInput.value = "";
+							passwordInput.value = "";
+							$('.u-p-password-pwchk-error').empty();
+							$('.u-p-password-regex-error').empty();
+							$('.u-p-password-used-error').empty();
+							usedError.innerHTML = "❌ 입력하신 비밀번호와 현재 비밀번호가 같습니다.";
+						}
+					},
+					error: function (e) {
+						console.log("error : ", e);
+					}
+				});
+			}
+		}
+
+		function getPasswordFromInput(){
+			return passwordInput.value;
+		}
+
+		pwsubmitBtn.addEventListener("click", pwSubmitExec)
 	</script>
 </main>
 
