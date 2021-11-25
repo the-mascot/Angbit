@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
@@ -98,20 +99,10 @@ public class ESController {
 		System.out.println("ESController coinInfoAjax Start...");
 		System.out.println("ESController coinInfoAjax coincode->"+coincode);
 		
-		JSONParser paser = new JSONParser();
 		CoinInfo coinInfo = ivs.coinInfo(coincode);
 		
 		return coinInfo;
 	}
-	
-	@GetMapping("test")
-	public String test() {
-		
-		System.out.println("ESController home Start...");
-		
-		return "/invest/NewFile";
-	}
-	
 	
 	@ResponseBody
 	@GetMapping("invest/orderInfo")
@@ -130,6 +121,7 @@ public class ESController {
 		
 		return memberCoin;
 	}
+	
 	
 	
 }

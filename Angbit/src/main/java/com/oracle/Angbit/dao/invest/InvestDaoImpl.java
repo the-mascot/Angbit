@@ -57,6 +57,7 @@ public class InvestDaoImpl implements InvestDao {
 		
 		try {
 			memberCoin = seesion.selectOne("memberCoin", paraMemberCoin);
+			System.out.println("InvestDaoImpl memberCoin memberCoin.getKrw()->"+memberCoin.getKrw());
 		} catch (Exception e) {
 			System.out.println("InvestDaoImpl memberCoin Exception->"+e.getMessage());
 			e.printStackTrace();

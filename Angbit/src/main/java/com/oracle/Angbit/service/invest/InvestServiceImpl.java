@@ -39,7 +39,7 @@ public class InvestServiceImpl implements InvestService {
 		System.out.println("InvestServiceImpl memberCoin Start...");
 		MemberCoin memberCoin = ivdao.memberCoin(paraMemberCoin);
 		
-		return null;
+		return memberCoin;
 	}
 	
 	

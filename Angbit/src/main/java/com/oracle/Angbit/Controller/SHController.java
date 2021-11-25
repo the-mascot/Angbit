@@ -88,20 +88,20 @@ public class SHController {
 //		String minCandle = "https://api.upbit.com/v1/candles/days?market="+currCoin+"&count=200"; // 일봉 현재일자 기준 200개 요청
         String minCandle = "https://api.upbit.com/v1/candles/minutes/1?market="+currCoin+"&count=200"; // 분봉 현재시간 기준 200개 요청
 
-        System.out.println("HTTP URL : "+minCandle);
+//        System.out.println("HTTP URL : "+minCandle);
 
         ResponseEntity<String> candleResponse 	= restTemplate.exchange(minCandle, HttpMethod.GET, entity, String.class);
 
         try {
             String minCandleStr = candleResponse.getBody();
 
-            System.out.println("minCandleStr : "+minCandleStr);
+//            System.out.println("minCandleStr : "+minCandleStr);
 
             String jsonStr = minCandleStr.toString();
 
             JSONParser parser = new JSONParser();
             JSONArray json = (JSONArray) parser.parse(jsonStr);
-            System.out.println("json 객체->"+json);
+//            System.out.println("json 객체->"+json);
 
             JSONArray chartdata = new JSONArray(); // ajax에서 리턴받을 객체
             for(int i=0; i<json.size(); i++) {
@@ -126,6 +126,7 @@ public class SHController {
                 addJSON.put("close", close);
                 chartdata.add(addJSON); // 사용할 값 입력 뒤 JSONArray에 추가
             }
+
             PrintWriter out = response.getWriter();
             out.print(chartdata);
 
