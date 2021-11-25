@@ -75,9 +75,10 @@ public class SHController {
 
         System.out.println("AngController chartAPI Start...");
 		String currCoin = request.getParameter("currCoin"); // 캔들 호출된 코인명
-//		String currCoin = (String) request.getAttribute("currCoin");
-//        String currCoin = "KRW-BTC"; // 캔들 호출된 코인명
         System.out.println("AngController chartApi currCoin->"+currCoin); // 코인명 콘솔 출력
+        if (currCoin==null) {
+            currCoin = "KRW-BTC";
+        }
 
         RestTemplate restTemplate = new RestTemplate(); // ?
         HttpHeaders headers = new HttpHeaders(); //
@@ -97,8 +98,6 @@ public class SHController {
             System.out.println("minCandleStr : "+minCandleStr);
 
             String jsonStr = minCandleStr.toString();
-
-            System.out.println(jsonStr);
 
             JSONParser parser = new JSONParser();
             JSONArray json = (JSONArray) parser.parse(jsonStr);
@@ -127,14 +126,8 @@ public class SHController {
                 addJSON.put("close", close);
                 chartdata.add(addJSON); // 사용할 값 입력 뒤 JSONArray에 추가
             }
-
-            for(int i=0; i<chartdata.size(); i++) {
-                System.out.println("json index "+i+":"+chartdata.get(i));
-            }
-
             PrintWriter out = response.getWriter();
             out.print(chartdata);
-
 
         } catch (Exception e1) {
             e1.printStackTrace();
