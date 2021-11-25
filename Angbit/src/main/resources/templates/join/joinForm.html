@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>AngBit 회원가입 페이지</title>
+<th:block th:replace="common/commonHead"></th:block>
+</head>
+
+<script type="text/javascript" src="js/jquery.js"></script> 
+<script type="text/javascript" src="js/httpRequest.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+function chkJoin() {
+	if(joinfrm.id.value == ""){
+		alert("이메일 아이디가 입력되지 않았습니다.")
+		joinfrm.id.focus();
+		return false;
+	}
+	if(joinfrm.password.value!=joinfrm.checkpassword.value) {
+		alert("재확인 비밀번호가 일치하지 않습니다. 동일하게 입력해주세요.");
+		joinfrm.checkpassword.focus();
+		return false;
+	}
+	return true;
+}
+</script>
+
+<script type="text/javascript">
+	function chk() {
+		if(!joinfrm.id.value){
+			alert("사번을 입력한 후에 확인하세요.")
+			frm.empno.focus();
+			return false;
+		} else {
+			location.href="confirm?empno="+frm.empno.value;
+		}
+	}
+</script>
+
+<script type="text/javascript">
+function chkID(Vdeptno){
+	alert("입력한 ID -> " + Vdeptno);
+	
+	$.ajax({
+		url : "IDchk",
+		data : {id : Vdeptno},
+		dataType : 'int',
+		success : function(data){
+			if(data == 1){
+				$('#msg').html("중복된 이메일 아이디가 존재합니다. 새로운 아이디를 입력해주세요.");
+			} else {
+				$('#msg').html("회원가입 가능한 이메일 아이디입니다.");
+			}
+		}
+	});
+}
+</script>
+
+<style>
+body { background-color: #F5F5F5; }
+
+/*--------중단부--------------  */
+.wrapper_join {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+.container_join {
+	height : 600px;
+	width : auto;
+	margin-top: 100px;
+}
+.signinfo{
+	border:2px solid #D4D4D4;
+	height:50px;
+	width:400px;
+	background-color: white;
+	}
+.inputbox{
+	margin-top: 10px;
+}
+/*---------------하단부---------------*/
+.signbtn{
+	margin-top: 10px;
+}
+</style>
+
+<body>
+
+<header th:replace="common/header :: header"></header>
+
+
+<div class="wrapper_join">
+	<form action="JoinProcess" id="joinfrm" onsubmit="return chkJoin()" method="post">
+<div class="container_join">
+			
+			<div class="signinfo">
+				<div style="top:50% left:50% margin:auto;">
+					<h2 align="center">AngBit 회원가입 하기</h2>
+				</div>	
+		  	</div>
+		<br>
+			<div class="form-floating mb-1">
+			  <input type="email" class="form-control input-sm" id="id" name="id" placeholder="Id">
+			  <input type="button" value="중복 확인" onclick="chkID(joinfrm.id.value)"> <span id="msg"></span>
+			  
+			  ----------------------------------------------------
+			  
+			  <input type="button" id="btn_idCheck" value="부서명" onmouseover="getDeptName(${empDept.deptno})">
+			  <input type="button" id="btn_Dept" value="부서명"  onclick="getDept(10)">
+			  
+			  
+			  
+			  
+			 
+			  ----------------------------------------------------
+			  
+			  <label for="floatingInput">이메일</label>
+		    </div>
+			
+			<div class="form-floating mb-1">
+				  <input type="password" class="form-control input-sm" id="password" name="password" placeholder="Password">
+				  <label for="floatingInput">Password</label>
+			</div>
+			
+			<div class="form-floating mb-1">
+				  <input type="password" class="form-control input-sm" id="checkpassword" name="checkpassword" placeholder="Check Password">
+				  <label for="floatingInput">Password-check</label>
+			</div>
+		<br>	
+			<div class="form-floating mb-1">
+			  <input type="text" class="form-control input-sm" id="nickname" name="nickname" placeholder="name@example.com">
+			  <label for="floatingInput">닉네임</label>
+		    </div>
+		
+			<div class="signbtn">
+				<button type="submit" class="btn btn-warning btn-lg btn-block col-lg-12">&nbsp&nbsp&nbsp&nbsp&nbsp 가입하기 :) &nbsp&nbsp&nbsp&nbsp&nbsp</button></div>
+			</div>
+	</form>
+</div>
+
+<footer th:replace="common/footer :: footer"></footer>
+
+</body>
+</html>

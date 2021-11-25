@@ -30,7 +30,6 @@ public class GMController {
 			System.out.println("AngController statusList start...");
 			List<MemberInfo> member1 = ss.krwStatus(member);
 			List<Coin> statusList1 = ss.listStatus(coin);
-			System.out.println(coin);
 			model.addAttribute("statusList", statusList1);
 			model.addAttribute("krwList", member1);
 			return "/status/status";
