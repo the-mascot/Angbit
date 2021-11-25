@@ -33,7 +33,7 @@
            </tr>
        </thead>
        <tbody>
-       		<!-- <th:block th:each="mlist : ${memberList}"> -->
+       		 <th:block th:each="mlist : ${memberList}">
        		<th:block th:object="${memberList}">
             <tr th:each="blist : ${boardList}">
                <td th:text="${blist.b_num}"></td>
