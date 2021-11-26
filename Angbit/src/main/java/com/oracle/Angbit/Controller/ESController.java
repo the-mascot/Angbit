@@ -25,7 +25,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import com.oracle.Angbit.model.common.CoinInfo;
+import com.oracle.Angbit.model.common.Trade;
 import com.oracle.Angbit.model.invest.MemberCoin;
+import com.oracle.Angbit.model.invest.OrderTrade;
 import com.oracle.Angbit.service.invest.InvestService;
 
 
@@ -108,16 +110,34 @@ public class ESController {
 	}
 	
 	@ResponseBody
-	@GetMapping("invest/selectKRW")
+	@PostMapping("invest/selectKRW")
 	public int selectKRW(HttpServletRequest request, HttpServletResponse response, String coincode) {
 		
 		System.out.println("ESController selectKRW Start...");
 		HttpSession session = request.getSession();
 		String id = (String) session.getAttribute("sessionID");
+		int krw = 0;
 		
-		int krw = ivs.selectKRW(id);
+		if(id != null) {
+			krw = ivs.selectKRW(id);
+		}
 		
 		return krw;
+	}
+	
+	@ResponseBody
+	@PostMapping("invest/buyCoin")
+	public String buyCoin(OrderTrade orderTrade, HttpServletRequest request, HttpServletResponse response) {
+		
+		System.out.println("ESController buyCoin Start...");
+		HttpSession session = request.getSession();
+		orderTrade.setId((String) session.getAttribute("sessionID"));
+		if(orderTrade.getTrd_method().equals("limits")) {
+//			int result = ivs.insertTrade(trade);
+		} else {
+			
+		}
+		return null;
 	}
 	
 	
