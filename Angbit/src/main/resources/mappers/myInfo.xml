@@ -8,4 +8,28 @@
 	<select id="getMyInfo" resultType="MemberInfo">
 		SELECT * FROM memberinfo WHERE ID=#{id}
 	</select>
+	<update id="nickChange" parameterType="MemberInfo">
+		UPDATE memberinfo SET nickname=#{nickname}, finaldate=sysdate WHERE id=#{id}
+	</update>
+	<select id="chkNick" parameterType="MemberInfo" resultType="boolean">
+		SELECT NVL(MAX(COUNT(1)), 0)
+		FROM memberinfo
+		WHERE nickname=#{nickname}
+		GROUP BY nickname
+	</select>
+	<update id="pwChange" parameterType="MemberInfo">
+		UPDATE memberinfo SET password=#{password}, finaldate=sysdate WHERE id=#{id}
+	</update>
+	<select id="chkPw" parameterType="MemberInfo" resultType="boolean">
+		SELECT NVL(MAX(COUNT(1)), 0)
+		FROM memberinfo
+		WHERE password=#{password} and id=#{id}
+		GROUP BY id
+	</select>
+	<update id="widraw">
+		UPDATE memberinfo SET member_stu=1 WHERE id=#{id}
+	</update>
+	<select id="chkWidraw" resultType="boolean">
+		SELECT member_stu FROM memberinfo WHERE id=#{id}
+	</select>
 </mapper>

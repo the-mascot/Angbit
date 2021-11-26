@@ -47,10 +47,10 @@
 
 						<div class="u-p-nickname-error u-p-nickname-redundant-error"></div>
 
-						<div class="u-p-nickname-notice">
-							<i class="bi bi-exclamation-triangle"></i>
-							닉네임 변경은 7일에 한번 가능합니다.
-						</div>
+<!--						<div class="u-p-nickname-notice">-->
+<!--							<i class="bi bi-exclamation-triangle"></i>-->
+<!--							닉네임 변경은 7일에 한번 가능합니다.-->
+<!--						</div>-->
 					</div>
 				</div>
 				<div class="u-p-t-row-3">
@@ -70,6 +70,8 @@
 							<div class="u-p-password-error u-p-password-regex-error"></div>
 
 							<div class="u-p-password-error u-p-password-pwchk-error"></div>
+
+							<div class="u-p-password-error u-p-password-used-error"></div>
 
 							<div class="u-p-password-notice">
 								<i class="bi bi-exclamation-triangle"></i>
@@ -123,8 +125,10 @@
 					<p>정말 탈퇴하시겠습니까?</p>
 				</div>
 				<div class="modal-footer">
+					<form action="widraw" method="POST">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-					<button type="button" class="btn btn-danger" onclick="alert('회원 탈퇴 되었습니다. 이용해주셔서 감사합니다.')">탈퇴</button>
+					<button type="submit" class="btn btn-danger" onclick="alert('이용해주셔서 감사합니다.')">탈퇴</button>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -137,30 +141,22 @@
 			$('#exampleModal').modal('show');
 		};
 
-		/* nickname 선택자 */
 		const nicknameInput = document.querySelector(".u-p-nickname-input");
 		const submitBtn = document.querySelector(".u-p-nickname-edit-submit-btn");
 		const currentNickname = nicknameInput.value;
 
-		/* pw 선택자 */
-		const passwordInput = document.querySelector(".u-p-password-input");
-		const pwsubmitBtn = document.querySelector(".u-p-password-edit-btn");
-		const pwchkInput = document.querySelector(".u-p-pwchk-input");
 
-		function validateNickname(){
+		function validateNickname() {
 			const lblError = document.querySelector(".u-p-nickname-regex-error");
-			const redundantError = document.querySelector(".u-p-nickname-redundant-error");
 
 			lblError.innerHTML = "";
-			redundantError.innerHTML = "";
 			submitBtn.disabled = false
-			/*const expr = /^[0-9:.\-$-()_&a-zA-Z가-힣]{3,8}(?<![-(.])$/;*/
 			const expr = /^[0-9:.\-_a-zA-Z가-힣]{3,8}$/;
 
 			if (!expr.test(nicknameInput.value)) {
 				submitBtn.disabled = true;
 				lblError.innerHTML = "✋ 글자수 제한(3~8자)을 충족하지 않거나, 사용할 수 없는 문자가 포함되었습니다.";
-			}else if(nicknameInput.value === currentNickname){
+			} else if (nicknameInput.value === currentNickname) {
 				submitBtn.disabled = true;
 			}
 		}
@@ -171,42 +167,43 @@
 		}
 
 		function submitExec(){
-			if (confirm("닉네임을 변경하시겠습니까?\n변경 후 7일 이내에는 다시 변경하실 수 없습니다.")){
-				const nickname = getNicknameFromInput();
-				updateNickname(nickname)
-						.then(newNickname => setNewNicknameToPage(newNickname))
-						.then(toggleBtns)
-						.then(showSuccessAlert);
+				if (confirm("닉네임을 변경하시겠습니까?\n변경 후 7일 이내에는 다시 변경하실 수 없습니다.")){
+					const nickname = getNicknameFromInput();
+					const redundantError = document.querySelector(".u-p-nickname-redundant-error");
+					redundantError.innerHTML = "";
+
+					$.ajax({
+						type: 'POST',
+						url: 'nickChange',
+						data: {"nickname" : nickname},
+						// contentType: 'application/text; charset=UTF-8',
+						dataType: 'text',
+						success: function (data) {
+							console.log("변경 완료 : "+data)
+							if (data==1) {
+								setNewNicknameToPage(data);
+								toggleBtns();
+								showSuccessAlert();
+							} else if (data==0) {
+								submitBtn.disabled = true;
+								redundantError.innerHTML = "이미 존재하는 닉네임입니다."
+							}
+
+						},
+						error: function (e) {
+							console.log("error : ", e);
+						}
+					});
+				}
 			}
-		}
 
 		function getNicknameFromInput(){
-			console.log("변경할 닉네임? : "+nicknameInput.value);
 			return nicknameInput.value;
 		}
 
-		/* 닉네임 변경 AJAX */
-		async function updateNickname(nickname){
-            const newNickname = await fetch("/nickChange", {
-                method: "post",
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify({
-                    nickname : nickname
-                })
-            })
-            try{
-                return newNickname.text();
-            } catch (error){
-                alert(JSON.stringify(error));
-            }
-        }
-
 		function setNewNicknameToPage(newNickname){
-			const mainHeaderNicknameSpan = document.querySelector(".main-header-profile-nickname");
+			console.log(newNickname);
 			const nicknameEditBtnContainer = document.querySelector(".u-p-nickname-btn-container");
-			mainHeaderNicknameSpan.innerText = newNickname;
 			nicknameEditBtnContainer.remove();
 		}
 
@@ -226,13 +223,11 @@
 					cancelBtn = $(".u-p-nickname-edit-cancel-btn"),
 					editBtn = $(".u-p-nickname-edit-btn"),
 					editBtnCondition = editBtn.prop('disabled'),
-					pwsubmitBtn = $(".u-p-password-edit-btn"),
 					inputCondition = input.prop('disabled');
 
 			cancelBtn.toggle();
 			submitBtn.toggle();
 			editBtn.toggle();
-			pwsubmitBtn.toggle();
 			input.prop('disabled', !inputCondition);
 			editBtn.prop('disabled', !editBtnCondition);
 		}
@@ -248,52 +243,90 @@
 
 		/*-- 기존 JS --*/
 
-
+		const passwordInput = document.querySelector(".u-p-password-input");
+		const pwchkInput = document.querySelector(".u-p-pwchk-input");
+		const pwsubmitBtn = document.querySelector(".u-p-password-edit-btn");
 
 		function validatePassword(){
 			const plblError = document.querySelector(".u-p-password-regex-error");
+			$('.u-p-password-used-error').empty();
 
 			plblError.innerHTML = "";
-			pwsubmitBtn.disabled = false;
-			/*const expr = /^[0-9:.\-$-()_&a-zA-Z가-힣]{3,8}(?<![-(.])$/;*/
+			// pwsubmitBtn.disabled = false;
+
 			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/;
 
 			if (!exprpw.test(passwordInput.value)) {
-				pwsubmitBtn.disabled = true;
+				// pwsubmitBtn.disabled = true;
 				plblError.innerHTML = "✋ 글자수 제한(8~15자)을 충족하지 않거나, 사용할 수 없는 문자가 포함되었습니다.";
 			}
 		}
 
-		function validatePassword(){
-			const plblError = document.querySelector(".u-p-password-regex-error");
-
-			plblError.innerHTML = "";
-			/* pwsubmitBtn.disabled = false; */
-			/*const expr = /^[0-9:.\-$-()_&a-zA-Z가-힣]{3,8}(?<![-(.])$/;*/
-			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/;
-
-			if (!exprpw.test(passwordInput.value)) {
-				pwsubmitBtn.disabled = true;
-				plblError.innerHTML = "✋ 글자수 제한(8~15자)을 충족하지 않거나, 사용할 수 없는 문자가 포함되었습니다.";
-			}
-		}
-
-		function validatePwchk(){
+		function validatePwchk() {
 			const chkError = document.querySelector(".u-p-password-pwchk-error");
+			$('.u-p-password-used-error').empty();
 
 			chkError.innerHTML = "";
-			/* pwsubmitBtn.disabled = false; */
-			/*const expr = /^[0-9:.\-$-()_&a-zA-Z가-힣]{3,8}(?<![-(.])$/;*/
+
 			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/;
 
+			if (!exprpw.test(passwordInput.value)) {
+			}
 			if (passwordInput.value != pwchkInput.value) {
 				pwsubmitBtn.disabled = true;
 				chkError.innerHTML = "❌ 입력하신 비밀번호가 일치하지 않습니다.";
-			} else if (passwordInput.value == pwchkInput.value) {
-				chkError.innerHTML = "<span style='color: blue;'>✔️ 비밀번호가 일치합니다.</span>";
-				pwsubmitBtn.disabled = false;
+			} else if (exprpw.test(pwchkInput.value)) {
+
+				if (passwordInput.value == pwchkInput.value) {
+					chkError.innerHTML = "<span style='color: blue;'>✔️ 비밀번호가 일치합니다.</span>";
+					pwsubmitBtn.disabled = false;
+				}
 			}
 		}
+
+		/*비밀번호 변경 AJAX*/
+		function pwSubmitExec(){
+			const chkError = document.querySelector(".u-p-password-pwchk-error");
+			const plblError = document.querySelector(".u-p-password-regex-error");
+			if (confirm("비밀번호를 변경하시겠습니까?")){
+				const password = getPasswordFromInput();
+				const usedError = document.querySelector(".u-p-password-used-error");
+				$.ajax({
+					type: 'POST',
+					url: 'pwChange',
+					data: {"password" : password},
+					dataType: 'text',
+					success: function (data) {
+						console.log("변경 완료 : "+data)
+						if (data==1) {
+							pwchkInput.value = "";
+							passwordInput.value = "";
+							$('.u-p-password-pwchk-error').empty();
+							$('.u-p-password-regex-error').empty();
+							$('.u-p-password-used-error').empty();
+							usedError.innerHTML = "<span style='color: blue;'>✔️ 비밀번호 변경에 성공했습니다.</span>";
+						} else {
+							submitBtn.disabled = true;
+							pwchkInput.value = "";
+							passwordInput.value = "";
+							$('.u-p-password-pwchk-error').empty();
+							$('.u-p-password-regex-error').empty();
+							$('.u-p-password-used-error').empty();
+							usedError.innerHTML = "❌ 입력하신 비밀번호와 현재 비밀번호가 같습니다.";
+						}
+					},
+					error: function (e) {
+						console.log("error : ", e);
+					}
+				});
+			}
+		}
+
+		function getPasswordFromInput(){
+			return passwordInput.value;
+		}
+
+		pwsubmitBtn.addEventListener("click", pwSubmitExec)
 
 	</script>
 </main>

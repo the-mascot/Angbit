@@ -564,30 +564,24 @@
 				success		:	function(data) {
 
 					var chart = LightweightCharts.createChart(document.getElementById('coinChart'), {
-						width: 950,
-						height: 440,
+						width: 980,
+						height: 425,
+						// 차트 크기 설정
 						layout: {
 							backgroundColor: '#ffffff',
 							textColor: 'rgba(33, 56, 77, 1)',
 						},
-						localization: {
+						localization: { // 현지화, 원화 표기
 							locale: 'cn-CN',
+							priceFormatter: price =>
+									 price + '₩'
+							,
+							dateFormat : 'yyyy/MM/dd' ,
 						},
-						// grid: {
-						// 	vertLines: {
-						// 		color: 'rgba(197, 203, 206, 0.7)',
-						// 	},
-						// 	horzLines: {
-						// 		color: 'rgba(197, 203, 206, 0.7)',
-						// 	},
-						// },
-						timeScale: {
-							timeVisible: true,
-							secondsVisible: false,
-						},
+
 						priceScale : {
 							autoScale : true ,
-							invertScale : true ,
+							invertScale : false ,
 							alignLabels : false ,
 							borderVisible : false ,
 							borderColor : '#555ffd ' ,
@@ -596,19 +590,23 @@
 								bottom : 0 ,
 							} ,
 						},
+						timeScale: {
+							shiftVisibleRangeOnNewBar : true,
+							fixLeftEdge : true,
+						}
+
 					});
 
 					var lineSeries = chart.addCandlestickSeries({
-						upColor: '#FF4646',
-						downColor: '#64D6FF',
+						// blue 0000be, red ff0000
+						upColor: '#ff0000',
+						downColor: '#0000be',
 						borderVisible: false,
 						wickVisible: true,
-						borderColor: '#000000',
-						wickColor: '#000000',
-						borderUpColor: '#FF3232',
-						borderDownColor: '#5ACCFF',
-						wickUpColor: '#FF3232',
-						wickDownColor: '#5ACCFF',
+						borderUpColor: '#ff0000',
+						borderDownColor: '#0000be',
+						wickUpColor: '#ff0000',
+						wickDownColor: '#0000be',
 					});
 
 
@@ -623,6 +621,20 @@
 					console.log(Array.isArray(chardat))
 
 					lineSeries.setData(rechardat);
+
+					chart.applyOptions({
+						timeScale: {
+							visible : true,
+							timeVisible: true,
+							secondsVisible: false,
+							// tickMarkFormatter: (time, tickMarkType, locale) => {
+							// 	console.log(time, tickMarkType, locale);
+							// 	const year = LightweightCharts.isBusinessDay(time) ? time.year : new Date(time * 1000).getUTCFullYear();
+							// 	const day = LightweightCharts.isBusinessDay(time) ? time.day : new Date(time * 1000).getMinutes();
+							// 	return String(day+'분');
+							// },
+						},
+					});
 
 				},
 				error		:	function(e) {

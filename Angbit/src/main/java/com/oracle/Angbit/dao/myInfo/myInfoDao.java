@@ -6,4 +6,10 @@ public interface myInfoDao {
 
     int loginTest(MemberInfo mi);
     MemberInfo getMyInfo(String id);
+    int nickChange(MemberInfo mi);
+    boolean chkNick(MemberInfo mi);
+    int pwChange(MemberInfo mi);
+    boolean chkPw(MemberInfo mi);
+    void widraw(String id);
+    boolean chkWidraw(String id);
 }
