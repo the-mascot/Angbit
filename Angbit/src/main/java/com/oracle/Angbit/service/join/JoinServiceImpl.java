@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.oracle.Angbit.dao.join.JoinDao;
+import com.oracle.Angbit.dao.lg.LoginDao;
 import com.oracle.Angbit.model.common.MemberInfo;
 
 
@@ -24,15 +25,12 @@ public class JoinServiceImpl implements JoinService {
 	}
 
 	@Override
-	public int IDchk(MemberInfo memberinfo) {
+	public MemberInfo IDchk(String id) {
 		System.out.println("JoinServiceImpl - IDchk 시작");
-		System.out.println("JoinServiceImpl - IDchk -> " + memberinfo.getId());
 		
-		int result = 0;
-		result = jd.IDchk(memberinfo);
-		System.out.println("JoinServiceImpl - IDchk result -> " + result);
+		MemberInfo memberInfo = jd.IDchk(id);
 		
-		return result;
+		return memberInfo;
 	}
 
 
