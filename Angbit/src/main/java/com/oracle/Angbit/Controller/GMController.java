@@ -11,11 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.oracle.Angbit.model.common.Coin;
 import com.oracle.Angbit.model.common.MemberInfo;
-import com.oracle.Angbit.model.common.Trade;
+import com.oracle.Angbit.model.status.CoinCoinInfo;
+import com.oracle.Angbit.model.status.TradeCoinInfo;
 import com.oracle.Angbit.service.status.StatusService;
 
 @Controller
@@ -35,7 +34,7 @@ public class GMController {
 			System.out.println("statusList id -> "+id);
 			
 			List<MemberInfo> member1 = ss.krwStatus(id);
-			List<Coin> statusList1 = ss.listStatus(id);
+			List<CoinCoinInfo> statusList1 = ss.listStatus(id);
 			int result = ss.totpriceStatus(id);
 
 			model.addAttribute("statusList", statusList1);
@@ -52,7 +51,7 @@ public class GMController {
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_y_history id -> "+id);
 			
-			List<Trade> tradeList = ss.yStatus(id);
+			List<TradeCoinInfo> tradeList = ss.yStatus(id);
 			model.addAttribute("yList", tradeList);
 			return "/status/y_history";
 		}
@@ -65,7 +64,7 @@ public class GMController {
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_n_history id -> "+id);
 			
-			List<Trade> tradeList = ss.nStatus(id);
+			List<TradeCoinInfo> tradeList = ss.nStatus(id);
 			model.addAttribute("nList", tradeList);
 			return "/status/n_history";
 		}
@@ -78,7 +77,7 @@ public class GMController {
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_y_history_buy id -> "+id);
 			
-			List<Trade> comBuyList = ss.comBuyList(id);
+			List<TradeCoinInfo> comBuyList = ss.comBuyList(id);
 			model.addAttribute("cbList", comBuyList);
 			return "/status/y_history_buy";
 		}
@@ -91,7 +90,7 @@ public class GMController {
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_n_history_buy id -> "+id);
 			
-			List<Trade> comSellList = ss.comSellList(id);
+			List<TradeCoinInfo> comSellList = ss.comSellList(id);
 			model.addAttribute("csList", comSellList);
 			return "/status/y_history_sell";
 		}

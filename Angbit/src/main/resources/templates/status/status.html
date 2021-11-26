@@ -232,7 +232,7 @@ data = {
       	<span th:case="XLM"><img class="table_images" alt="" src="images/status/xlm.png"></span>
       	<span th:case="XRP"><img class="table_images" alt="" src="images/status/xrp.png"></span>
       </th>
-      <td th:text="${slist.coincode}"></td>
+      <td th:text="${slist.coinname}+'('+${slist.coincode}+')'"></td>
       <td th:text="${#numbers.formatDecimal(slist.coin_amt,1,'COMMA',8,'POINT')}"></td>
       <td th:text="${#numbers.formatDecimal(slist.avg_price,1,'COMMA',0,'POINT')}"></td>
       <td th:id="${slist.coincode}+'-totPrice'" th:text="${#numbers.formatDecimal(slist.tot_price,1,'COMMA',0,'POINT')}"></td>

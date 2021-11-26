@@ -44,7 +44,7 @@
       	<span th:case="XLM"><img class="table_images" alt="" src="images/status/xlm.png"></span>
       	<span th:case="XRP"><img class="table_images" alt="" src="images/status/xrp.png"></span>
       </th>
-      <td th:text="${nlist.coincode}">비트코인<br>(BTC)</td>
+      <td th:text="${nlist.coinname}+'&#13;&#10;'+'('+${nlist.coincode}+')'"></td>
       <td th:if="${nlist.trd_div}==1" style="color: blue;">매도 대기</td>
       <td th:if="${nlist.trd_div}==0" style="color: red;">매수 대기</td>
       <td th:text="${nlist.trd_amt}"></td>

@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="StatusDao">
-	<select id="StatusList" parameterType="java.lang.String" resultType="Coin">
-		select * from coin where id=#{id} order by coincode asc
+	<select id="StatusList" parameterType="java.lang.String" resultType="CoinCoinInfo">
+		select c.*, ci.coinname from coin c inner join coininfo ci on c.coincode=ci.coincode where id=#{id} order by c.coincode asc
 	</select>
 	<select id="KrwList" parameterType="java.lang.String" resultType="MemberInfo">
 		select krw from memberinfo where id=#{id} 
 	</select>
-	<select id="YList" parameterType="java.lang.String" resultType="Trade">
-		select * from trade where id=#{id} and trd_stu=1 order by trd_date desc
+	<select id="YList" parameterType="java.lang.String" resultType="TradeCoinInfo">
+		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 order by trd_date desc
+<!-- 		select * from trade where id=#{id} and trd_stu=1 order by trd_date desc -->
 	</select>
-	<select id="NList" parameterType="java.lang.String" resultType="Trade">
-		select * from trade where id=#{id} and trd_stu=0 order by trd_date desc
+	<select id="NList" parameterType="java.lang.String" resultType="TradeCoinInfo">
+		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=0 order by trd_date desc
 	</select>
 	<select id="TotPrice" parameterType="java.lang.String" resultType="int">
 		select sum(tot_price) from coin where id=#{id}
 	</select>
-	<select id="CBuyList" resultType="Trade">
-		select * from trade where id=#{id} and trd_stu=1 and trd_div=0 order by trd_date desc
+	<select id="CBuyList" resultType="TradeCoinInfo">
+		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=0 order by trd_date desc 
 	</select>
-	<select id="CSellList" resultType="Trade">
-		select * from trade where id=#{id} and trd_stu=1 and trd_div=1 order by trd_date desc
+	<select id="CSellList" resultType="TradeCoinInfo">
+		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=1 order by trd_date desc 
+	</select>
+	<select id="krwNameList" resultType="CoinInfo">
+		select coinname from coininfo
 	</select>
 <!-- 	<select id="login" resultType="MemberInfo"> -->
 <!-- 		select id, password from memberinfo where id=#{id} and password=#{password} -->

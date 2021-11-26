@@ -7,8 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.oracle.Angbit.dao.status.StatusDao;
 import com.oracle.Angbit.model.common.Coin;
+import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.model.common.Trade;
+import com.oracle.Angbit.model.status.CoinCoinInfo;
+import com.oracle.Angbit.model.status.TradeCoinInfo;
 
 @Service
 public class StatusServiceImpl implements StatusService {
@@ -24,9 +27,9 @@ public class StatusServiceImpl implements StatusService {
 	}
 
 	@Override
-	public List<Coin> listStatus(String id) {
+	public List<CoinCoinInfo> listStatus(String id) {
 		System.out.println("StatusServiceImpl listStatus start...");
-		List<Coin> listStatus = sd.listStatus(id);
+		List<CoinCoinInfo> listStatus = sd.listStatus(id);
 		return listStatus;
 	}
 
@@ -38,16 +41,16 @@ public class StatusServiceImpl implements StatusService {
 	}
 
 	@Override
-	public List<Trade> yStatus(String id) {
+	public List<TradeCoinInfo> yStatus(String id) {
 		System.out.println("StatusServiceImpl yStatus start...");
-		List<Trade> listY = sd.listY(id); 
+		List<TradeCoinInfo> listY = sd.listY(id); 
 		return listY;
 	}
 
 	@Override
-	public List<Trade> nStatus(String id) {
+	public List<TradeCoinInfo> nStatus(String id) {
 		System.out.println("StatusServiceImpl nStatus start...");
-		List<Trade> listN = sd.listN(id);
+		List<TradeCoinInfo> listN = sd.listN(id);
 		return listN;
 	}
 
@@ -59,19 +62,18 @@ public class StatusServiceImpl implements StatusService {
 	}
 
 	@Override
-	public List<Trade> comBuyList(String id) {
+	public List<TradeCoinInfo> comBuyList(String id) {
 		System.out.println("StatusServiceImpl comBuyList start...");
-		List<Trade> cbuyList = sd.buyComList(id);
+		List<TradeCoinInfo> cbuyList = sd.buyComList(id);
 		return cbuyList;
 	}
 
 	@Override
-	public List<Trade> comSellList(String id) {
+	public List<TradeCoinInfo> comSellList(String id) {
 		System.out.println("StatusServiceImpl comSellList start...");
-		List<Trade> csellList = sd.sellComList(id);
+		List<TradeCoinInfo> csellList = sd.sellComList(id);
 		return csellList;
 	}
-	
 
 
 
