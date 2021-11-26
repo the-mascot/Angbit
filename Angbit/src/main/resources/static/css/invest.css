@@ -203,8 +203,30 @@ main::after {
 	color: white;
 }
 
+
+/* 차트 */
 .tv-lightweight-charts {
 	overflow : visible!important;
+}
+
+.c-buttonarea {
+	margin-left : 10px;
+	margin-top : 5px;
+	height : 30px;
+}
+
+.c-buttonarea-button {
+	background-color : #ffffff;
+	border-style: none;
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+.c-buttonarea-button:hover {
+	box-shadow:200px 0 0 0 rgba(72,127,176,1) inset;
+	background-color: #487fb0;
+	color: #fff !important;
+	transition: color .2s ease-in;
+	border-radius: 3px;
 }
 
 /* 링크 */

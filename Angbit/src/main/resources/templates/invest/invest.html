@@ -22,6 +22,7 @@
 		var currCoin = null;	// 현재 위치한 코인 페이지
 		var currCoincode = null;
 		var pcp = null;
+		var currCandle = null;
 		
 		// 페이지 로딩 되면 실행되는 initial 함수
 		function init() {
@@ -602,21 +603,22 @@
 		// 차트 API
 		function chartApi() {
 
-			sendData = "currCoin="+currCoin;
+			// sendCoin = "currCoin="+currCoin;
+			// sendCandle = "currCandle="+currCandle;
 			console.log('currCoin->'+currCoin);
 			$("#coinChart").empty();
 
 			$.ajax({
 				type		:	'GET',
 				url			:	'chartApi',
-				data		:	sendData,
+				data		:	{ 'currCoin' : currCoin, 'currCandle' : currCandle},
 				contentType : 	'application/text; charset=UTF-8',
 				dataType 	: 	'json',
 				success		:	function(data) {
 
 					var chart = LightweightCharts.createChart(document.getElementById('coinChart'), {
 						width: 980,
-						height: 425,
+						height: 380,
 						// 차트 크기 설정
 						layout: {
 							backgroundColor: '#ffffff',
@@ -629,7 +631,6 @@
 							,
 							dateFormat : 'yyyy/MM/dd' ,
 						},
-
 						priceScale : {
 							autoScale : true ,
 							invertScale : false ,
@@ -693,7 +694,13 @@
 				}
 			})
 		};
-		
+
+		function candleChange(candle) {
+			currCandle = candle;
+			console.log('candle?->'+candle)
+			chartApi();
+		}
+
 </script>
 </head>
 <body>
@@ -734,10 +741,17 @@
 				</div> 
 			</div>
 		</div>
-		
+
 		<div class="d-flex justify-content-center mt-3 mb-3">
-			<div class="coinChart card" id="coinChart">
-				차트 구간입니다 승훈아 가능하니??....
+			<div class="coinChart card">
+				<div class="coinChart c-buttonarea">
+					<button type="button" class="c-buttonarea-button" onclick="candleChange('minutes/1')">1분</button>
+					<button type="button" class="c-buttonarea-button" onclick="candleChange('minutes/30')">30분</button>
+					<button type="button" class="c-buttonarea-button" onclick="candleChange('minutes/60')">1시간</button>
+					<button type="button" class="c-buttonarea-button" onclick="candleChange('minutes/240')">4시간</button>
+					<button type="button" class="c-buttonarea-button" onclick="candleChange('days')">일</button>
+				</div>
+				<div class="coinChart c-chartarea" id="coinChart"></div>
 			</div>
 		</div>
 		<div class="orderSection d-flex justify-content-between mx-auto">
