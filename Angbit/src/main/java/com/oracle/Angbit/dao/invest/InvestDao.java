@@ -11,6 +11,6 @@ public interface InvestDao {
 
 	CoinInfo coinInfo(String coincode);
 
-	MemberCoin memberCoin(MemberCoin paraMemberCoin);
+	int selectKRW(String id);
 	
 }
