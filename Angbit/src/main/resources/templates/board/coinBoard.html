@@ -1,27 +1,21 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>코인게시판</title>
-<!-- common css -->
-<link href="css/common.css" rel="stylesheet" type="text/css">
-<link href="css/status.css" rel="stylesheet" type="text/css">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&display=swap" rel="stylesheet">
+<!-- Common meta tag, Bootstrap, js -->
+<th:block th:replace="common/commonHead"></th:block>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
+<!-- Jquery -->
+<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
 </head>
 <body>
 <!-- 헤더 -->
 <header th:replace="common/header :: header"></header>
 
 <!-- 몸통 -->
-
+<main>
+<div class="pt-5">
 <table id="datatablesSimple" border="1">
        <thead>
            <tr>
@@ -42,7 +36,7 @@
                
                <th:block th:each="mlist : ${memberList}">
                <th:block th:switch="${blist.id}">
-               	<td th:case="${mlist.id}" th:text="${mlist.nickname}></td>
+               	<td th:case="${mlist.id}" th:text="${mlist.nickname}"></td>
                </th:block>
                </th:block>
                
@@ -55,12 +49,17 @@
 <th:if test="${pg.startPage > pg.pageBlock }">
 	<a href="empList?currentPage=${pg.startPage-pg.pageBlock}">[이전]</a>
 </th:if>
-<th:each = "i : begin="${pg.startPage}" end="${pg.endPage}">
+<th:each test ="i : begin='${pg.startPage}' end='${pg.endPage}'">
 	<a href="empList?currentPage=${i}">[${i}]</a>
 </th:forEach>
 <th:if test="${pg.endPage < pg.totalPage }">
 	<a href="empList?currentPage=${pg.startPage+pg.pageBlock}">[다음]</a>
 </th:if>
+</div>
+</main>
+
+<!-- footer -->
+<footer th:replace="common/footer :: footer"></footer>
 
 </body>
 </html>
