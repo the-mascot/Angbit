@@ -15,7 +15,7 @@ public class MemberInfo {
 	private int krw;
 	private Date joindate;
 	private Date finaldate;
-	
+	private int member_stu;
 	
 	// 조회용
 		private String search;   private String keyword;

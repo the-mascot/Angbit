@@ -24,7 +24,7 @@ public class BoardDaoImpl implements BoardDao {
 		List<Board> boardList = null;
 		
 		try {
-			boardList = session.selectList("boardList");
+			boardList = session.selectList("boardList"); 					//Board.xml에서 가져갈 이름
 			System.out.println("BoardDaoImpl BoardList boardList.size()->"+boardList.size());
 		} catch (Exception e) {
 			System.out.println("BoardDaoImpl BoardList Exception->"+e.getMessage());
@@ -86,7 +86,7 @@ public class BoardDaoImpl implements BoardDao {
 		System.out.println("BoardDaoImpl pgMemberList Start ..." );
 		try {
 			//                             Naming Rule 
-			pgmemberList = session.selectList("tkEmpListAll", memberInfo);
+			pgmemberList = session.selectList("pgmemberList", memberInfo);
 		} catch (Exception e) {
 			System.out.println("BoardDaoImpl pgMemberList Exception->"+e.getMessage());
 		}

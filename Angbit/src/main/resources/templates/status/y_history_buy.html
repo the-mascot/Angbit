@@ -37,11 +37,10 @@
 		<button type="button" class="btn btn-outline-warning" style="color: black;">180일</button>
 	</div>
 	<div class="col-4" style="float: left">거래종류 설정<p>
-		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history'">전체</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_buy'">매수</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history'">전체</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history_buy'">매수</button>
 		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sell'">매도</button>
 	</div>
-<!-- 	th:onclick="'location.href=|''+@{${/status_y_history_buy}}+'|''" -->
 	<div class="col-4" style="float: left; margin-top: 25px;"><p>
 		<a href="#">
 			<input type="text" placeholder="코인의 이름을 입력하세요." style="border: 1px solid #ffc107; height: 35px" size="40">  
@@ -64,8 +63,8 @@
     </tr>
   </thead>
   <tbody align="center" style="vertical-align:middle;">
-    <tr th:each="ylist:${yList}">
-      <th scope="row" th:switch="${ylist.coincode}">
+    <tr th:each="cblist:${cbList}">
+      <th scope="row" th:switch="${cblist.coincode}">
       	<span th:case="ADA"><img class="table_images" alt="" th:src="@{images/status/ada.png}"></span>
       	<span th:case="AXS"><img class="table_images" alt="" th:src="@{images/status/axs.png}"></span>
       	<span th:case="BCH"><img class="table_images" alt="" th:src="@{images/status/bch.png}"></span>
@@ -82,15 +81,14 @@
       	<span th:case="XLM"><img class="table_images" alt="" th:src="@{images/status/xlm.png}"></span>
       	<span th:case="XRP"><img class="table_images" alt="" th:src="@{images/status/xrp.png}"></span>
       </th>
-      <td th:text="${ylist.coinname}+'&#13;&#10;'+'('+${ylist.coincode}+')'"></td>
-<!--       <td th:utext="${#strings.replace(#strings.escapeXml(ylist.coinname), T(java.lang.System).getProperty('line.separator'), &lt;br /&gt;')}+'('+${ylist.coincode}+')'"></td> -->
-      <td th:if="${ylist.trd_div}==1" style="color: blue;">매도</td>
-      <td th:if="${ylist.trd_div}==0" style="color: red;">매수</td>
+      <td th:text="${cblist.coinname}+'&#13;&#10;'+'('+${cblist.coincode}+')'"></td>
+      <td th:if="${cblist.trd_div}==1" style="color: blue;">매도</td>
+      <td th:if="${cblist.trd_div}==0" style="color: red;">매수</td>
 <!--       <td th:unless="${ylsit.trd_div}==0">매수</td> -->
-      <td th:text="${#numbers.formatDecimal(ylist.trd_amt,1,'COMMA',8,'POINT')}"></td>
-      <td th:text="${#numbers.formatDecimal(ylist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
-      <td th:text="${#numbers.formatDecimal(ylist.trd_price,1,'COMMA',0,'POINT')}"></td>
-      <td th:text="${#dates.format(ylist.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
+      <td th:text="${#numbers.formatDecimal(cblist.trd_amt,1,'COMMA',8,'POINT')}"></td>
+      <td th:text="${#numbers.formatDecimal(cblist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
+      <td th:text="${#numbers.formatDecimal(cblist.trd_price,1,'COMMA',0,'POINT')}"></td>
+      <td th:text="${#dates.format(cblist.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
     </tr>
   </tbody>
 </table>

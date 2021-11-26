@@ -6,7 +6,10 @@
 		<typeAlias alias="Board" type="com.oracle.Angbit.model.common.Board"/>
 		<typeAlias alias="Coin" type="com.oracle.Angbit.model.common.Coin"/>
 		<typeAlias alias="Trade" type="com.oracle.Angbit.model.common.Trade"/>
+		<typeAlias alias="MemberInfo" type="com.oracle.Angbit.model.common.MemberInfo"/>
 		<typeAlias alias="MemberCoin" type="com.oracle.Angbit.model.invest.MemberCoin"/>
+		<typeAlias alias="TradeCoinInfo" type="com.oracle.Angbit.model.status.TradeCoinInfo"/>
+		<typeAlias alias="CoinCoinInfo" type="com.oracle.Angbit.model.status.CoinCoinInfo"/>
 		<typeAlias alias="MemberInfo" type="com.oracle.Angbit.model.common.MemberInfo"/>
 	</typeAliases>
 </configuration>

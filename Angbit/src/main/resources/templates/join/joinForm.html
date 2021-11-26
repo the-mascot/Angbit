@@ -7,6 +7,8 @@
 <th:block th:replace="common/commonHead"></th:block>
 </head>
 
+<link th:href="@{/css/joinForm.css}" rel="stylesheet">
+
 <script type="text/javascript" src="js/jquery.js"></script> 
 <script type="text/javascript" src="js/httpRequest.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -23,70 +25,49 @@ function chkJoin() {
 		joinfrm.checkpassword.focus();
 		return false;
 	}
+	
+	var pw = $("#password").val();
+	var num = pw.search(/[0-9]/g);
+	var eng = pw.search(/[a-z]/ig);
+	var spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+	
+	if(pw.length < 8 || pw.length > 20){
+		
+		 alert("비밀번호는 8자리 ~ 20자리 이내로 입력해주세요.");
+		 return false;
+		}else if(pw.search(/\s/) != -1){
+		 alert("비밀번호는 공백 없이 입력해주세요.");
+		 return false;
+		}else if(num < 0 || eng < 0 || spe < 0 ){
+		 alert("영문,숫자,특수문자를 최소 1개 이상 혼합하여 입력해주세요.");
+		 return false;
+		}else {
+		   return true;
+		}
 	return true;
 }
 </script>
 
 <script type="text/javascript">
-	function chk() {
-		if(!joinfrm.id.value){
-			alert("사번을 입력한 후에 확인하세요.")
-			frm.empno.focus();
-			return false;
-		} else {
-			location.href="confirm?empno="+frm.empno.value;
-		}
-	}
-</script>
-
-<script type="text/javascript">
 function chkID(Vdeptno){
-	alert("입력한 ID -> " + Vdeptno);
-	
 	$.ajax({
 		url : "IDchk",
 		data : {id : Vdeptno},
-		dataType : 'int',
+		dataType : 'text',
 		success : function(data){
-			if(data == 1){
-				$('#msg').html("중복된 이메일 아이디가 존재합니다. 새로운 아이디를 입력해주세요.");
-			} else {
-				$('#msg').html("회원가입 가능한 이메일 아이디입니다.");
-			}
+			$('#msg').html(data);
 		}
 	});
 }
 </script>
 
-<style>
-body { background-color: #F5F5F5; }
+<script type="text/javascript">
+	$(function () {
+	  $('[data-toggle="tooltip"]').tooltip()
+	})
+</script>
 
-/*--------중단부--------------  */
-.wrapper_join {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-.container_join {
-	height : 600px;
-	width : auto;
-	margin-top: 100px;
-}
-.signinfo{
-	border:2px solid #D4D4D4;
-	height:50px;
-	width:400px;
-	background-color: white;
-	}
-.inputbox{
-	margin-top: 10px;
-}
-/*---------------하단부---------------*/
-.signbtn{
-	margin-top: 10px;
-}
-</style>
+
 
 <body>
 
@@ -99,38 +80,28 @@ body { background-color: #F5F5F5; }
 			
 			<div class="signinfo">
 				<div style="top:50% left:50% margin:auto;">
-					<h2 align="center">AngBit 회원가입 하기</h2>
-				</div>	
+					<font color="orange"> <h2 align="center"><img alt="Angbit_logo" src="images/Angbit_logo.png"> 회원가입 하기</h2> </font>
+				</div>
 		  	</div>
 		<br>
 			<div class="form-floating mb-1">
 			  <input type="email" class="form-control input-sm" id="id" name="id" placeholder="Id">
-			  <input type="button" value="중복 확인" onclick="chkID(joinfrm.id.value)"> <span id="msg"></span>
-			  
-			  ----------------------------------------------------
-			  
-			  <input type="button" id="btn_idCheck" value="부서명" onmouseover="getDeptName(${empDept.deptno})">
-			  <input type="button" id="btn_Dept" value="부서명"  onclick="getDept(10)">
-			  
-			  
-			  
-			  
-			 
-			  ----------------------------------------------------
-			  
+			  <input type="button" value="중복 확인" onclick="chkID(joinfrm.id.value)"> <font color="red"><span id="msg"></span></font> 
 			  <label for="floatingInput">이메일</label>
 		    </div>
 			
 			<div class="form-floating mb-1">
 				  <input type="password" class="form-control input-sm" id="password" name="password" placeholder="Password">
-				  <label for="floatingInput">Password</label>
+				  <label for="floatingInput">비밀번호</label>
 			</div>
 			
 			<div class="form-floating mb-1">
 				  <input type="password" class="form-control input-sm" id="checkpassword" name="checkpassword" placeholder="Check Password">
-				  <label for="floatingInput">Password-check</label>
+				  <label for="floatingInput">비밀번호 재확인</label>
+				  
+				  <button class="tooltip-link" data-tooltip="비밀번호는 공백없이 8~20자리로 영문,숫자,특수문자를 각각 1개 이상 씩 혼합하여 입력하여 주십시오." disabled="disabled">비밀번호 규칙</button>
 			</div>
-		<br>	
+			
 			<div class="form-floating mb-1">
 			  <input type="text" class="form-control input-sm" id="nickname" name="nickname" placeholder="name@example.com">
 			  <label for="floatingInput">닉네임</label>

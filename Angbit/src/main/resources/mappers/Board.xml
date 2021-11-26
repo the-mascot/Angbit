@@ -8,5 +8,13 @@
 	<select id="memberList" resultType="MemberInfo">
 		select * from MEMBERINFO
 	</select>
-	
+	<select id="pgmemberList" parameterType="MemberInfo" resultType="Board">
+		SELECT *
+		FROM
+		  (
+		    Select rownum rn , a.*
+		    From   (select * from board order by b_num DESC) a
+		  )
+			WHERE rn between #{start} and #{end} 
+	</select>
 </mapper>
