@@ -34,12 +34,12 @@ public class InvestServiceImpl implements InvestService {
 	}
 
 	@Override
-	public MemberCoin memberCoin(MemberCoin paraMemberCoin) {
+	public int selectKRW(String id) {
 
-		System.out.println("InvestServiceImpl memberCoin Start...");
-		MemberCoin memberCoin = ivdao.memberCoin(paraMemberCoin);
+		System.out.println("InvestServiceImpl selectKRW Start...");
+		int krw = ivdao.selectKRW(id);
 		
-		return memberCoin;
+		return krw;
 	}
 	
 	
