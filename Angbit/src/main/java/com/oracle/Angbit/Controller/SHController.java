@@ -83,7 +83,7 @@ public class SHController {
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
 //		String minCandle = "https://api.upbit.com/v1/candles/days?market="+currCoin+"&count=200"; // 일봉 현재일자 기준 200개 요청
-        String minCandle = "https://api.upbit.com/v1/candles/minutes/1?market="+currCoin+"&count=200"; // 분봉 현재시간 기준 200개 요청
+        String minCandle = "https://api.upbit.com/v1/candles/minutes/30?market="+currCoin+"&count=200"; // 분봉 현재시간 기준 200개 요청
 
 //        System.out.println("HTTP URL : "+minCandle);
 
