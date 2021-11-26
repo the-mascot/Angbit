@@ -4,20 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>코인게시판</title>
-<!-- common css -->
-<link href="css/common.css" rel="stylesheet" type="text/css">
-<link href="css/status.css" rel="stylesheet" type="text/css">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&display=swap" rel="stylesheet">
+<!-- Common meta tag, Bootstrap, js -->
+<th:block th:replace="common/commonHead"></th:block>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-<!-- 헤더 -->
+<!-- common 헤더 -->
 <header th:replace="common/header :: header"></header>
 
 <!-- 몸통 -->
@@ -42,7 +35,7 @@
                
                <th:block th:each="mlist : ${memberList}">
                <th:block th:switch="${blist.id}">
-               	<td th:case="${mlist.id}" th:text="${mlist.nickname}></td>
+               	<td th:case="${mlist.id}" th:text="${mlist.nickname}"></td>
                </th:block>
                </th:block>
                
