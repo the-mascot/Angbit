@@ -254,7 +254,7 @@
 			plblError.innerHTML = "";
 			// pwsubmitBtn.disabled = false;
 
-			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/;
+			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/;
 
 			if (!exprpw.test(passwordInput.value)) {
 				// pwsubmitBtn.disabled = true;
@@ -268,7 +268,7 @@
 
 			chkError.innerHTML = "";
 
-			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/;
+			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/;
 
 			if (!exprpw.test(passwordInput.value)) {
 			}

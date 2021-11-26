@@ -229,23 +229,6 @@ main::after {
 	border-radius: 3px;
 }
 
-.legend {
-	position: absolute;
-	right: 150px;
-	top: 12px;
-	z-index: 1;
-	font-size: 16px;
-	line-height: 18px;
-	font-weight: 400;
-	font-family: 'Noto Sans KR', sans-serif;
-}
-
-.btnClicked {
-	color: #fff;
-	background-color: #487fb0;
-	border-radius: 3px;
-}
-
 /* 링크 */
 a:link {
 	text-decoration: none;
