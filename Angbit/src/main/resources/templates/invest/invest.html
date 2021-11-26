@@ -12,7 +12,9 @@
 
 <!-- Jquery -->
 <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
-	<script th:src="@{https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js}"></script>
+
+<!-- lightweight-chart -->
+<script th:src="@{https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js}"></script>
 
 <script type="text/javascript">
 
@@ -521,7 +523,19 @@
 				$('.coinTitle-card').css('height', '500px');
 				$('.coinTitle-card').css('overflow', 'scroll');
 				
-				// DB에서 COININFO 테이블 조회
+				// coinInfo.html 불러오기
+				$.ajax({
+					type		:	'GET',
+					url			:	'html/coinInfo.html',
+					success		:	function(data) {
+						$('#coinTitle-body').html(data);
+					},
+					error		:	function(e) {
+						console.log("error : ",e);
+					}
+				});
+				
+ 				// DB에서 COININFO 테이블 조회 후 coinInfo 테이블 삽입
 				var coincode = 'coincode='+currCoincode;
 				$.ajax({
 					type		:	'GET',
@@ -530,12 +544,16 @@
 					contentType : 	'application/json; charset=UTF-8',
 				    dataType 	: 	'json',
 					success		:	function(json) {
-						$('#coinTitle-body').html("<p class='fs-4 fw-bold mb-1'>"+currCoin+"</p><div class='d-flex justify-content-center'><table class='coinTitle-table table table-bordered mt-3 mb-5'><tr><th>최초발행</th><td>"+json.issuedate+"</td><th>시가총액</th><td>"+json.coingap+"</td></tr><tr><th>총 발행한도</th><td>"+json.issuelimit+"</td><td colspan='2'></td></tr></table></div><p class='fs-2 fw-bold mb-3'>코인소개</p><p class='coinTitle-coinsumr'>"+json.coinsumr+"</p>");
+						$('#coinInfo-coincode').text(json.coincode);
+						$('#coinInfo-issuedate').text(json.issuedate);
+						$('#coinInfo-coingap').text(json.coingap);
+						$('#coinInfo-issuelimit').text(json.issuelimit);
+						$('#coinInfo-coinsurm').text(json.coinsumr);
 					},
 					error		:	function(e) {
 						console.log("error : ",e);
 					}
-				});
+				}); 
 			});
 			
 			// coinTitle에서 시세 클릭시
@@ -548,6 +566,35 @@
 				$('#coinTitle-body').html("<div id='coinTitle-tp'></div><span class='text-secondary' style='font-size: 13px;'>전일대비</span><span class='ms-2 me-2' id='coinTitle-scr'></span><span id='coinTitle-scp'></span>")
 				investApi(event);
 			});
+			
+			// 매수 클릭시
+			$('#order-buy-a').on('click', function(e) {
+				e.preventDefault();
+				$('#order-buy-a').attr('class', 'nav-link active');
+				$('#order-sell-a').attr('class', 'nav-link');
+				
+			});
+			
+			// 매도 클릭시
+			$('#order-sell-a').on('click', function(e) {
+				e.preventDefault();
+				$('#order-buy-a').attr('class', 'nav-link');
+				$('#order-sell-a').attr('class', 'nav-link active');
+				
+				$.ajax({
+					type		:	'GET',
+					url			:	'html/sellForm.html',
+					success		:	function(data) {
+						$('#order-card-body').html(data);
+					},
+					error		:	function(e) {
+						console.log("error : ",e);
+					}
+				});
+				
+			});
+			
+			
 			
 			// order 가격, 수량 입력시 주문총액(trd_price) 계산
 			$("#order-unit_price, #order-trd_amt").on('keyup', function() {
@@ -877,14 +924,14 @@
 				<div class="card-header">
 					<ul class="nav nav-tabs card-header-tabs">
 			    		<li class="nav-item">
-				        	<a class="nav-link active fw-bold" href="#" id="order-limits-a">매수</a>
+				        	<a class="nav-link active fw-bold" href="#" id="order-buy-a">매수</a>
 				      	</li>
 				      	<li class="nav-item">
-				        	<a class="nav-link fw-bold" href="#" id="order-maketorder-a">매도</a>
+				        	<a class="nav-link fw-bold" href="#" id="order-sell-a">매도</a>
 				      	</li>
 			    	</ul>
 				</div>
-				<div class="card-body">
+				<div class="card-body" id="order-card-body">
 					<form id="order-form" method="post">
 						<div class="d-flex justify-content-between mb-5">
 							<div>주문구분</div>
