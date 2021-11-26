@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>코인게시판</title>
 
 <!-- Common meta tag, Bootstrap, js -->
 <th:block th:replace="common/commonHead"></th:block>
 
+<!-- Jquery -->
+<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
 </head>
 <body>
 <!-- common 헤더 -->
 <header th:replace="common/header :: header"></header>
 
 <!-- 몸통 -->
-
+<main>
+<div class="pt-5">
 <table id="datatablesSimple" border="1">
        <thead>
            <tr>
@@ -48,12 +49,17 @@
 <th:if test="${pg.startPage > pg.pageBlock }">
 	<a href="empList?currentPage=${pg.startPage-pg.pageBlock}">[이전]</a>
 </th:if>
-<th:each = "i : begin="${pg.startPage}" end="${pg.endPage}">
+<th:each test ="i : begin='${pg.startPage}' end='${pg.endPage}'">
 	<a href="empList?currentPage=${i}">[${i}]</a>
 </th:forEach>
 <th:if test="${pg.endPage < pg.totalPage }">
 	<a href="empList?currentPage=${pg.startPage+pg.pageBlock}">[다음]</a>
 </th:if>
+</div>
+</main>
+
+<!-- footer -->
+<footer th:replace="common/footer :: footer"></footer>
 
 </body>
 </html>

@@ -11,7 +11,9 @@
 
 <!-- Jquery -->
 <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
-	<script th:src="@{https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js}"></script>
+
+<!-- lightweight-chart -->
+<script th:src="@{https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js}"></script>
 
 <script type="text/javascript">
 
@@ -323,20 +325,19 @@
 				}
 			});
 			
-			if(sessionStorage.getItem("sessionID") != null) {
-				sendDataOI = 'coincode='+currCoincode;
-				$.ajax({
-					type		:	'GET',
-					url			:	'invest/selectKRW',
-					data		:	sendDataOI,
-					success		:	function(data) {
-						upBuyInfo(data);
-					},
-					error		:	function(e) {
-						console.log("error : ",e);
-					}
-				});
-			}
+			// 매수 가능 KRW 조회
+			sendDataOI = 'coincode='+currCoincode;
+			$.ajax({
+				type		:	'POST',
+				url			:	'invest/selectKRW',
+				data		:	sendDataOI,
+				success		:	function(data) {
+					upBuyInfo(data);
+				},
+				error		:	function(e) {
+					console.log("error : ",e);
+				}
+			});
 
 			chartApi();
 			
@@ -395,7 +396,6 @@
 				
 				
 				// 10호가 전일대비로 Text CSS 변경
-
 				if(pcp < ap) {
 					document.getElementById('ap-'+i).style.color 		= "red";
 					document.getElementById('apPercent-'+i).style.color	= "red";
@@ -510,7 +510,10 @@
 	            return true;
 	    }
 		
+
+		
 		$(document).ready(function(){ 
+			// coinTitle에서 정보 클릭시
 			$('#coinTitle-coinInfo-a').on('click', function coinInfoAjax(e) {
 				e.preventDefault();
 				coinInfoLoad = coinInfoAjax;
@@ -519,8 +522,20 @@
 				$('.coinTitle-card').css('height', '500px');
 				$('.coinTitle-card').css('overflow', 'scroll');
 				
+				// coinInfo.html 불러오기
+				$.ajax({
+					type		:	'GET',
+					url			:	'html/coinInfo.html',
+					success		:	function(data) {
+						$('#coinTitle-body').html(data);
+					},
+					error		:	function(e) {
+						console.log("error : ",e);
+					}
+				});
+				
+ 				// DB에서 COININFO 테이블 조회 후 coinInfo 테이블 삽입
 				var coincode = 'coincode='+currCoincode;
-				console.log(coincode);
 				$.ajax({
 					type		:	'GET',
 					url			:	'invest/coinInfoAjax',
@@ -528,14 +543,19 @@
 					contentType : 	'application/json; charset=UTF-8',
 				    dataType 	: 	'json',
 					success		:	function(json) {
-						$('#coinTitle-body').html("<p class='fs-4 fw-bold mb-1'>"+currCoin+"</p><div class='d-flex justify-content-center'><table class='coinTitle-table table table-bordered mt-3 mb-5'><tr><th>최초발행</th><td>"+json.issuedate+"</td><th>시가총액</th><td>"+json.coingap+"</td></tr><tr><th>총 발행한도</th><td>"+json.issuelimit+"</td><td colspan='2'></td></tr></table></div><p class='fs-2 fw-bold mb-3'>코인소개</p><p class='coinTitle-coinsumr'>"+json.coinsumr+"</p>");
+						$('#coinInfo-coincode').text(json.coincode);
+						$('#coinInfo-issuedate').text(json.issuedate);
+						$('#coinInfo-coingap').text(json.coingap);
+						$('#coinInfo-issuelimit').text(json.issuelimit);
+						$('#coinInfo-coinsurm').text(json.coinsumr);
 					},
 					error		:	function(e) {
 						console.log("error : ",e);
 					}
-				});
+				}); 
 			});
 			
+			// coinTitle에서 시세 클릭시
 			$('#coinTitle-value-a').on('click', function(e) {
 				e.preventDefault();
 				$('.coinTitle-card').css('overflow', 'auto');
@@ -546,8 +566,86 @@
 				investApi(event);
 			});
 			
+			// 매수 클릭시
+			$('#order-buy-a').on('click', function(e) {
+				e.preventDefault();
+				$('#order-buy-a').attr('class', 'nav-link active');
+				$('#order-sell-a').attr('class', 'nav-link');
+				
+			});
+			
+			// 매도 클릭시
+			$('#order-sell-a').on('click', function(e) {
+				e.preventDefault();
+				$('#order-buy-a').attr('class', 'nav-link');
+				$('#order-sell-a').attr('class', 'nav-link active');
+				
+				$.ajax({
+					type		:	'GET',
+					url			:	'html/sellForm.html',
+					success		:	function(data) {
+						$('#order-card-body').html(data);
+					},
+					error		:	function(e) {
+						console.log("error : ",e);
+					}
+				});
+				
+			});
+			
+			
+			
+			// order 가격, 수량 입력시 주문총액(trd_price) 계산
+			$("#order-unit_price, #order-trd_amt").on('keyup', function() {
+				var trd_price = $('#order-trd_amt').val() * uncomma($('#order-unit_price').val());
+				$('#order-trd_price').val(comma(trd_price));
+			});
+			
+			// 주문 금액 10, 25, 50, 100% 버튼 선택 
+			$(".order-form-amt-butn").on('click', function() {
+				var percent = $(this).val().substring(0, $(this).val().length-1);
+				var price =  Math.floor(uncomma($('#order-avaliableKRW').text()) * (percent * 0.01));
+				var unit_price =uncomma($('#order-unit_price').val());
+				var trd_amt = price / unit_price;
+				
+				$('#order-trd_amt').val(trd_amt.toFixed(8));
+				$('#order-trd_price').val(price.toLocaleString());
+			});
+			
+			// 매수 요청
+			$('#buySubmit').on('click', function() {
+				if(uncomma($('#order-avaliableKRW').text()) < $('#order-trd_price').val()) {
+					$('#modal-msg').text('주문가능 금액이 부족합니다')
+					$('#warmModal').modal('toggle');
+				} else if($('#order-trd_price').val() <= 0) {
+					$('#modal-msg').text('주문 개수를 입력하세요')
+					$('#warmModal').modal('toggle');
+				} else {
+					buyCoin();
+				}
+			});
+			
 		});
-
+		
+		function buyCoin() {
+			var formData = $('#order-form').serialize()+'&coincode='+currCoincode;
+			console.log('formData->'+formData);
+			var data = formData;
+			console.log(data)
+			$.ajax({
+				type		:	'POST',
+				url			:	'invest/buyCoin',
+				data		:	formData,
+				success		:	function(json) {
+					
+				},
+				error		:	function(e) {
+					console.log("error : ",e);
+				}
+			});
+		}
+		
+		// 차트 API
 		function chartApi() {
 
 			sendData = "currCoin="+currCoin;
@@ -640,25 +738,6 @@
 					console.log("error : ",e);
 				}
 			})
-		
-			// order 가격, 수량 입력시 주문총액(trd_price) 계산
-			$("#order-unit_price, #order-trd_amt").on('keyup', function() {
-				var trd_price = $('#order-trd_amt').val() * uncomma($('#order-unit_price').val());
-				$('#order-trd_price').val(comma(trd_price));
-			});
-			
-			$(".order-form-amt-butn").on('click', function() {
-				var percent = $(this).val().substring(0, $(this).val().length-1);
-				var price =  Math.floor(uncomma($('#order-avaliableKRW').text()) * (percent * 0.01));
-				var unit_price =uncomma($('#order-unit_price').val());
-				var trd_amt = price / unit_price;
-				console.log('re->'+trd_amt);
-				
-				
-				$('#order-trd_amt').val(trd_amt.toFixed(8));
-				$('#order-trd_price').val(price.toLocaleString());
-			});
-			
 		};
 		
 </script>
@@ -708,187 +787,198 @@
 			</div>
 		</div>
 		<div class="orderSection d-flex justify-content-between mx-auto">
-		<div class="orderbook-div card" id="orderbook-div">
-			<table class="table table-bordered table-responsive" id="orderbook-table">
-				<tr>
-					<td class="as" id="as-9" width="33%"></td>
-					<td class="orderbook-td-ap" id="orderbook-td-ap-9" style="width: 33%"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-9"></div><div class="col-5 text-center px-0" id="apPercent-9"></div></div></td>
-
-					<td width="33%"></td>
-				</tr>
-				<tr>
-					<td class="as" id="as-8" width="33%"></td>
-
-					<td class="orderbook-td-ap" id="orderbook-td-ap-8"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-8"></div><div class="col-5 text-center px-0" id="apPercent-8"></div></div></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td class="as" id="as-7" width="33%"></td>
-					<td class="orderbook-td-ap" id="orderbook-td-ap-7"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-7"></div><div class="col-5 text-center px-0" id="apPercent-7"></div></div></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td class="as" id="as-6" width="33%"></td>
-					<td class="orderbook-td-ap" id="orderbook-td-ap-6"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-6"></div><div class="col-5 text-center px-0" id="apPercent-6"></div></div></td>
-					<td rowspan="2">
-						<div class="orderbook-td-info d-flex justify-content-between">
-							<div class="text-secondary mb-1">거래량</div><div><span id="orderbook-atv24h"></span><span class="ms-1 text-secondary" id="orderbook-atv24h-unit"></span></div></div>
-						<div class="orderbook-td-info d-flex justify-content-between">
-							<div class="text-secondary mb-1">거래대금</div><div><span id="orderbook-atp24h"></span><span class="ms-1 text-secondary">백만원</span></div></div>
-						<div class="orderbook-td-info d-flex flex-row-reverse">
-							<div class="text-secondary">(최근24시간)</div></div>
-					</td>
-				</tr>
-				<tr>
-					<td class="as" id="as-5" width="33%"></td>
-					<td class="orderbook-td-ap" id="orderbook-td-ap-5"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-5"></div><div class="col-5 text-center px-0" id="apPercent-5"></div></div></td>
-				</tr>
-				<tr>
-					<td class="as" id="as-4" width="33%"></td>
-					<td class="orderbook-td-ap" id="orderbook-td-ap-4"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-4"></div><div class="col-5 text-center px-0" id="apPercent-4"></div></div></td>
-					<td rowspan="3">
-						<div class="orderbook-td-info d-flex justify-content-between">
-							<div class="text-secondary mb-1">5주 최고</div><div id="orderbook-h52wp"></div></div>
-						<div class="orderbook-td-info d-flex flex-row-reverse">
-							<div id="orderbook-h52wdt"></div></div>
-						<div class="orderbook-td-info d-flex justify-content-between">
-							<div class="text-secondary mb-1">5주 최저</div><div id="orderbook-l52wp"></div></div>
-						<div class="orderbook-td-info d-flex flex-row-reverse">
-							<div id="orderbook-l52wdt"></div></div>
-					</td>
-				</tr>
-				<tr>
-					<td class="as" id="as-3" width="33%"></td>
-					<td class="orderbook-td-ap" id="orderbook-td-ap-3"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-3"></div><div class="col-5 text-center px-0" id="apPercent-3"></div></div></td>
-				</tr>
-				<tr>
-					<td class="as" id="as-2" width="33%"></td>
-					<td class="orderbook-td-ap" id="orderbook-td-ap-2"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-2"></div><div class="col-5 text-center px-0" id="apPercent-2"></div></div></td>
-				</tr>
-				<tr>
-					<td class="as" id="as-1" width="33%"></td>
-					<td class="orderbook-td-ap" id="orderbook-td-ap-1"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-1"></div><div class="col-5 text-center px-0" id="apPercent-1"></div></div></td>
-					<td rowspan="2">
-						<div class="orderbook-td-info d-flex justify-content-between">
-							<div class="text-secondary mb-1">전일종가</div><div id="orderbook-pcp"></div></div>
-						<div class="orderbook-td-info d-flex justify-content-between">
-							<div class="text-secondary mb-1">당일고가</div><div id="orderbook-hp"></div></div>
-						<div class="orderbook-td-info d-flex justify-content-between">
-							<div class="text-secondary mb-1">전일저가</div><div id="orderbook-lp"></div></div>
-					</td>
-				</tr>
-				<tr>
-					<td class="as" id="as-0" width="33%"></td>
-					<td class="orderbook-td-ap" id="orderbook-td-ap-0"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-0"></div><div class="col-5 text-center px-0" id="apPercent-0"></div></div></td>
-
-				</tr>
-				<tr>
-					<td class="px-0 py-0" rowspan="10" colspan="1">
-					<div style="font-size: 11px;">
-		
-						<table class="table text-center" id="trade-table">
-								<tr style="background-color: #0d6efd0d;">
-									<td>체결가</td><td>체결량</td>
-								</tr>
-								<tr th:each="i : ${#numbers.sequence(0, 9)}">
-									<td th:id="'trd-tp-'+${i}"></td><td th:id="'trd-tv-'+${i}"></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>						
-					</td>
-
-					<td class="orderbook-td-bp" id="orderbook-td-bp-0"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-0"></div><div class="col-5 text-center px-0" id="bpPercent-0"></div></div></td>
-					<td id="bs-0"></td>
-				</tr>
-				<tr>
-					<td class="orderbook-td-bp" id="orderbook-td-bp-1"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-1"></div><div class="col-5 text-center px-0" id="bpPercent-1"></div></div></td>
-					<td id="bs-1"></td>
-				</tr>
-				<tr>
-					<td class="orderbook-td-bp" id="orderbook-td-bp-2"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-2"></div><div class="col-5 text-center px-0" id="bpPercent-2"></div></div></td>
-					<td id="bs-2"></td>
-				</tr>
-				<tr>
-					<td class="orderbook-td-bp" id="orderbook-td-bp-3"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-3"></div><div class="col-5 text-center px-0" id="bpPercent-3"></div></div></td>
-					<td id="bs-3"></td>
-				</tr>
-				<tr>
-					<td class="orderbook-td-bp" id="orderbook-td-bp-4"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-4"></div><div class="col-5 text-center px-0" id="bpPercent-4"></div></div></td>
-					<td id="bs-4"></td>
-				</tr>
-				<tr>
-					<td class="orderbook-td-bp" id="orderbook-td-bp-5"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-5"></div><div class="col-5 text-center px-0" id="bpPercent-5"></div></div></td>
-					<td id="bs-5"></td>
-				</tr>
-				<tr>
-					<td class="orderbook-td-bp" id="orderbook-td-bp-6"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-6"></div><div class="col-5 text-center px-0" id="bpPercent-6"></div></div></td>
-					<td id="bs-6"></td>
-				</tr>
-				<tr>
-					<td class="orderbook-td-bp" id="orderbook-td-bp-7"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-7"></div><div class="col-5 text-center px-0" id="bpPercent-7"></div></div></td>
-					<td id="bs-7"></td>
-				</tr>
-				<tr>
-					<td class="orderbook-td-bp" id="orderbook-td-bp-8"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-8"></div><div class="col-5 text-center px-0" id="bpPercent-8"></div></div></td>
-					<td id="bs-8"></td>
-				</tr>
-				<tr>
-					<td class="orderbook-td-bp" id="orderbook-td-bp-9"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-9"></div><div class="col-5 text-center px-0" id="bpPercent-9"></div></div></td>
-
-					<td id="bs-9"></td>
-				</tr>
-			</table>
-			
-		</div>
+			<div class="orderbook-div card" id="orderbook-div">
+				<table class="table table-bordered table-responsive" id="orderbook-table">
+					<tr>
+						<td class="as" id="as-9" width="33%"></td>
+						<td class="orderbook-td-ap" id="orderbook-td-ap-9" style="width: 33%"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-9"></div><div class="col-5 text-center px-0" id="apPercent-9"></div></div></td>
 	
+						<td width="33%"></td>
+					</tr>
+					<tr>
+						<td class="as" id="as-8" width="33%"></td>
+	
+						<td class="orderbook-td-ap" id="orderbook-td-ap-8"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-8"></div><div class="col-5 text-center px-0" id="apPercent-8"></div></div></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="as" id="as-7" width="33%"></td>
+						<td class="orderbook-td-ap" id="orderbook-td-ap-7"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-7"></div><div class="col-5 text-center px-0" id="apPercent-7"></div></div></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="as" id="as-6" width="33%"></td>
+						<td class="orderbook-td-ap" id="orderbook-td-ap-6"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-6"></div><div class="col-5 text-center px-0" id="apPercent-6"></div></div></td>
+						<td rowspan="2">
+							<div class="orderbook-td-info d-flex justify-content-between">
+								<div class="text-secondary mb-1">거래량</div><div><span id="orderbook-atv24h"></span><span class="ms-1 text-secondary" id="orderbook-atv24h-unit"></span></div></div>
+							<div class="orderbook-td-info d-flex justify-content-between">
+								<div class="text-secondary mb-1">거래대금</div><div><span id="orderbook-atp24h"></span><span class="ms-1 text-secondary">백만원</span></div></div>
+							<div class="orderbook-td-info d-flex flex-row-reverse">
+								<div class="text-secondary">(최근24시간)</div></div>
+						</td>
+					</tr>
+					<tr>
+						<td class="as" id="as-5" width="33%"></td>
+						<td class="orderbook-td-ap" id="orderbook-td-ap-5"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-5"></div><div class="col-5 text-center px-0" id="apPercent-5"></div></div></td>
+					</tr>
+					<tr>
+						<td class="as" id="as-4" width="33%"></td>
+						<td class="orderbook-td-ap" id="orderbook-td-ap-4"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-4"></div><div class="col-5 text-center px-0" id="apPercent-4"></div></div></td>
+						<td rowspan="3">
+							<div class="orderbook-td-info d-flex justify-content-between">
+								<div class="text-secondary mb-1">5주 최고</div><div id="orderbook-h52wp"></div></div>
+							<div class="orderbook-td-info d-flex flex-row-reverse">
+								<div id="orderbook-h52wdt"></div></div>
+							<div class="orderbook-td-info d-flex justify-content-between">
+								<div class="text-secondary mb-1">5주 최저</div><div id="orderbook-l52wp"></div></div>
+							<div class="orderbook-td-info d-flex flex-row-reverse">
+								<div id="orderbook-l52wdt"></div></div>
+						</td>
+					</tr>
+					<tr>
+						<td class="as" id="as-3" width="33%"></td>
+						<td class="orderbook-td-ap" id="orderbook-td-ap-3"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-3"></div><div class="col-5 text-center px-0" id="apPercent-3"></div></div></td>
+					</tr>
+					<tr>
+						<td class="as" id="as-2" width="33%"></td>
+						<td class="orderbook-td-ap" id="orderbook-td-ap-2"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-2"></div><div class="col-5 text-center px-0" id="apPercent-2"></div></div></td>
+					</tr>
+					<tr>
+						<td class="as" id="as-1" width="33%"></td>
+						<td class="orderbook-td-ap" id="orderbook-td-ap-1"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-1"></div><div class="col-5 text-center px-0" id="apPercent-1"></div></div></td>
+						<td rowspan="2">
+							<div class="orderbook-td-info d-flex justify-content-between">
+								<div class="text-secondary mb-1">전일종가</div><div id="orderbook-pcp"></div></div>
+							<div class="orderbook-td-info d-flex justify-content-between">
+								<div class="text-secondary mb-1">당일고가</div><div id="orderbook-hp"></div></div>
+							<div class="orderbook-td-info d-flex justify-content-between">
+								<div class="text-secondary mb-1">전일저가</div><div id="orderbook-lp"></div></div>
+						</td>
+					</tr>
+					<tr>
+						<td class="as" id="as-0" width="33%"></td>
+						<td class="orderbook-td-ap" id="orderbook-td-ap-0"><div class="row"><div class="orderbook-ap col-7 text-end px-0" id="ap-0"></div><div class="col-5 text-center px-0" id="apPercent-0"></div></div></td>
+	
+					</tr>
+					<tr>
+						<td class="px-0 py-0" rowspan="10" colspan="1">
+						<div style="font-size: 11px;">
+			
+							<table class="table text-center" id="trade-table">
+									<tr style="background-color: #0d6efd0d;">
+										<td>체결가</td><td>체결량</td>
+									</tr>
+									<tr th:each="i : ${#numbers.sequence(0, 9)}">
+										<td th:id="'trd-tp-'+${i}"></td><td th:id="'trd-tv-'+${i}"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>						
+						</td>
+	
+						<td class="orderbook-td-bp" id="orderbook-td-bp-0"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-0"></div><div class="col-5 text-center px-0" id="bpPercent-0"></div></div></td>
+						<td id="bs-0"></td>
+					</tr>
+					<tr>
+						<td class="orderbook-td-bp" id="orderbook-td-bp-1"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-1"></div><div class="col-5 text-center px-0" id="bpPercent-1"></div></div></td>
+						<td id="bs-1"></td>
+					</tr>
+					<tr>
+						<td class="orderbook-td-bp" id="orderbook-td-bp-2"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-2"></div><div class="col-5 text-center px-0" id="bpPercent-2"></div></div></td>
+						<td id="bs-2"></td>
+					</tr>
+					<tr>
+						<td class="orderbook-td-bp" id="orderbook-td-bp-3"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-3"></div><div class="col-5 text-center px-0" id="bpPercent-3"></div></div></td>
+						<td id="bs-3"></td>
+					</tr>
+					<tr>
+						<td class="orderbook-td-bp" id="orderbook-td-bp-4"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-4"></div><div class="col-5 text-center px-0" id="bpPercent-4"></div></div></td>
+						<td id="bs-4"></td>
+					</tr>
+					<tr>
+						<td class="orderbook-td-bp" id="orderbook-td-bp-5"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-5"></div><div class="col-5 text-center px-0" id="bpPercent-5"></div></div></td>
+						<td id="bs-5"></td>
+					</tr>
+					<tr>
+						<td class="orderbook-td-bp" id="orderbook-td-bp-6"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-6"></div><div class="col-5 text-center px-0" id="bpPercent-6"></div></div></td>
+						<td id="bs-6"></td>
+					</tr>
+					<tr>
+						<td class="orderbook-td-bp" id="orderbook-td-bp-7"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-7"></div><div class="col-5 text-center px-0" id="bpPercent-7"></div></div></td>
+						<td id="bs-7"></td>
+					</tr>
+					<tr>
+						<td class="orderbook-td-bp" id="orderbook-td-bp-8"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-8"></div><div class="col-5 text-center px-0" id="bpPercent-8"></div></div></td>
+						<td id="bs-8"></td>
+					</tr>
+					<tr>
+						<td class="orderbook-td-bp" id="orderbook-td-bp-9"><div class="row"><div class="orderbook-bp col-7 text-end px-0" id="bp-9"></div><div class="col-5 text-center px-0" id="bpPercent-9"></div></div></td>
+	
+						<td id="bs-9"></td>
+					</tr>
+				</table>
+			</div>
 			<div class="order-card card">
 				<div class="card-header">
 					<ul class="nav nav-tabs card-header-tabs">
-				    	<li class="nav-item">
-				        	<a class="nav-link active fw-bold" href="#" id="order-limits-a">매수</a>
+			    		<li class="nav-item">
+				        	<a class="nav-link active fw-bold" href="#" id="order-buy-a">매수</a>
 				      	</li>
 				      	<li class="nav-item">
-				        	<a class="nav-link fw-bold" href="#" id="order-maketorder-a">매도</a>
+				        	<a class="nav-link fw-bold" href="#" id="order-sell-a">매도</a>
 				      	</li>
-			    </ul>
-			</div>
-			<div class="card-body">
-				<form action="" method="post">
-					<div class="d-flex justify-content-between mb-5">
-						<div>주문구분</div>
-						<div>
-							<input type="radio" class="form-check-input" name="trd_method" value="limits" checked="checked">지정가
-							<input type="radio" class="form-check-input" name="trd_method" value="market">시장가
-						</div>
-					</div>
-					<div class="d-flex justify-content-between mb-3">
-						<div>주문가능</div><div><span class="mb-1" id="order-avaliableKRW"></span><span class="ms-1 mb-0">KRW</span></div>
-					</div>
-					<div class="d-flex justify-content-between mb-3">
-						<div>매수가격</div><input type="text" class="order-form form-control" id="order-unit_price" name="trd_unit_price" onkeyup="inUnitPrice(this)">
-					</div>
-					<div class="d-flex justify-content-between mb-3">
-						<div>주문수량</div>
-						<div>
-							<input type="text" class="order-form form-control" id="order-trd_amt" name="trd_amt" value="0" onkeypress="return inTrdAmt(event)">
-							<div class="d-flex justify-content-between mt-1">
-								<input type="button" class="order-form-amt-butn form-control" value="10%">
-								<input type="button" class="order-form-amt-butn form-control" value="25%">
-								<input type="button" class="order-form-amt-butn form-control" value="50%">
-								<input type="button" class="order-form-amt-butn form-control" value="100%">
+			    	</ul>
+				</div>
+				<div class="card-body" id="order-card-body">
+					<form id="order-form" method="post">
+						<div class="d-flex justify-content-between mb-5">
+							<div>주문구분</div>
+							<div>
+								<input type="radio" class="form-check-input" name="trd_method" value="limits" checked="checked">지정가
+								<input type="radio" class="form-check-input" name="trd_method" value="market">시장가
 							</div>
 						</div>
-					</div>
-					<div class="d-flex justify-content-between mb-3">
-					<div>주문총액(KRW)</div><input type="text" class="order-form form-control" id="order-trd_price" name="trd_price" value="0" readonly="readonly">
-					</div>
-					<p class="text-end" style="font-size: 14px;">최소주문금액 : 5,000 KRW / 수수료 : 없음</p>
-					<div class="d-flex justify-content-center">
-						<input type="reset" class="order-form-reset form-control me-3" value="초기화"><input type="submit" class="order-form-submit form-control bg-danger" value="매 수">
-					</div>
-				</form>
+						<div class="d-flex justify-content-between mb-3">
+							<div>주문가능</div><div><span class="mb-1" id="order-avaliableKRW"></span><span class="ms-1 mb-0">KRW</span></div>
+						</div>
+						<div class="d-flex justify-content-between mb-3">
+							<div>매수가격</div><input type="text" class="order-form form-control" id="order-unit_price" name="trd_unit_price" onkeyup="inUnitPrice(this)">
+						</div>
+						<div class="d-flex justify-content-between mb-3">
+							<div>주문수량</div>
+							<div>
+								<input type="text" class="order-form form-control" id="order-trd_amt" name="trd_amt" value="0" onkeypress="return inTrdAmt(event)">
+								<div class="d-flex justify-content-between mt-1">
+									<input type="button" class="order-form-amt-butn form-control" value="10%">
+									<input type="button" class="order-form-amt-butn form-control" value="25%">
+									<input type="button" class="order-form-amt-butn form-control" value="50%">
+									<input type="button" class="order-form-amt-butn form-control" value="100%">
+								</div>
+							</div>
+						</div>
+						<div class="d-flex justify-content-between mb-3">
+							<div>주문총액(KRW)</div><input type="text" class="order-form form-control" id="order-trd_price" name="trd_price" value="0" readonly="readonly">
+						</div>
+						<p class="text-end" style="font-size: 14px;">최소주문금액 : 5,000 KRW / 수수료 : 없음</p>
+						<div class="d-flex justify-content-center">
+							<input type="reset" class="order-form-reset form-control me-3" value="초기화"><input type="button" class="order-form-submit form-control bg-danger" id="buySubmit" value="매 수">
+						</div>
+					</form>
+				</div>
 			</div>
+			<div class="modal" tabindex="-1" id="warmModal">
+			  <div class="modal-dialog modal-dialog-centered modal-sm">
+			    <div class="modal-content">
+			      <div class="modal-body">
+			        <p class="modal-title fw-bold fs-5 mb-3">매매 알람</p>
+			        <p class="mb-5" id="modal-msg"></p>
+			        <div class="d-flex justify-content-end">
+				        <button type="button" class="btn btn-primary fw-bold" data-bs-dismiss="modal">확인</button>
+			        </div>
+			      </div>
+			    </div>
+			  </div>
 			</div>
 		</div>
 	</section>
@@ -937,6 +1027,7 @@
 
 </main>
 
+<!-- footer -->
 <footer th:replace="common/footer :: footer"></footer>
 
 

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>AngBit 로그인 페이지</title>
+<th:block th:replace="common/commonHead"></th:block>
+</head>
+
+<link th:href="@{/css/joinForm.css}" rel="stylesheet">
+
+<body>
+
+<header th:replace="common/header :: header"></header>
+
+<div class="wrapper_join">
+	<form action="LoginProcess" id="joinfrm" onsubmit="return chkJoin()">
+<div class="container_join">
+			
+		<div class="signinfo">
+				<div style="top:50% left:50% margin:auto;">
+					<font color="orange"> <h2 align="center"><img alt="Angbit_logo" src="images/Angbit_logo.png"> 로그인 하기</h2> </font>
+				</div>
+		  	</div>
+		<br>
+			<div class="form-floating mb-1">
+			  <input type="email" class="form-control input-sm" id="id" name="id" placeholder="Id">
+			  <label for="floatingInput">이메일</label>
+		    </div>
+		    
+			<div class="form-floating mb-1">
+				  <input type="password" class="form-control input-sm" id="password" name="password" placeholder="Password">
+				  <label for="floatingInput">비밀번호</label>
+			</div>
+			
+			<div class="signbtn">
+				<button type="submit" class="btn btn-warning btn-lg btn-block col-lg-12">&nbsp&nbsp&nbsp&nbsp&nbsp 로그인 ! &nbsp&nbsp&nbsp&nbsp&nbsp</button></div>
+				<p>
+				<h6 align="center"><a href="joinForm">회원가입</a>  |  <a href="">비밀번호 찾기</a></h6>
+			</div>
+	</form>
+</div>
+
+
+
+<footer th:replace="common/footer :: footer"></footer>
+
+</body>
+</html>
