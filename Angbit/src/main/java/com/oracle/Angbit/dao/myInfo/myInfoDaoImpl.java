@@ -34,4 +34,49 @@ public class myInfoDaoImpl implements myInfoDao {
 		MemberInfo mi = session.selectOne("getMyInfo", id);
 		return mi;
 	}
+
+	@Override
+	public boolean chkNick(MemberInfo mi) {
+		boolean chk = session.selectOne("chkNick", mi);
+		System.out.println("닉네임 존재 확인결과 : "+chk);
+		// True시 존재하는 닉네임
+		return chk;
+	}
+
+	@Override
+	public int nickChange(MemberInfo mi) {
+		System.out.println("nickChange DAO");
+		int result = session.update("nickChange", mi);
+		System.out.println("닉변후 result ->"+result);
+		return result;
+	}
+
+	@Override
+	public int pwChange(MemberInfo mi) {
+		System.out.println("pwChange DAO");
+		int result = session.update("pwChange", mi);
+		System.out.println("변경 성공?"+result);
+		return result;
+	}
+
+	@Override
+	public boolean chkPw(MemberInfo mi) {
+		boolean chk = session.selectOne("chkPw", mi);
+		System.out.println("기존 비밀번호? "+chk);
+		// True시 사용중인 password
+		return chk;
+	}
+
+	@Override
+	public void widraw(String id) {
+		session.update("widraw", id);
+	}
+
+	@Override
+	public boolean chkWidraw(String id) {
+		boolean chk = session.selectOne("chkWidraw", id);
+		System.out.println("회원 탈퇴? "+chk);
+		// True시 탈퇴 O
+		return chk;
+	}
 }

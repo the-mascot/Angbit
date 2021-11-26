@@ -6,11 +6,20 @@
 </head>
 <body>
 <h1>로그인</h1>
-<div th:text="${msg}">기본 메시지</div>
+<div th:text="${msg}"></div>
+<div th:text="${chk}"></div>
+<p>임시 로그인 페이지입니다.</p>
+<div th:switch="${session.sessionID}">
+	<div th:case="null">
 <form action="logintest" method="post">
 	<input type="email" placeholder="ID" id="id" name="id">
 	<input type="password" placeholder="PW" id="pw" name="pw">
 	<input type="submit" value="확인">
 </form>
+	</div>
+	<div th:case="*">
+		<span th:text="${session.sessionID}+'로 로그인 중입니다.'"></span>
+	</div>
+</div>
 </body>
 </html>

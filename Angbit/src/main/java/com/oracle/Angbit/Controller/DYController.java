@@ -27,7 +27,7 @@ public class DYController {
 		System.out.println("memberList.get(0).getId() ->"+memberList.get(0).getId());
 		model.addAttribute("boardList", boardList);
 		model.addAttribute("memberList", memberList);
-		return "/board/coinBoard";
+		return "board/coinBoard";
 	}
 	
 	//삭제

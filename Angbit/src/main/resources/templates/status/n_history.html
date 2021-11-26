@@ -23,7 +23,6 @@
       <th scope="col" width="14.6%"><h5><b>주문단가</b></h5></th>
       <th scope="col" width="14.6%"><h5><b>주문금액</b></h5></th> 
       <th scope="col" width="14.6%"><h5><b>주문시간</b></h5></th>
-      <th width="7.8%">&nbsp;</th>
     </tr>
   </thead>
   <tbody align="center" style="vertical-align:middle;">
@@ -45,14 +44,13 @@
       	<span th:case="XLM"><img class="table_images" alt="" src="images/status/xlm.png"></span>
       	<span th:case="XRP"><img class="table_images" alt="" src="images/status/xrp.png"></span>
       </th>
-      <td th:text="${nlist.coincode}">비트코인<br>(BTC)</td>
+      <td th:text="${nlist.coinname}+'&#13;&#10;'+'('+${nlist.coincode}+')'"></td>
       <td th:if="${nlist.trd_div}==1" style="color: blue;">매도 대기</td>
       <td th:if="${nlist.trd_div}==0" style="color: red;">매수 대기</td>
       <td th:text="${nlist.trd_amt}"></td>
       <td th:text="${#numbers.formatDecimal(nlist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
       <td th:text="${#numbers.formatDecimal(nlist.trd_price,1,'COMMA',0,'POINT')}"></td>
       <td th:text="${#dates.format(nlist.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
-      <td><button th:onclick="location.href='status/delete?trd_num=${trd_num}'" style="border: 0; outline: 0; background-color: orange; border-radius: 6px" >삭제</button></td>
     </tr>
   </tbody>
 </table>

@@ -7,8 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.oracle.Angbit.dao.status.StatusDao;
 import com.oracle.Angbit.model.common.Coin;
+import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.model.common.Trade;
+import com.oracle.Angbit.model.status.CoinCoinInfo;
+import com.oracle.Angbit.model.status.TradeCoinInfo;
 
 @Service
 public class StatusServiceImpl implements StatusService {
@@ -24,39 +27,54 @@ public class StatusServiceImpl implements StatusService {
 	}
 
 	@Override
-	public List<Coin> listStatus(Coin coin) {
+	public List<CoinCoinInfo> listStatus(String id) {
 		System.out.println("StatusServiceImpl listStatus start...");
-		List<Coin> listStatus = sd.listStatus(coin);
+		List<CoinCoinInfo> listStatus = sd.listStatus(id);
 		return listStatus;
 	}
 
 	@Override
-	public List<MemberInfo> krwStatus(MemberInfo member) {
+	public List<MemberInfo> krwStatus(String id) {
 		System.out.println("StatuasServiceImpl krwStatus start...");
-		List<MemberInfo> listKrw = sd.listKrw(member);
+		List<MemberInfo> listKrw = sd.listKrw(id);
 		return listKrw;
 	}
 
 	@Override
-	public List<Trade> yStatus(Trade trade) {
+	public List<TradeCoinInfo> yStatus(String id) {
 		System.out.println("StatusServiceImpl yStatus start...");
-		List<Trade> listY = sd.listY(trade); 
+		List<TradeCoinInfo> listY = sd.listY(id); 
 		return listY;
 	}
 
 	@Override
-	public List<Trade> nStatus(Trade trade) {
+	public List<TradeCoinInfo> nStatus(String id) {
 		System.out.println("StatusServiceImpl nStatus start...");
-		List<Trade> listN = sd.listN(trade);
+		List<TradeCoinInfo> listN = sd.listN(id);
 		return listN;
 	}
 
 	@Override
-	public int totpriceStatus() {
+	public int totpriceStatus(String id) {
 		System.out.println("StatusServiceImpl totpriceStatus start...");
-		int result = sd.priceTot();
+		int result = sd.priceTot(id);
 		return result;
 	}
+
+	@Override
+	public List<TradeCoinInfo> comBuyList(String id) {
+		System.out.println("StatusServiceImpl comBuyList start...");
+		List<TradeCoinInfo> cbuyList = sd.buyComList(id);
+		return cbuyList;
+	}
+
+	@Override
+	public List<TradeCoinInfo> comSellList(String id) {
+		System.out.println("StatusServiceImpl comSellList start...");
+		List<TradeCoinInfo> csellList = sd.sellComList(id);
+		return csellList;
+	}
+
 
 
 

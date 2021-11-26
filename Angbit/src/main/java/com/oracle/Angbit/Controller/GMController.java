@@ -1,31 +1,20 @@
 package com.oracle.Angbit.Controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.RestTemplate;
 
-import com.oracle.Angbit.model.common.Coin;
 import com.oracle.Angbit.model.common.MemberInfo;
-import com.oracle.Angbit.model.common.Trade;
+import com.oracle.Angbit.model.status.CoinCoinInfo;
+import com.oracle.Angbit.model.status.TradeCoinInfo;
 import com.oracle.Angbit.service.status.StatusService;
 
 @Controller
@@ -37,12 +26,17 @@ public class GMController {
 
 //		Status Controller
 		@GetMapping("/statusList")
-		public String statusList(Coin coin, MemberInfo member, Model model) {
-			System.out.println("AngController statusList start...");
-			List<MemberInfo> member1 = ss.krwStatus(member);
-			List<Coin> statusList1 = ss.listStatus(coin);
-			int result = ss.totpriceStatus();
-			System.out.println(coin);
+		public String statusList(HttpServletRequest request, Model model) {
+			System.out.println("GMController statusList start...");
+			
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("statusList id -> "+id);
+			
+			List<MemberInfo> member1 = ss.krwStatus(id);
+			List<CoinCoinInfo> statusList1 = ss.listStatus(id);
+			int result = ss.totpriceStatus(id);
+
 			model.addAttribute("statusList", statusList1);
 			model.addAttribute("krwList", member1);
 			model.addAttribute("totPrice", result);
@@ -50,57 +44,55 @@ public class GMController {
 		}
 		
 		@GetMapping("/status_y_history")
-		public String statusYHistory(Trade trade, Model model) {
-			System.out.println("AngController StatusYHistory Start...");
-			List<Trade> tradeList = ss.yStatus(trade);
+		public String statusYHistory(HttpServletRequest request, Model model) {
+			System.out.println("GMController StatusYHistory Start...");
+			
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("status_y_history id -> "+id);
+			
+			List<TradeCoinInfo> tradeList = ss.yStatus(id);
 			model.addAttribute("yList", tradeList);
 			return "/status/y_history";
-
 		}
 		
 		@GetMapping("/status_n_history")
-		public String statusNHistory(Trade trade, Model model) {
-			System.out.println("AngController StatusNHistory Start...");
-			List<Trade> tradeList = ss.nStatus(trade);
+		public String statusNHistory(HttpServletRequest request, Model model) {
+			System.out.println("GMController StatusNHistory Start...");
+			
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("status_n_history id -> "+id);
+			
+			List<TradeCoinInfo> tradeList = ss.nStatus(id);
 			model.addAttribute("nList", tradeList);
 			return "/status/n_history";
 		}
 		
-		@GetMapping("/status_delete")
-		public String statusDelete(int trd_num, Model model) {
-			return "redirect:status_n_history";
+		@GetMapping("/status_y_history_buy")
+		public String statusBuycom(HttpServletRequest request, Model model) {
+			System.out.println("GMController status_y_history_buy Start...");
+			
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("status_y_history_buy id -> "+id);
+			
+			List<TradeCoinInfo> comBuyList = ss.comBuyList(id);
+			model.addAttribute("cbList", comBuyList);
+			return "/status/y_history_buy";
 		}
 		
-		@ResponseBody
-		@GetMapping("/status_tickerApi")
-		public void tickerApi(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		@GetMapping("/status_y_history_sell")
+		public String statusSellcom(HttpServletRequest request, Model model) {
+			System.out.println("GMController status_y_history_buy Start...");
 			
-			System.out.println("GMController tickerApi Start...");
-			String currCoin = request.getParameter("currCoin");
-			System.out.println("GMController investApi currCoin->"+currCoin);
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("status_n_history_buy id -> "+id);
 			
-			RestTemplate restTemplate = new RestTemplate();
-			HttpHeaders headers = new HttpHeaders();
-			headers.set("Accept", "application/json");
-			HttpEntity<?> entity = new HttpEntity<>(headers);
-			
-			String tickerUrl 	= "https://api.upbit.com/v1/ticker?markets="+currCoin;
-			ResponseEntity<String> tickerResponse 	= restTemplate.exchange(tickerUrl, HttpMethod.GET, entity, String.class);
-			try {
-				String tickerStr 	= tickerResponse.getBody();
-				String jsonStr = tickerStr.substring(1, (tickerStr.length()-1));
-				
-				System.out.println(jsonStr);
-				
-				JSONParser parser = new JSONParser();
-				JSONArray json = (JSONArray) parser.parse(jsonStr);
-				System.out.println("json 객체->"+json);
-				
-				PrintWriter out = response.getWriter();
-				out.print(json);
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			List<TradeCoinInfo> comSellList = ss.comSellList(id);
+			model.addAttribute("csList", comSellList);
+			return "/status/y_history_sell";
 		}
+		
 	}

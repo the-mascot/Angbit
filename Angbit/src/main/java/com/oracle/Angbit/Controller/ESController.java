@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
@@ -45,11 +46,14 @@ public class ESController {
 	}
 	
 	@GetMapping("invest")
-	public String invest(Model model) {
+	public String invest(Model model, HttpServletRequest request, HttpServletResponse response) {
 		
 		System.out.println("ESController invest Start...");
+		HttpSession session = request.getSession();
+		String id = (String) session.getAttribute("sessionID");
 		List<CoinInfo> coinInfoList =  ivs.coinInfoList();
 		model.addAttribute("coinInfoList", coinInfoList);
+		
 		return "/invest/invest";
 	}
 	
@@ -98,38 +102,24 @@ public class ESController {
 		System.out.println("ESController coinInfoAjax Start...");
 		System.out.println("ESController coinInfoAjax coincode->"+coincode);
 		
-		JSONParser paser = new JSONParser();
 		CoinInfo coinInfo = ivs.coinInfo(coincode);
 		
 		return coinInfo;
 	}
 	
-	@GetMapping("test")
-	public String test() {
-		
-		System.out.println("ESController home Start...");
-		
-		return "/invest/NewFile";
-	}
-	
-	
 	@ResponseBody
-	@GetMapping("invest/orderInfo")
-	public MemberCoin orderInfo(HttpServletRequest request, HttpServletResponse response, String coincode) {
+	@GetMapping("invest/selectKRW")
+	public int selectKRW(HttpServletRequest request, HttpServletResponse response, String coincode) {
 		
-		System.out.println("ESController orderInfo Start...");
+		System.out.println("ESController selectKRW Start...");
 		HttpSession session = request.getSession();
+		String id = (String) session.getAttribute("sessionID");
 		
-		session.setAttribute("sessionID", "dmstn1812@naver.com");
+		int krw = ivs.selectKRW(id);
 		
-		MemberCoin paraMemberCoin = new MemberCoin();
-		paraMemberCoin.setId((String) session.getAttribute("sessionID"));
-		paraMemberCoin.setCoincode(coincode);
-		
-		MemberCoin memberCoin = ivs.memberCoin(paraMemberCoin);
-		
-		return memberCoin;
+		return krw;
 	}
+	
 	
 	
 }

@@ -11,7 +11,7 @@ public interface InvestService {
 
 	CoinInfo coinInfo(String coincode);
 
-	MemberCoin memberCoin(MemberCoin paraMemberCoin);
+	int selectKRW(String id);
 	
 	
 	

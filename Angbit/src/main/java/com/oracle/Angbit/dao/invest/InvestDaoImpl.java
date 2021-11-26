@@ -50,19 +50,20 @@ public class InvestDaoImpl implements InvestDao {
 	}
 
 	@Override
-	public MemberCoin memberCoin(MemberCoin paraMemberCoin) {
+	public int selectKRW(String id) {
 
-		System.out.println("InvestDaoImpl memberCoin Start...");
-		MemberCoin memberCoin = new MemberCoin();
+		System.out.println("InvestDaoImpl selectKRW Start...");
+		int krw = 0;
 		
 		try {
-			memberCoin = seesion.selectOne("memberCoin", paraMemberCoin);
+			krw = seesion.selectOne("selectKRW", id);
+			System.out.println("InvestDaoImpl selectKRW KRW()->"+krw);
 		} catch (Exception e) {
-			System.out.println("InvestDaoImpl memberCoin Exception->"+e.getMessage());
+			System.out.println("InvestDaoImpl selectKRW Exception->"+e.getMessage());
 			e.printStackTrace();
 		}
 		
-		return memberCoin;
+		return krw;
 	}
 
 }

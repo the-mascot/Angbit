@@ -3,15 +3,20 @@ package com.oracle.Angbit.dao.status;
 import java.util.List;
 
 import com.oracle.Angbit.model.common.Coin;
+import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.model.common.Trade;
+import com.oracle.Angbit.model.status.CoinCoinInfo;
+import com.oracle.Angbit.model.status.TradeCoinInfo;
 
 public interface StatusDao {
-	List<Coin> listStatus(Coin coin);
-	List<MemberInfo> listKrw(MemberInfo member);
-	List<Trade> listY(Trade trade);
-	List<Trade> listN(Trade trade);
-	int priceTot();
+	List<CoinCoinInfo> listStatus(String id);
+	List<MemberInfo> listKrw(String id);
+	List<TradeCoinInfo> listY(String id);
+	List<TradeCoinInfo> listN(String id);
+	int priceTot(String id);
+	List<TradeCoinInfo> buyComList(String id);
+	List<TradeCoinInfo> sellComList(String id);
 	MemberInfo memberLogin(MemberInfo member);
 
 }
