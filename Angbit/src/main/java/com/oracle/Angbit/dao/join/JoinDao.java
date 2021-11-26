@@ -6,6 +6,6 @@ public interface JoinDao {
 
 	int JoinProcess(MemberInfo memberinfo);
 
-	int IDchk(MemberInfo memberinfo);
+	MemberInfo IDchk(String id);
 
 }

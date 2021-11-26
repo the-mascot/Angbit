@@ -26,19 +26,15 @@ public class JoinDaoImpl implements JoinDao {
 	}
 
 	@Override
-	public int IDchk(MemberInfo memberinfo) {
+	public MemberInfo IDchk(String id) {
 		System.out.println("JoinDaoImpl - JoinProcess 시작");
-		System.out.println("JoinDaoImpl - IDchk -> " + memberinfo.getId());
-		
-		int result = 0;
+		MemberInfo memberInfo = null;
 		try {
-			result = session.selectOne("IDchk", memberinfo);
+			memberInfo = session.selectOne("IDchk", id);
 		} catch (Exception e) {
 			System.out.println("JoinDaoImpl - IDchk Exception -> " + e.getMessage());
 		}
-		System.out.println("JoinDaoImpl - IDchk result -> " + result);
-		
-		return result;
+		return memberInfo;
 	}
 	
 	

@@ -6,17 +6,23 @@
 	
 	<!-- result = session.insert("JoinProcess", memberinfo); -->
 	<insert id="JoinProcess" parameterType="memberinfo">
-		insert into memberinfo values (#{id}, #{password}, #{nickname}, 30000000, sysdate, sysdate)
+		insert into memberinfo values (#{id}, #{password}, #{nickname}, 30000000, sysdate, sysdate, 0)
 	</insert>
 	
-	<!-- result = session.selectOne("IDchk", memberinfo); -->
-	<select id="IDchk" parameterType="memberinfo" resultType="int">
-		select count(*)
+	<!-- MemberInfo memberInfo = session.selectOne("IDchk", id); -->
+	<select id="IDchk" parameterType="memberinfo" resultType="memberinfo">
+		select *
 		from memberinfo
 		where id = #{id}
 	</select>
 	
-
+	<!-- result = session.selectOne("LoginChk", memberinfo); -->
+	<select id="LoginChk" parameterType="memberinfo" resultType="memberinfo">
+		select *
+		from memberinfo
+		where id = #{id}
+		and password = #{password}
+	</select>
 
 
 </mapper>
