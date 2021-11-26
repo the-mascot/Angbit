@@ -324,19 +324,20 @@
 				}
 			});
 			
-			sendDataOI = 'coincode='+currCoincode;
-			$.ajax({
-				type		:	'GET',
-				url			:	'invest/orderInfo',
-				data		:	sendDataOI,
-				success		:	function(data) {
-					upOrderInfoData(data);
-					
-				},
-				error		:	function(e) {
-					console.log("error : ",e);
-				}
-			})
+			if(sessionStorage.getItem("sessionID") != null) {
+				sendDataOI = 'coincode='+currCoincode;
+				$.ajax({
+					type		:	'GET',
+					url			:	'invest/selectKRW',
+					data		:	sendDataOI,
+					success		:	function(data) {
+						upBuyInfo(data);
+					},
+					error		:	function(e) {
+						console.log("error : ",e);
+					}
+				});
+			}
 
 			chartApi();
 			
@@ -347,6 +348,10 @@
 			
 			document.getElementById('coinTitle-coinname').innerText = document.getElementById(currCoincode).innerText;
 			document.getElementById('coinTitle-coincode').innerText = currCoin;
+			
+			document.getElementById('order-unit_price').value = jason[1].trade_price.toLocaleString();
+			document.getElementById('order-trd_amt').value = 0;
+			document.getElementById('order-trd_price').value = 0;
 			
 			// 체결 테이블 업데이트			
 			for(var i = 0; i < jason[2].length; i++) {
@@ -461,9 +466,50 @@
 			
 		}
 		
-		function upOrderInfoData(data) {
-			document.getElementById('order-avaliableKRW').innerText = data.krw.toLocaleString();
+		function upBuyInfo(krw) {
+			document.getElementById('order-avaliableKRW').innerText = krw.toLocaleString();
 		}
+		
+		// 콤마추가
+	    function comma(str) {
+	    	str = str.toString().split(".");
+	        return str[0].replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,')
+	    }
+		
+		// 콤마빼기
+	    function uncomma(str) {
+	        str = String(str);
+	        return str.replace(/[^\d]+/g, '');
+	    } 
+		
+		// order 가격 입력시 콤마 생성
+	    function inUnitPrice(obj) {
+	    	obj.value = comma(uncomma(obj.value));
+	    }
+	    
+		// order 수량 입력시 제한사항
+	    function inTrdAmt(evt) {
+	            var charCode = (evt.which) ? evt.which : event.keyCode;
+	            if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
+	                return false;
+	            // Textbox value    
+	            var _value = event.srcElement.value;    
+
+	            // 소수점(.)이 두번 이상 나오지 못하게
+	            var _pattern0 = /^\d*[.]\d*$/; // 현재 value값에 소수점(.) 이 있으면 . 입력불가
+	            if (_pattern0.test(_value)) {
+	                if (charCode == 46) {
+	                    return false;
+	                }
+	            }
+
+	            // 소수점 둘째자리까지만 입력가능
+	            var _pattern2 = /^\d*[.]\d{8}$/; // 현재 value값이 소수점 둘째짜리 숫자이면 더이상 입력 불가
+	            if (_pattern2.test(_value)) {
+	                return false;
+	            }  
+	            return true;
+	    }
 		
 		$(document).ready(function(){ 
 			$('#coinTitle-coinInfo-a').on('click', function coinInfoAjax(e) {
@@ -584,7 +630,25 @@
 					console.log("error : ",e);
 				}
 			})
-
+		
+			// order 가격, 수량 입력시 주문총액(trd_price) 계산
+			$("#order-unit_price, #order-trd_amt").on('keyup', function() {
+				var trd_price = $('#order-trd_amt').val() * uncomma($('#order-unit_price').val());
+				$('#order-trd_price').val(comma(trd_price));
+			});
+			
+			$(".order-form-amt-butn").on('click', function() {
+				var percent = $(this).val().substring(0, $(this).val().length-1);
+				var price =  Math.floor(uncomma($('#order-avaliableKRW').text()) * (percent * 0.01));
+				var unit_price =uncomma($('#order-unit_price').val());
+				var trd_amt = price / unit_price;
+				console.log('re->'+trd_amt);
+				
+				
+				$('#order-trd_amt').val(trd_amt.toFixed(8));
+				$('#order-trd_price').val(price.toLocaleString());
+			});
+			
 		};
 		
 </script>
@@ -792,12 +856,12 @@
 						<div>주문가능</div><div><span class="mb-1" id="order-avaliableKRW"></span><span class="ms-1 mb-0">KRW</span></div>
 					</div>
 					<div class="d-flex justify-content-between mb-3">
-						<div>매수가격</div><input type="number" class="order-form form-control" name="trd_unit_price">
+						<div>매수가격</div><input type="text" class="order-form form-control" id="order-unit_price" name="trd_unit_price" onkeyup="inUnitPrice(this)">
 					</div>
 					<div class="d-flex justify-content-between mb-3">
 						<div>주문수량</div>
 						<div>
-							<input type="text" class="order-form form-control" name="trd_amt" value="0">
+							<input type="text" class="order-form form-control" id="order-trd_amt" name="trd_amt" value="0" onkeypress="return inTrdAmt(event)">
 							<div class="d-flex justify-content-between mt-1">
 								<input type="button" class="order-form-amt-butn form-control" value="10%">
 								<input type="button" class="order-form-amt-butn form-control" value="25%">
@@ -807,7 +871,7 @@
 						</div>
 					</div>
 					<div class="d-flex justify-content-between mb-3">
-					<div>주문총액(KRW)</div><input type="text" class="order-form form-control" name="trd_price" value="0" readonly="readonly">
+					<div>주문총액(KRW)</div><input type="text" class="order-form form-control" id="order-trd_price" name="trd_price" value="0" readonly="readonly">
 					</div>
 					<p class="text-end" style="font-size: 14px;">최소주문금액 : 5,000 KRW / 수수료 : 없음</p>
 					<div class="d-flex justify-content-center">
