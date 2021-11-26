@@ -75,20 +75,20 @@ public class SHController {
         String currCandle = request.getParameter("currCandle"); // 캔들 호출된 봉
         System.out.println("chartApi currCandle->"+currCandle);
         System.out.println("chartApi currCoin->"+currCoin); // 코인명 콘솔 출력
-        if (currCoin==null) {
+        if (currCoin==null || currCoin=="") {
             currCoin = "KRW-BTC";
         }
-        if (currCandle==null) {
+        if (currCandle==null || currCandle=="") {
             currCandle = "minutes/1";
         }
 
-        RestTemplate restTemplate = new RestTemplate(); // ?
-        HttpHeaders headers = new HttpHeaders(); //
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", "application/json");
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
 //		String minCandle = "https://api.upbit.com/v1/candles/days?market="+currCoin+"&count=200"; // 일봉 현재일자 기준 200개 요청
-        String Candle = "https://api.upbit.com/v1/candles/minutes/1?market="+currCoin+"&count=200"; // 분봉 현재시간 기준 200개 요청
+        String Candle = "https://api.upbit.com/v1/candles/"+currCandle+"?market="+currCoin+"&count=200"; // 분봉 현재시간 기준 200개 요청
 
 //        System.out.println("HTTP URL : "+minCandle);
 
