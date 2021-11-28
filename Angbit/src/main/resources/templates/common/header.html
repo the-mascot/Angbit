@@ -32,8 +32,8 @@
 					  	  </div>
 					</nav>
 				</ul>
-		        <div class="d-flex justify-content-end text-end">
-					<div th:if="${session.sessionID!=null}"><span style="color:white;" th:text="'환영합니다, '+${session.sessionID}+'님'"></span></div>
+		        <div class="d-flex justify-content-end text-end ">
+					<div class="header-line" th:if="${session.sessionID!=null}"><span th:text="'환영합니다, '+${session.sessionID}+'님'"></span></div>
 						<div>
 		          <button type="button" class="btn btn-outline-light me-2" onclick="location.href='/gologin'" th:if="${session.sessionID==null}">로그인</button>
 							<button type="button" class="btn btn-outline-light me-2" onclick="location.href='/logout'" th:if="${session.sessionID!=null}">로그아웃</button>
