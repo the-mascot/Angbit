@@ -31,10 +31,11 @@
 </div>
 <div class="container">
 	<div class="col-4" style="float: left;" >기간 설정<p>
-		<button type="button" class="btn btn-outline-warning" style="color: black;">7일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;">30일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;">90일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;">180일</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history'">전체</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort7d'">7일</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort30d'">30일</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort90d'">90일</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort180d'">180일</button>
 	</div>
 	<div class="col-4" style="float: left">거래종류 설정<p>
 		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history'">전체</button>
@@ -42,7 +43,7 @@
 		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sell'">매도</button>
 	</div>
 <!-- 	th:onclick="'location.href=|''+@{${/status_y_history_buy}}+'|''" -->
-	<div class="col-4" style="float: left; margin-top: 25px;"><p>
+	<div class="col-4" style="float: left; margin-top: 25px;">
 		<a href="#">
 			<input type="text" placeholder="코인의 이름을 입력하세요." style="border: 1px solid #ffc107; height: 35px" size="40">  
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
@@ -64,34 +65,39 @@
     </tr>
   </thead>
   <tbody align="center" style="vertical-align:middle;">
-    <tr th:each="ylist:${yList}">
-      <th scope="row" th:switch="${ylist.coincode}">
-      	<span th:case="ADA"><img class="table_images" alt="" th:src="@{images/status/ada.png}"></span>
-      	<span th:case="AXS"><img class="table_images" alt="" th:src="@{images/status/axs.png}"></span>
-      	<span th:case="BCH"><img class="table_images" alt="" th:src="@{images/status/bch.png}"></span>
-      	<span th:case="BTC"><img class="table_images" alt="" th:src="@{images/status/btc.png}"></span>
-      	<span th:case="DOGE"><img class="table_images" alt="" th:src="@{images/status/doge.png}"></span>
-      	<span th:case="DOT"><img class="table_images" alt="" th:src="@{images/status/dot.png}"></span>
-      	<span th:case="ETC"><img class="table_images" alt="" th:src="@{images/status/etc.png}"></span>
-      	<span th:case="ETH"><img class="table_images" alt="" th:src="@{images/status/eth.png}"></span>
-      	<span th:case="LTC"><img class="table_images" alt="" th:src="@{images/status/ltc.png}"></span>
-      	<span th:case="MANA"><img class="table_images" alt="" th:src="@{images/status/mana.png}"></span>
-      	<span th:case="SAND"><img class="table_images" alt="" th:src="@{images/status/sand.png}"></span>
-      	<span th:case="SOL"><img class="table_images" alt="" th:src="@{images/status/sol.png}"></span>
-      	<span th:case="VET"><img class="table_images" alt="" th:src="@{images/status/vet.png}"></span>
-      	<span th:case="XLM"><img class="table_images" alt="" th:src="@{images/status/xlm.png}"></span>
-      	<span th:case="XRP"><img class="table_images" alt="" th:src="@{images/status/xrp.png}"></span>
-      </th>
-      <td th:text="${ylist.coinname}+'&#13;&#10;'+'('+${ylist.coincode}+')'"></td>
-<!--       <td th:utext="${#strings.replace(#strings.escapeXml(ylist.coinname), T(java.lang.System).getProperty('line.separator'), &lt;br /&gt;')}+'('+${ylist.coincode}+')'"></td> -->
-      <td th:if="${ylist.trd_div}==1" style="color: blue;">매도</td>
-      <td th:if="${ylist.trd_div}==0" style="color: red;">매수</td>
-<!--       <td th:unless="${ylsit.trd_div}==0">매수</td> -->
-      <td th:text="${#numbers.formatDecimal(ylist.trd_amt,1,'COMMA',8,'POINT')}"></td>
-      <td th:text="${#numbers.formatDecimal(ylist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
-      <td th:text="${#numbers.formatDecimal(ylist.trd_price,1,'COMMA',0,'POINT')}"></td>
-      <td th:text="${#dates.format(ylist.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
-    </tr>
+  	<th:block data-th-if="${yList.size != 0}">
+	    <tr th:each="ylist:${yList}">
+	      <th scope="row" th:switch="${ylist.coincode}">
+	      	<span th:case="ADA"><img class="table_images" alt="" th:src="@{images/status/ada.png}"></span>
+	      	<span th:case="AXS"><img class="table_images" alt="" th:src="@{images/status/axs.png}"></span>
+	      	<span th:case="BCH"><img class="table_images" alt="" th:src="@{images/status/bch.png}"></span>
+	      	<span th:case="BTC"><img class="table_images" alt="" th:src="@{images/status/btc.png}"></span>
+	      	<span th:case="DOGE"><img class="table_images" alt="" th:src="@{images/status/doge.png}"></span>
+	      	<span th:case="DOT"><img class="table_images" alt="" th:src="@{images/status/dot.png}"></span>
+	      	<span th:case="ETC"><img class="table_images" alt="" th:src="@{images/status/etc.png}"></span>
+	      	<span th:case="ETH"><img class="table_images" alt="" th:src="@{images/status/eth.png}"></span>
+	      	<span th:case="LTC"><img class="table_images" alt="" th:src="@{images/status/ltc.png}"></span>
+	      	<span th:case="MANA"><img class="table_images" alt="" th:src="@{images/status/mana.png}"></span>
+	      	<span th:case="SAND"><img class="table_images" alt="" th:src="@{images/status/sand.png}"></span>
+	      	<span th:case="SOL"><img class="table_images" alt="" th:src="@{images/status/sol.png}"></span>
+	      	<span th:case="VET"><img class="table_images" alt="" th:src="@{images/status/vet.png}"></span>
+	      	<span th:case="XLM"><img class="table_images" alt="" th:src="@{images/status/xlm.png}"></span>
+	      	<span th:case="XRP"><img class="table_images" alt="" th:src="@{images/status/xrp.png}"></span>
+	      </th>
+	      <td th:text="${ylist.coinname}+'&#13;&#10;'+'('+${ylist.coincode}+')'"></td>
+	<!--       <td th:utext="${#strings.replace(#strings.escapeXml(ylist.coinname), T(java.lang.System).getProperty('line.separator'), &lt;br /&gt;')}+'('+${ylist.coincode}+')'"></td> -->
+	      <td th:if="${ylist.trd_div}==1" style="color: blue;">매도</td>
+	      <td th:if="${ylist.trd_div}==0" style="color: red;">매수</td>
+	<!--       <td th:unless="${ylsit.trd_div}==0">매수</td> -->
+	      <td th:text="${#numbers.formatDecimal(ylist.trd_amt,1,'COMMA',8,'POINT')}"></td>
+	      <td th:text="${#numbers.formatDecimal(ylist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
+	      <td th:text="${#numbers.formatDecimal(ylist.trd_price,1,'COMMA',0,'POINT')}"></td>
+	      <td th:text="${#dates.format(ylist.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
+	    </tr>
+	</th:block>
+    <th:block data-th-if="${yList.size == 0}">
+	  	<td colspan="7">데이터가 없습니다.</td>
+	</th:block>
   </tbody>
 </table>
 </main>

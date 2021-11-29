@@ -17,6 +17,10 @@ public interface StatusService {
 	int totpriceStatus(String id);
 	List<TradeCoinInfo> comBuyList(String id);
 	List<TradeCoinInfo> comSellList(String id);
+	List<TradeCoinInfo> allDateSort7(String id);
+	List<TradeCoinInfo> allDateSort30(String id);
+	List<TradeCoinInfo> allDateSort90(String id);
+	List<TradeCoinInfo> allDateSort180(String id);
 	MemberInfo memberLogin(MemberInfo member);
 
 }
