@@ -13,6 +13,10 @@ public interface BoardDao {
 	List<MemberInfo> MemberList();
 	int Delete(int empno);
 	int total();
-	List<MemberInfo> pgMemberList(MemberInfo memberInfo);
+	
+	List<Board> pagingBd(Board board);
+	Board detailBoard(int b_num);
+	int update(Board board);
+	MemberInfo detailMember(String nickname);
 	
 }

@@ -63,6 +63,7 @@ public class StatusDaoImpl implements StatusDao {
 	public int priceTot(String id) {
 		System.out.println("StatusDaoImpl priceTot start...");
 		int result = session.selectOne("TotPrice", id);
+		System.out.println("statusDaoImpl priceTot result -> "+result);
 		return result;
 	}
 
@@ -78,6 +79,34 @@ public class StatusDaoImpl implements StatusDao {
 		System.out.println("StatusDaoImpl sellComList start...");
 		List<TradeCoinInfo> sellList = session.selectList("CSellList", id);
 		return sellList;
+	}
+
+	@Override
+	public List<TradeCoinInfo> allDateSort7(String id) {
+		List<TradeCoinInfo> allDateSort7 = session.selectList("AllDateSort7", id);
+		System.out.println("StatusDaoImpl allDateSort7.size() -> "+allDateSort7.size());
+		return allDateSort7;
+	}
+
+	@Override
+	public List<TradeCoinInfo> allDateSort30(String id) {
+		List<TradeCoinInfo> allDateSort30 = session.selectList("AllDateSort30", id);
+		System.out.println("StatusDaoImpl allDateSort30.size() -> "+allDateSort30.size());
+		return allDateSort30;
+	}
+
+	@Override
+	public List<TradeCoinInfo> allDateSort90(String id) {
+		List<TradeCoinInfo> allDateSort90 = session.selectList("AllDateSort90", id);
+		System.out.println("StatusDaoImpl allDateSort90.size() -> "+allDateSort90.size());
+		return allDateSort90;
+	}
+
+	@Override
+	public List<TradeCoinInfo> allDateSort180(String id) {
+		List<TradeCoinInfo> allDateSort180 = session.selectList("AllDateSort180", id);
+		System.out.println("StatusDaoImpl allDateSort180.size() -> "+allDateSort180.size());
+		return allDateSort180;
 	}
 
 

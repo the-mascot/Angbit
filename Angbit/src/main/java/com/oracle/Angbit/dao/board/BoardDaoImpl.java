@@ -11,6 +11,7 @@ import com.oracle.Angbit.model.common.MemberInfo;
 
 
 
+
 @Repository
 public class BoardDaoImpl implements BoardDao {
 
@@ -51,19 +52,7 @@ public class BoardDaoImpl implements BoardDao {
 		return memberList;
 	}
 
-//삭제기능
-	@Override
-	public int Delete(int empno) {
-		System.out.println("BoardDaoImpl Delete Start...");
-		int result = 0;
-		try {
-			result  = session.delete("delete",empno);
-			System.out.println("BoardDaoImpl delete result->"+result);
-		} catch (Exception e) {
-			System.out.println("BoardDaoImpl delete Exception->"+e.getMessage());
-		}
-		return result;
-	}
+
 
 	@Override
 	public int total() {
@@ -71,7 +60,7 @@ public class BoardDaoImpl implements BoardDao {
 		System.out.println("BoardDaoImpl total Start ..." );
 		try {
 			//    Mapper    ------>   Map ID (Naming Rule)
-			tot = session.selectOne("dyEmpTotal");
+			tot = session.selectOne("dyboardTotal");
 		} catch (Exception e) {
 			System.out.println("BoardDaoImpl total Exception->"+e.getMessage());
 		}
@@ -79,21 +68,75 @@ public class BoardDaoImpl implements BoardDao {
 		return tot;
 	}
 
-	
 	@Override
-	public List<MemberInfo> pgMemberList(MemberInfo memberInfo) {
-		List<MemberInfo> pgmemberList = null;
-		System.out.println("BoardDaoImpl pgMemberList Start ..." );
+	public List<Board> pagingBd(Board board) {
+		List<Board> pagingbd = null;
+		System.out.println("BoardDaoImpl pagingBd Start ..." );
 		try {
 			//                             Naming Rule 
-			pgmemberList = session.selectList("pgmemberList", memberInfo);
+			pagingbd = session.selectList("pagingbd", board);
 		} catch (Exception e) {
-			System.out.println("BoardDaoImpl pgMemberList Exception->"+e.getMessage());
+			System.out.println("BoardDaoImpl pagingBd Exception->"+e.getMessage());
 		}
-		return pgmemberList;
+		return pagingbd;
 	}
 
+	@Override
+	public Board detailBoard(int b_num) {
+		System.out.println("BoardDaoImpl detail start..");
+		Board board = new Board();
+		try {
+			//                       mapper ID   ,    Parameter
+			board = session.selectOne("dyBoardSelOne",    b_num);
+			System.out.println("BoardDaoImpl detail getTitle->"+board.getB_num());
+		} catch (Exception e) {
+			System.out.println("BoardDaoImpl detail Exception->"+e.getMessage());
+		}
+	return board;
+	}
+
+	@Override
+	public MemberInfo detailMember(String nickname) {
+		System.out.println("BoardDaoImpl detail start..");
+		MemberInfo memberInfo = new MemberInfo();
+		try {
+			//                       mapper ID   ,    Parameter
+			memberInfo = session.selectOne("dyMemberSelOne",    nickname);
+			System.out.println("BoardDaoImpl detail getNickname->"+memberInfo.getNickname());
+		} catch (Exception e) {
+			System.out.println("BoardDaoImpl detail Exception->"+e.getMessage());
+		}
+	return memberInfo;
+	}
 	
 	
+	
+	//삭제기능
+		@Override
+		public int Delete(int empno) {
+			System.out.println("BoardDaoImpl Delete Start...");
+			int result = 0;
+			try {
+				result  = session.delete("delete",empno);
+				System.out.println("BoardDaoImpl delete result->"+result);
+			} catch (Exception e) {
+				System.out.println("BoardDaoImpl delete Exception->"+e.getMessage());
+			}
+			return result;
+		}
+
+		@Override
+		public int update(Board board) {
+			System.out.println("BoardDaoImpl update start..");
+			int kkk = 0;
+			try {
+				kkk  = session.update("DYboardUpdate",board);
+			} catch (Exception e) {
+				System.out.println("BoardDaoImpl update Exception->"+e.getMessage());
+			}
+			return kkk;
+		}
+
+		
 	
 }

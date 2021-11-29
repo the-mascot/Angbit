@@ -12,6 +12,7 @@ import com.oracle.Angbit.model.common.MemberInfo;
 
 
 
+
 @Service
 public class BoardServiceImpl implements BoardService {
 
@@ -48,15 +49,46 @@ public class BoardServiceImpl implements BoardService {
 		return totCnt;
 	}
 
+
 	@Override
-	public List<MemberInfo> pgMemberList(MemberInfo memberInfo) {
-		List<MemberInfo> pgmemberList = null;
-		System.out.println("BoardServiceImpl pgmemberList Start..." );
-		pgmemberList = bdao.pgMemberList(memberInfo);
-		System.out.println("BoardServiceImpl pgMemberList pgmemberList.size()->" +pgmemberList.size());
+	public List<Board> pagingBd(Board board) {
+		List<Board> pagingbd = null;
+		System.out.println("BoardServiceImpl pagingBd Start..." );
+		pagingbd = bdao.pagingBd(board);
+		System.out.println("BoardServiceImpl pagingBd pagingbd.size()->" +pagingbd.size());
 		
-		return pgmemberList;
+		return pagingbd;
 	}
+
+	@Override
+	public Board detailBoard(int b_num) {
+		System.out.println("BoardServiceImpl detail ...");
+		Board board = null;
+		
+		board = bdao.detailBoard(b_num);
+		
+		return board;
+	}
+
+	@Override
+	public MemberInfo detailMember(String nickname) {
+		System.out.println("BoardServiceImpl detail ...");
+		MemberInfo memberInfo = null;
+		
+		memberInfo = bdao.detailMember(nickname);
+		
+		return memberInfo;
+	}
+	
+	@Override
+	public int update(Board board) {
+		System.out.println("BoardServiceImpl update ...");
+		int kkk = 0;
+		kkk = bdao.update(board);
+		return kkk;
+	}
+
+	
 	
 	
 	

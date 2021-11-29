@@ -8,7 +8,8 @@
 	<select id="memberList" resultType="MemberInfo">
 		select * from MEMBERINFO
 	</select>
-	<select id="pgmemberList" parameterType="MemberInfo" resultType="Board">
+	<select id="dyboardTotal"></select>
+	<select id="pagingbd" parameterType="MemberInfo" resultType="Board">
 		SELECT *
 		FROM
 		  (
@@ -17,4 +18,22 @@
 		  )
 			WHERE rn between #{start} and #{end} 
 	</select>
+	<select id="dyBoardSelOne" parameterType="String" resultType="Board">
+		select * from Board where b_num = #{b_num}
+	</select>
+	<select id="dyMemberSelOne" parameterType="String" resultType="MemberInfo">
+		select nickname from memberInfo where nickname = #{nickname}
+	</select>
+	
+	<update id="DYboardUpdate" parameterType="Board">
+		 update board as bd, memberinfo as mb 
+		 set    bd.b_num=#{b_num},
+		        bd.title=#{title}, 
+		        bd.uploaddate=#{uploaddate}, 
+		    	bd.views=#{views},  
+		        mb.nickname=#{nickname} 
+		 where  bd.title=#{title}
+	</update>
+	
+	<select id="delete"></select>
 </mapper>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>수정</title>
+
+<!-- Common meta tag, Bootstrap, js -->
+<th:block th:replace="common/commonHead"></th:block>
+
+<!-- Jquery -->
+<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
+
+</head>
+<body>
+
+<!-- common 헤더 -->
+<header th:replace="common/header :: header"></header>
+
+<main>
+	<h2>게시글 상세화면</h2>
+	<form action="update" method="post">
+  	<input type="hidden" name="title" value="${board.title }">
+         
+  	<table>  
+		<tr><th>순번</th><td th:text="${board.b_num }"></td></tr>
+		<tr><th>제목</th><td>
+	    	<input type="text" name="title" required="required" th:value="${board.title }" ></td></tr>
+		<tr><th>작성일</th><td>
+	    	<input type="date" name="uploaddate" 	required="required" th:value="${board.uploaddate}"></td></tr>
+		<tr><th>조회수</th><td>
+	    	<input type="number" name="views" required="required" th:value="${board.views }"></td></tr>
+		<tr><th>닉네임</th><td>
+	    	<input type="date" name="nickname" 	th:value="${memberInfo.nickname }"></td></tr>
+		
+		<tr><td colspan="2">
+	   	<input type="submit" th:value="확인">
+	   	</td>
+		</tr>
+	</table>
+	</form>
+</main>
+
+
+<!-- footer -->
+<footer th:replace="common/footer :: footer"></footer>
+
+</body>
+</html>

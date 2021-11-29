@@ -1,66 +1,80 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>코인게시판</title>
-<!-- common css -->
-<link href="css/common.css" rel="stylesheet" type="text/css">
-<link href="css/status.css" rel="stylesheet" type="text/css">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&display=swap" rel="stylesheet">
+<!-- Common meta tag, Bootstrap, js -->
+<th:block th:replace="common/commonHead"></th:block>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
+<!-- Jquery -->
+<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
 </head>
 <body>
-<!-- 헤더 -->
+
+<!-- common 헤더 -->
 <header th:replace="common/header :: header"></header>
 
 <!-- 몸통 -->
+<main>
 
-<table id="datatablesSimple" border="1">
-       <thead>
-           <tr>
-               <th>순번</th>
-               <th>제목</th>
-               <th>작성일</th>
-               <th>조회수</th>
-               <th>글쓴이</th>
-           </tr>
-       </thead>
-       <tbody>
+<a href="writeForm">글작성</a>
+<p>kkk 수정시 전달 메시지 : ${kkk} </p>
+<p>kk3 수정시 전달 메시지 : ${kk3} </p>
 
-            <tr th:each="blist : ${boardList}">
-               <td th:text="${blist.b_num}"></td>
-               <td th:text="${blist.title}"></td>
-               <td th:text="${blist.uploaddate}"></td>
-               <td th:text="${blist.views}"></td>
-               
-               <th:block th:each="mlist : ${memberList}">
-               <th:block th:switch="${blist.id}">
-               	<td th:case="${mlist.id}" th:text="${mlist.nickname}></td>
-               </th:block>
-               </th:block>
-               
-            </tr>
-       </tbody>
-</table>
+<div class="container">
+	<div class="freeboard"><p>자유게시판</p></div>
+	<div class="between"></div>
+
+
+
+	<div class="wrapper_table pt-5">
+		<table class="table table-bordered">
+		       <thead>
+		           <tr>
+		               <th>순번</th>
+		               <th>제목</th>
+		               <th>작성일</th>
+		               <th>조회수</th>
+		               <th>글쓴이</th>
+		           </tr>
+		       </thead>
+		       <tbody>
+		
+		            <tr th:each="blist : ${boardList}">
+		               <td th:text="${blist.b_num}"></td>
+		               <td th:text="${blist.title}"></td>
+		               <td th:text="${blist.uploaddate}"></td>
+		               <td th:text="${blist.views}"></td>
+		               
+		               <th:block th:each="mlist : ${memberList}">
+		               <th:block th:switch="${blist.id}">
+		               	<td th:case="${mlist.id}" th:text="${mlist.nickname}"></td>
+		               </th:block>
+		               </th:block>
+		               
+		            </tr>
+		       </tbody>
+		</table>
 
 <!-- 페이지 단락 넘김 -->
+		<div class="wrapper_paging">
+			<th:if = "${pg.startPage > pg.pageBlock}">
+				<a th:href="@{ board_bdPaging(currentPage=${pg.startPage-pg.pageBlock}) }">[이전]</a>
+			</th:if>
+			<th:each test ="i : begin='${pg.startPage}' end='${pg.endPage}'">
+				<a th:href="@{ board_bdPaging(currentPage=${i}) }">[${i}]</a>
+			</th:each>
+			<th:if test="${pg.endPage < pg.totalPage }">
+				<a th:href="@{ board_bdPaging(currentPage=${pg.startPage+pg.pageBlock}) }">[다음]</a>
+			</th:if>
+		</div>	
+		
+	</div>
+</div>
+</main>
 
-<th:if test="${pg.startPage > pg.pageBlock }">
-	<a href="empList?currentPage=${pg.startPage-pg.pageBlock}">[이전]</a>
-</th:if>
-<th:each = "i : begin="${pg.startPage}" end="${pg.endPage}">
-	<a href="empList?currentPage=${i}">[${i}]</a>
-</th:forEach>
-<th:if test="${pg.endPage < pg.totalPage }">
-	<a href="empList?currentPage=${pg.startPage+pg.pageBlock}">[다음]</a>
-</th:if>
+<!-- footer -->
+<footer th:replace="common/footer :: footer"></footer>
 
 </body>
 </html>

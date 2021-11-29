@@ -75,6 +75,34 @@ public class StatusServiceImpl implements StatusService {
 		return csellList;
 	}
 
+	@Override
+	public List<TradeCoinInfo> allDateSort7(String id) {
+		System.out.println("StatusServiceImpl allDateSort7 start...");
+		List<TradeCoinInfo> allDateSort7 = sd.allDateSort7(id);
+		return allDateSort7;
+	}
+
+	@Override
+	public List<TradeCoinInfo> allDateSort30(String id) {
+		System.out.println("StatusServiceImpl allDateSort30 start...");
+		List<TradeCoinInfo> allDateSort30 = sd.allDateSort30(id);
+		return allDateSort30;
+	}
+
+	@Override
+	public List<TradeCoinInfo> allDateSort90(String id) {
+		System.out.println("StatusServiceImpl allDateSort90 start...");
+		List<TradeCoinInfo> allDateSort90 = sd.allDateSort90(id);
+		return allDateSort90;
+	}
+
+	@Override
+	public List<TradeCoinInfo> allDateSort180(String id) {
+		System.out.println("StatusServiceImpl allDateSort180 start...");
+		List<TradeCoinInfo> allDateSort180 = sd.allDateSort180(id);
+		return allDateSort180;
+	}
+
 
 
 

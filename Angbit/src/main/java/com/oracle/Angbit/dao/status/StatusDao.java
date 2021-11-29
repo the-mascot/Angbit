@@ -17,6 +17,10 @@ public interface StatusDao {
 	int priceTot(String id);
 	List<TradeCoinInfo> buyComList(String id);
 	List<TradeCoinInfo> sellComList(String id);
+	List<TradeCoinInfo> allDateSort7(String id);
+	List<TradeCoinInfo> allDateSort30(String id);
+	List<TradeCoinInfo> allDateSort90(String id);
+	List<TradeCoinInfo> allDateSort180(String id);
 	MemberInfo memberLogin(MemberInfo member);
 
 }

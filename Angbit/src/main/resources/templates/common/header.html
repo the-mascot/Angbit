@@ -32,7 +32,6 @@
 					  	  </div>
 					</nav>
 				</ul>
-				
                <div th:if="${session.sessionID!=null}"><span style="color:white;" th:text="'환영합니다. '+ ${session.sessionNickName} + ' 님 '"></span></div> &nbsp&nbsp
                   <div>
                 <button type="button" class="btn btn-outline-light me-2" onclick="location.href='/loginForm'" th:if="${session.sessionID==null}">로그인</button>
@@ -40,7 +39,6 @@
                 <button type="button" class="btn btn-outline-light me-2" onclick="location.href='/joinForm'">회원가입</button>
               </div>
              </div>
-	        
 	    </div>
     </header>
     
