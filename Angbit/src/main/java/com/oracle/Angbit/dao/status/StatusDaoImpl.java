@@ -47,7 +47,7 @@ public class StatusDaoImpl implements StatusDao {
 		System.out.println("StatusDaoImpl listY start...");
 		List<TradeCoinInfo> yList = null;
 		yList = session.selectList("YList", id);
-		System.out.println("YList.id->"+yList.get(3).getTrd_amt());
+//		System.out.println("YList.id->"+yList.get(3).getTrd_amt());
 		return yList;
 	}
 

@@ -181,6 +181,8 @@ public class SHController {
         } else {
             System.out.println("닉네임 변경 실행");
             result = mis.nickChange(mi);
+            MemberInfo chg = mis.getMyInfo(mi.getId());
+            request.getSession().setAttribute("sessionNickName", chg.getNickname());
         }
         PrintWriter out = response.getWriter();
         out.print(result);
@@ -198,7 +200,7 @@ public class SHController {
         if(mis.chkPw(mi)==true) {
             result = 0;
         } else {
-            System.out.println("닉네임 변경 실행");
+            System.out.println("Password 변경 실행");
             result = mis.pwChange(mi);
         }
         PrintWriter out = response.getWriter();
