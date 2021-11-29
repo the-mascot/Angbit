@@ -78,7 +78,7 @@ public class SHController {
             currCoin = "KRW-BTC";
         }
         if (currCandle==null || currCandle=="") {
-            currCandle = "minutes/1";
+            currCandle = "minutes/30";
         }
 
         RestTemplate restTemplate = new RestTemplate();

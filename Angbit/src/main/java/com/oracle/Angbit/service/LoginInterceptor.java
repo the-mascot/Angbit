@@ -32,7 +32,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (id != null) {
             return true;
         } else {
-            response.sendRedirect("gologin");
+            response.sendRedirect("loginForm");
             return false;
         }
 
