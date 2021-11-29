@@ -7,28 +7,28 @@
 <!-- Common meta tag, Bootstrap, js -->
 <th:block th:replace="common/commonHead"></th:block>
 </head>
-<!-- </script> -->
 <body>
 <!-- Common header -->
 <header th:replace="common/header :: header"></header>
 <main>
-
 <div class="row my-3" align="center" style="padding-top: 25px">
 	<h4><b>체결 현황</b></h4>
 </div>
 <div class="container">
 	<div class="col-4" style="float: left;" >기간 설정<p>
-		<button type="button" class="btn btn-outline-warning" style="color: black;">7일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;">30일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;">90일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;">180일</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history'">전체</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort7d'">7일</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history_sort30d'">30일</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort90d'">90일</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort180d'">180일</button>
 	</div>
 	<div class="col-4" style="float: left">거래종류 설정<p>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history'">전체</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history'">전체</button>
 		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_buy'">매수</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history_sell'">매도</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sell'">매도</button>
 	</div>
-	<div class="col-4" style="float: left; margin-top: 25px;"><p>
+<!-- 	th:onclick="'location.href=|''+@{${/status_y_history_buy}}+'|''" -->
+	<div class="col-4" style="float: left; margin-top: 25px;">
 		<a href="#">
 			<input type="text" placeholder="코인의 이름을 입력하세요." style="border: 1px solid #ffc107; height: 35px" size="40">  
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
@@ -50,9 +50,9 @@
     </tr>
   </thead>
   <tbody align="center" style="vertical-align:middle;">
-  	<th:block data-th-if="${csList.size != 0}">
-	    <tr th:each="cslist:${csList}">
-	      <th scope="row" th:switch="${cslist.coincode}">
+  	<th:block data-th-if="${All30List.size != 0}">
+	    <tr th:each="day30list:${All30List}">
+	      <th scope="row" th:switch="${day30list.coincode}">
 	      	<span th:case="ADA"><img class="table_images" alt="" th:src="@{images/status/ada.png}"></span>
 	      	<span th:case="AXS"><img class="table_images" alt="" th:src="@{images/status/axs.png}"></span>
 	      	<span th:case="BCH"><img class="table_images" alt="" th:src="@{images/status/bch.png}"></span>
@@ -69,18 +69,19 @@
 	      	<span th:case="XLM"><img class="table_images" alt="" th:src="@{images/status/xlm.png}"></span>
 	      	<span th:case="XRP"><img class="table_images" alt="" th:src="@{images/status/xrp.png}"></span>
 	      </th>
-	      <td th:text="${cslist.coinname}+'&#13;&#10;'+'('+${cslist.coincode}+')'"></td>
-	      <td th:if="${cslist.trd_div}==1" style="color: blue;">매도</td>
-	      <td th:if="${cslist.trd_div}==0" style="color: red;">매수</td>
+	      <td th:text="${day30list.coinname}+'&#13;&#10;'+'('+${day30list.coincode}+')'"></td>
+	<!--       <td th:utext="${#strings.replace(#strings.escapeXml(ylist.coinname), T(java.lang.System).getProperty('line.separator'), &lt;br /&gt;')}+'('+${ylist.coincode}+')'"></td> -->
+	      <td th:if="${day30list.trd_div}==1" style="color: blue;">매도</td>
+	      <td th:if="${day30list.trd_div}==0" style="color: red;">매수</td>
 	<!--       <td th:unless="${ylsit.trd_div}==0">매수</td> -->
-	      <td th:text="${#numbers.formatDecimal(cslist.trd_amt,1,'COMMA',8,'POINT')}"></td>
-	      <td th:text="${#numbers.formatDecimal(cslist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
-	      <td th:text="${#numbers.formatDecimal(cslist.trd_price,1,'COMMA',0,'POINT')}"></td>
-	      <td th:text="${#dates.format(cslist.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
+	      <td th:text="${#numbers.formatDecimal(day30list.trd_amt,1,'COMMA',8,'POINT')}"></td>
+	      <td th:text="${#numbers.formatDecimal(day30list.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
+	      <td th:text="${#numbers.formatDecimal(day30list.trd_price,1,'COMMA',0,'POINT')}"></td>
+	      <td th:text="${#dates.format(day30list.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
 	    </tr>
-    </th:block>
-    <th:block data-th-if="${csList.size == 0}">
-	  	<td colspan="7">데이터가 없습니다.</td>
+	</th:block>
+    <th:block data-th-if="${All30List.size == 0}">
+	  	<td colspan="7"><Strong>30일 이내 매수 및 매도 내역이 없습니다.</Strong></td>
 	</th:block>
   </tbody>
 </table>

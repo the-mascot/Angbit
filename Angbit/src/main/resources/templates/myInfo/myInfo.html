@@ -107,7 +107,7 @@
 	<!-- 마이페이지 끝 -->
 	<!-- Modal -->
 	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
+		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header" style="background-color: #ff797c;">
 					<h5 class="modal-title" id="exampleModalLabel">탈퇴 전 유의사항</h5>
@@ -254,7 +254,7 @@
 			plblError.innerHTML = "";
 			// pwsubmitBtn.disabled = false;
 
-			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/;
+			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/;
 
 			if (!exprpw.test(passwordInput.value)) {
 				// pwsubmitBtn.disabled = true;
@@ -268,7 +268,7 @@
 
 			chkError.innerHTML = "";
 
-			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/;
+			const exprpw = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/;
 
 			if (!exprpw.test(passwordInput.value)) {
 			}

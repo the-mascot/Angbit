@@ -70,37 +70,36 @@ public class SHController {
     @GetMapping("chartApi")
     public void chartApi(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        System.out.println("AngController chartAPI Start...");
 		String currCoin = request.getParameter("currCoin"); // 캔들 호출된 코인명
-        System.out.println("AngController chartApi currCoin->"+currCoin); // 코인명 콘솔 출력
-        if (currCoin==null) {
+        String currCandle = request.getParameter("currCandle"); // 캔들 호출된 봉
+
+        // 최초 호출시 비트코인, 1분봉 세팅
+        if (currCoin==null || currCoin=="") {
             currCoin = "KRW-BTC";
         }
+        if (currCandle==null || currCandle=="") {
+            currCandle = "minutes/1";
+        }
 
-        RestTemplate restTemplate = new RestTemplate(); // ?
-        HttpHeaders headers = new HttpHeaders(); //
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", "application/json");
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-//		String minCandle = "https://api.upbit.com/v1/candles/days?market="+currCoin+"&count=200"; // 일봉 현재일자 기준 200개 요청
-        String minCandle = "https://api.upbit.com/v1/candles/minutes/30?market="+currCoin+"&count=200"; // 분봉 현재시간 기준 200개 요청
+        String Candle = "https://api.upbit.com/v1/candles/"+currCandle+"?market="+currCoin+"&count=200";
 
-//        System.out.println("HTTP URL : "+minCandle);
-
-        ResponseEntity<String> candleResponse 	= restTemplate.exchange(minCandle, HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> candleResponse 	= restTemplate.exchange(Candle, HttpMethod.GET, entity, String.class);
 
         try {
             String minCandleStr = candleResponse.getBody();
-
-//            System.out.println("minCandleStr : "+minCandleStr);
 
             String jsonStr = minCandleStr.toString();
 
             JSONParser parser = new JSONParser();
             JSONArray json = (JSONArray) parser.parse(jsonStr);
-//            System.out.println("json 객체->"+json);
 
             JSONArray chartdata = new JSONArray(); // ajax에서 리턴받을 객체
+
             for(int i=0; i<json.size(); i++) {
                 JSONObject conv = (JSONObject) json.get(i);
 
@@ -154,7 +153,6 @@ public class SHController {
             session.setAttribute("sessionID", id);
         }  else {
             model.addAttribute("msg", "아이디 혹은 비밀번호가 틀립니다.");
-//            request.setAttribute("msg", "아이디 혹은 비밀번호가 틀립니다.");
             return "forward:gologin";
         }
 

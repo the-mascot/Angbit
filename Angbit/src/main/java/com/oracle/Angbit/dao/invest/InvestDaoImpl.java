@@ -2,12 +2,14 @@ package com.oracle.Angbit.dao.invest;
 
 import java.util.List;
 
+import org.apache.ibatis.reflection.ReflectionException;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.oracle.Angbit.model.common.CoinInfo;
-import com.oracle.Angbit.model.invest.MemberCoin;
+import com.oracle.Angbit.model.invest.OrderTrade;
 
 @Repository
 public class InvestDaoImpl implements InvestDao {
@@ -64,6 +66,58 @@ public class InvestDaoImpl implements InvestDao {
 		}
 		
 		return krw;
+	}
+
+	@Override
+	public int insertTrade(OrderTrade orderTrade) {
+
+		System.out.println("InvestDaoImpl insertTrade Start...");
+		int result = 0;
+		
+		try {
+			result = seesion.insert("insertTrade", orderTrade);
+		} catch (Exception e) {
+			System.out.println("InvestDaoImpl insertTrade Exception->"+e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+
+	@Override
+	public int updateKRW(OrderTrade orderTrade) {
+
+		System.out.println("InvestDaoImpl insertTrade Start...");
+		int result = 0;
+		
+		try {
+			result = seesion.update("updateKRW", orderTrade);
+		} catch (Exception e) {
+			System.out.println("InvestDaoImpl updateKRW Exception->"+e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@Transactional
+	@Override
+	public void buyMarketPrice(OrderTrade orderTrade) {
+
+		System.out.println("InvestDaoImpl upBuyCoin Start...");
+			
+		seesion.insert("insertTrade", orderTrade);
+		seesion.update("updateKRW", orderTrade);
+		seesion.update("upBuyCoin", orderTrade);
+	}
+
+	@Override
+	public void buyLimitsPrice(OrderTrade orderTrade) {
+
+		System.out.println("InvestDaoImpl buyLimitsPrice Start...");
+		
+		seesion.insert("insertTrade", orderTrade);
+		seesion.update("updateKRW", orderTrade);
 	}
 
 }

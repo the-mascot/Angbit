@@ -88,6 +88,9 @@ function onMessage(evt) {
 			} else if(coinloss > '0'){
 				document.getElementById(coincode+'-loss').style.color = "red";
 				document.getElementById(coincode+'-loss').style.fontWeight = "700";
+			} else if(coinloss == '0') {
+				document.getElementById(coincode+'-loss').style.color = "black";
+				document.getElementById(coincode+'-loss').style.fontWeight = "700";
 			}
 			
 		var sumtot = 0;
@@ -214,31 +217,36 @@ data = {
     </tr>
   </thead>
   <tbody align="center" style="vertical-align:middle;">
-    <tr th:each="slist:${statusList}">
-      <th scope="row" th:switch="${slist.coincode}">
-      	<span th:case="ADA"><img class="table_images" alt="" src="images/status/ada.png"></span>
-      	<span th:case="AXS"><img class="table_images" alt="" src="images/status/axs.png"></span>
-      	<span th:case="BCH"><img class="table_images" alt="" src="images/status/bch.png"></span>
-      	<span th:case="BTC"><img class="table_images" alt="" src="images/status/btc.png"></span>
-      	<span th:case="DOGE"><img class="table_images" alt="" src="images/status/doge.png"></span>
-      	<span th:case="DOT"><img class="table_images" alt="" src="images/status/dot.png"></span>
-      	<span th:case="ETC"><img class="table_images" alt="" src="images/status/etc.png"></span>
-      	<span th:case="ETH"><img class="table_images" alt="" src="images/status/eth.png"></span>
-      	<span th:case="LTC"><img class="table_images" alt="" src="images/status/ltc.png"></span>
-      	<span th:case="MANA"><img class="table_images" alt="" src="images/status/mana.png"></span>
-      	<span th:case="SAND"><img class="table_images" alt="" src="images/status/sand.png"></span>
-      	<span th:case="SOL"><img class="table_images" alt="" src="images/status/sol.png"></span>
-      	<span th:case="VET"><img class="table_images" alt="" src="images/status/vet.png"></span>
-      	<span th:case="XLM"><img class="table_images" alt="" src="images/status/xlm.png"></span>
-      	<span th:case="XRP"><img class="table_images" alt="" src="images/status/xrp.png"></span>
-      </th>
-      <td th:text="${slist.coinname}+'('+${slist.coincode}+')'"></td>
-      <td th:text="${#numbers.formatDecimal(slist.coin_amt,1,'COMMA',8,'POINT')}"></td>
-      <td th:text="${#numbers.formatDecimal(slist.avg_price,1,'COMMA',0,'POINT')}"></td>
-      <td th:id="${slist.coincode}+'-totPrice'" th:text="${#numbers.formatDecimal(slist.tot_price,1,'COMMA',0,'POINT')}"></td>
-      <td th:id="${slist.coincode}"></td>
-      <td th:id="${slist.coincode}+'-loss'"></td>
-    </tr>
+  	<th:block data-th-if="${totPrice != null}">
+	    <tr th:each="slist:${statusList}">
+	      <th scope="row" th:switch="${slist.coincode}">
+	      	<span th:case="ADA"><img class="table_images" alt="" src="images/status/ada.png"></span>
+	      	<span th:case="AXS"><img class="table_images" alt="" src="images/status/axs.png"></span>
+	      	<span th:case="BCH"><img class="table_images" alt="" src="images/status/bch.png"></span>
+	      	<span th:case="BTC"><img class="table_images" alt="" src="images/status/btc.png"></span>
+	      	<span th:case="DOGE"><img class="table_images" alt="" src="images/status/doge.png"></span>
+	      	<span th:case="DOT"><img class="table_images" alt="" src="images/status/dot.png"></span>
+	      	<span th:case="ETC"><img class="table_images" alt="" src="images/status/etc.png"></span>
+	      	<span th:case="ETH"><img class="table_images" alt="" src="images/status/eth.png"></span>
+	      	<span th:case="LTC"><img class="table_images" alt="" src="images/status/ltc.png"></span>
+	      	<span th:case="MANA"><img class="table_images" alt="" src="images/status/mana.png"></span>
+	      	<span th:case="SAND"><img class="table_images" alt="" src="images/status/sand.png"></span>
+	      	<span th:case="SOL"><img class="table_images" alt="" src="images/status/sol.png"></span>
+	      	<span th:case="VET"><img class="table_images" alt="" src="images/status/vet.png"></span>
+	      	<span th:case="XLM"><img class="table_images" alt="" src="images/status/xlm.png"></span>
+	      	<span th:case="XRP"><img class="table_images" alt="" src="images/status/xrp.png"></span>
+	      </th>
+	      <td th:text="${slist.coinname}+'('+${slist.coincode}+')'"></td>
+	      <td th:text="${#numbers.formatDecimal(slist.coin_amt,1,'COMMA',8,'POINT')}"></td>
+	      <td th:text="${#numbers.formatDecimal(slist.avg_price,1,'COMMA',0,'POINT')}"></td>
+	      <td th:id="${slist.coincode}+'-totPrice'" th:text="${#numbers.formatDecimal(slist.tot_price,1,'COMMA',0,'POINT')}"></td>
+	      <td th:id="${slist.coincode}"></td>
+	      <td th:id="${slist.coincode}+'-loss'"></td>
+	    </tr>
+    </th:block>
+    <th:block data-th-if="${totPrice == 0}">
+	      <td colspan="7">데이터가 없습니다.</td>
+    </th:block>
   </tbody>
 </table>
 </main>
