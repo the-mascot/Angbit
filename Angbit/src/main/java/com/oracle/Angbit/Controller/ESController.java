@@ -18,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,8 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import com.oracle.Angbit.model.common.CoinInfo;
-import com.oracle.Angbit.model.common.Trade;
-import com.oracle.Angbit.model.invest.MemberCoin;
 import com.oracle.Angbit.model.invest.OrderTrade;
 import com.oracle.Angbit.service.invest.InvestService;
 
@@ -51,8 +50,6 @@ public class ESController {
 	public String invest(Model model, HttpServletRequest request, HttpServletResponse response) {
 		
 		System.out.println("ESController invest Start...");
-		HttpSession session = request.getSession();
-		String id = (String) session.getAttribute("sessionID");
 		List<CoinInfo> coinInfoList =  ivs.coinInfoList();
 		model.addAttribute("coinInfoList", coinInfoList);
 		
@@ -131,13 +128,36 @@ public class ESController {
 		
 		System.out.println("ESController buyCoin Start...");
 		HttpSession session = request.getSession();
+		System.out.println(orderTrade.getCoincode());
 		orderTrade.setId((String) session.getAttribute("sessionID"));
+
+		orderTrade.setTrd_div(0);
+		int result = 0;
+		String msg = null;
+		System.out.println(orderTrade.getTrd_amt());
+		
 		if(orderTrade.getTrd_method().equals("limits")) {
-//			int result = ivs.insertTrade(trade);
+			try {
+				orderTrade.setTrd_stu(0);
+				ivs.buyLimitsPrice(orderTrade);
+				msg = "매수주문 되었습니다";
+			} catch (Exception e) {
+				System.out.println("ESController buyCoin limits Exception->"+e.getMessage());
+				msg = "매수주문에 실패하였습니다";
+			}
 		} else {
-			
+			try {
+				orderTrade.setTrd_stu(1);
+				ivs.buyMarketPrice(orderTrade);
+				msg = "매수체결 되었습니다";
+			} catch (Exception e) {
+				System.out.println("ESController buyCoin limits Exception->"+e.getMessage());
+				System.out.println("market result->"+result);
+				msg = "매수체결에 실패하였습니다";
+			}
 		}
-		return null;
+		
+		return msg;
 	}
 	
 	
