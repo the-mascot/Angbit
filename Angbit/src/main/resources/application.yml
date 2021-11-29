@@ -17,6 +17,18 @@ spring:
     hibernate:
       ddl-auto : none
       
+# gmail Transfer, smtp(샌드 메일 트랜스퍼 프로토콜)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: angbit456@gmail.com
+    password: a123456789@
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true    
+      
 # DEVTOOLS
   devtools:
     restart:

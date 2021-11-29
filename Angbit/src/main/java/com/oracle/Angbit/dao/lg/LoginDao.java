@@ -6,4 +6,8 @@ public interface LoginDao {
 
 	MemberInfo LoginChk(MemberInfo memberinfo);
 
+	int FindPasswordProcess(MemberInfo memberinfo);
+
+	void tempPw(MemberInfo memberinfo2);
+
 }
