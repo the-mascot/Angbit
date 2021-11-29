@@ -12,7 +12,11 @@ public interface BoardService {
 	List<MemberInfo> MemberList(); //멤버 요소 가져오기 (NICKNAME)
 	int Delete(int empno); //삭제
 	int total(); //
-	List<MemberInfo> pgMemberList(MemberInfo memberInfo); //페이징 
+ //페이징 
+	List<Board> pagingBd(Board board);
+	Board detailBoard(int b_num);
+	int update(Board board);
+	MemberInfo detailMember(String nickname);
 	
 	
 	

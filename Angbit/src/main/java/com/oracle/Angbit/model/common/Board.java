@@ -20,4 +20,9 @@ public class Board {
 	private int re_level;
 	private int re_step;
 	
+	
+	// 조회용
+			private String search;   private String keyword;
+			private String pageNum;  
+			private int start; 		 private int end;
 }

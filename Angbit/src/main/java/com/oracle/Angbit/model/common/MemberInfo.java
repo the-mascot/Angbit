@@ -17,8 +17,5 @@ public class MemberInfo {
 	private Date finaldate;
 	private int member_stu;
 	
-	// 조회용
-		private String search;   private String keyword;
-		private String pageNum;  
-		private int start; 		 private int end;
+	
 }

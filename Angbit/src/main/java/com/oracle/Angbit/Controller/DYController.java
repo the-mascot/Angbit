@@ -1,16 +1,20 @@
 package com.oracle.Angbit.Controller;
 
+import java.lang.reflect.Member;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.oracle.Angbit.model.common.Board;
 import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.service.board.BoardService;
 import com.oracle.Angbit.service.board.Paging;
+
 
 @Controller
 public class DYController {
@@ -24,38 +28,124 @@ public class DYController {
 		System.out.println("DYController getList Start...");
 		List<Board> boardList = bs.BoardList();
 		List<MemberInfo> memberList = bs.MemberList();
-		System.out.println("memberList.get(0).getId() ->"+memberList.get(0).getId());
+		//System.out.println("memberList.get(0).getId() ->"+memberList.get(0).getId());
 		model.addAttribute("boardList", boardList);
 		model.addAttribute("memberList", memberList);
 		return "board/coinBoard";
 	}
 	
-	//삭제
-	@GetMapping("board_delete")
-	public String delete(int empno, Model model) {
-		System.out.println("DYController Start delete...");
-		int result = bs.Delete(empno);
-		return "empList";
-	}
-
 	  //페이징
-	  @GetMapping("board_memlist") 
-	  public String MemList(MemberInfo memberInfo ,String currentPage, Model model) {
+	  @GetMapping("board_bdPaging") 
+	  public String bdPaging(Board board ,String currentPage, Model model) {
 		  
-	  System.out.println("DYController Start memlist..." );   int total = bs.total();
-	  System.out.println("DYController total=>" + total);     Paging pg = new Paging(total, currentPage);
+	  System.out.println("DYController Start bdPaging..." );   
+	  int total = bs.total(); 												//서비스로 넘겨서 작업
+	  System.out.println("DYController total=>" + total);     
+	  Paging pg = new Paging(total, currentPage);
 	
-	  memberInfo.setStart(pg.getStart()); // 1 
-	  memberInfo.setEnd(pg.getEnd()); //10 
-	  System.out.println("DYController 	MemList start......"); 
-	  List<MemberInfo> pgMemberList = bs.pgMemberList(memberInfo);
+	  board.setStart(pg.getStart()); // 1 
+	  board.setEnd(pg.getEnd()); //10 
+	  System.out.println("DYController bdPaging start......"); 
+	  List<Board> pagingBd = bs.pagingBd(board);
 	  
 	  model.addAttribute("total", total); 
-	  model.addAttribute("pgMemberList", pgMemberList);
+	  model.addAttribute("pagingBd", pagingBd);
 	  model.addAttribute("pg", pg);
 	  
-	  return "memlist"; 
+	  return "board/coinBoard"; 
 	  }
 	
 
+	  @GetMapping(value="detailBoard")
+		public String detailBoard(String nickname, int b_num, Model model) {
+			System.out.println("DYController Start detail..." );
+			Board board = bs.detailBoard(b_num);
+			MemberInfo memberInfo = bs.detailMember(nickname);
+			
+			model.addAttribute("board",board);
+			model.addAttribute("memberInfo",memberInfo);
+			return "detailBoard";
+
+		}
+	  
+//	  @GetMapping(value = "detailBoard")
+//	  public String detailMember(String nickname, Model model) {
+//			System.out.println("DYController Start detail..." );
+//			MemberInfo memberInfo = bs.detailMember(nickname);
+//			model.addAttribute("memberInfo",memberInfo);
+//			return "detailBoard";
+//
+//		} 
+	  
+	  
+	  
+	//수정폼	
+		@GetMapping(value="updateForm")
+		public String updateForm(String nickname, int b_num, Model model) {
+			System.out.println("DYController Start updateForm..." );
+			Board board = bs.detailBoard(b_num); 
+			MemberInfo memberInfo = bs.detailMember(nickname);
+			
+			model.addAttribute("board",board);
+			model.addAttribute("memberInfo",memberInfo);
+			
+			return "updateForm";
+		}
+		
+		@PostMapping(value="update")
+	    public String update(Board board, Model model) {
+			int k = bs.update(board);
+			System.out.println("bs.update(board) k-->"+k);
+			model.addAttribute("kkk",k);               		// Test Controller간 Data 전달
+			model.addAttribute("kk3","Message Test");   	// Test Controller간 Data 전달
+			
+			return "forward:getList";   
+	    }
+		
+		
+	//작성폼
+//		@GetMapping(value="writeForm")
+//		public String writeForm(Model model) {
+//		// 	Emp emp = null;
+//			List<Board> list = bs.listManager();
+//			System.out.println("DYController writeForm list.size->"+list.size());
+//			model.addAttribute("bdMngList",list);   // board Manager List
+//			
+//			List<MemberInfo> memberList = bs.MemberSelect();
+//			model.addAttribute("memList", memList); // memberInfo
+//			
+//			return "writeForm";
+//		}
+//		@PostMapping(value="write")
+//		public String write(Board board, Model model) {
+//			System.out.println("DYController Start write..." );
+//			//System.out.println("emp.getHiredate->"+emp.getHiredate());
+//			// Service, Dao , Mapper명 까지 -> insert
+//			String returnStr ="";
+//			int result = bs.insert(board);
+//			if (result > 0) returnStr = "redirect:empList";
+//			else {
+//				model.addAttribute("msg","입력 실패 확인해 보세요");
+//				returnStr = "forward:writeForm";
+//			}
+//		    
+//			return returnStr;
+//		}	
+		
+		
+		
+		
+		
+		
+		
+		//삭제
+				@GetMapping("board_delete")
+				public String delete(int empno, Model model) {
+					System.out.println("DYController Start delete...");
+					int result = bs.Delete(empno);
+					
+					model.addAttribute("delete", result);
+					
+					return "redirect:getList"; 
+				}
 }
