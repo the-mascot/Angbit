@@ -7,7 +7,7 @@
 <th:block th:replace="common/commonHead"></th:block>
 
 <!-- Custom styles for this page -->
-<link th:href="@{css/common.css}" rel="stylesheet">
+<link th:href="@{css/invest.css}" rel="stylesheet">
 
 <!-- Jquery -->
 <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
@@ -30,6 +30,10 @@
 			output = document.getElementById("output");
 			console.log('init() Start...');
 			investApi(event);
+			/*봉 변경시 색 변경*/
+			for (var i = 0; i < btnClicked.length; i++) {
+				btnClicked[i].addEventListener("click", handleClick);
+			}
 	/* 		testWebSocket(); */
 		}
 		
@@ -651,7 +655,7 @@
 
 			// sendCoin = "currCoin="+currCoin;
 			// sendCandle = "currCandle="+currCandle;
-			console.log('currCoin->'+currCoin);
+			// console.log('currCoin->'+currCoin);
 			$("#coinChart").empty();
 
 			$.ajax({
@@ -692,7 +696,6 @@
 							shiftVisibleRangeOnNewBar : true,
 							fixLeftEdge : true,
 						}
-
 					});
 
 					var lineSeries = chart.addCandlestickSeries({
@@ -714,9 +717,9 @@
 					}
 					chardat = chardat.filter(function() { return true; });
 					rechardat = [...chardat].reverse();
-					console.log(chardat);
-					console.log(typeof chardat);
-					console.log(Array.isArray(chardat))
+					// console.log(chardat);
+					// console.log(typeof chardat);
+					// console.log(Array.isArray(chardat))
 
 					lineSeries.setData(rechardat);
 
@@ -725,13 +728,56 @@
 							visible : true,
 							timeVisible: true,
 							secondsVisible: false,
-							// tickMarkFormatter: (time, tickMarkType, locale) => {
-							// 	console.log(time, tickMarkType, locale);
-							// 	const year = LightweightCharts.isBusinessDay(time) ? time.year : new Date(time * 1000).getUTCFullYear();
-							// 	const day = LightweightCharts.isBusinessDay(time) ? time.day : new Date(time * 1000).getMinutes();
-							// 	return String(day+'분');
-							// },
 						},
+					});
+
+					document.getElementById('coinChart').style.position = 'relative'; // z-index?
+
+					var legend = document.createElement('div');
+					legend.classList.add('legend');
+					document.getElementById('coinChart').appendChild(legend);
+
+					var firstRow = document.createElement('div');
+					firstRow.style.color = 'black';
+					legend.appendChild(firstRow);
+
+					chart.subscribeCrosshairMove((param) => {
+						if (param.time) {
+							const price = param.seriesPrices.get(lineSeries);
+							const open = price.open.toString()
+									.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+							const high = price.high.toString()
+									.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+							const low = price.low.toString()
+									.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+							const close = price.close.toString()
+									.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+							const upgap = (price.close-price.open).toString()
+									.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");;
+							const uppercent = (((price.close-price.open)/price.open)*100).toFixed(2);
+							const downgap = (price.open-price.close).toString()
+									.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+							const downpercent = (((price.open-price.close)/price.open)*100).toFixed(2);
+							if (price.open < price.close) {
+								firstRow.innerHTML = '시 : <span style="color:red;">'+open+ '</span>' +
+										' 고 : <span style="color:red;">'+high + '</span>' +
+										' 저 : <span style="color:red;">'+low + '</span>' +
+										' 종 : <span style="color:red;">'+close + '</span>' +
+										'<p style="color:red;">'+upgap+'  +'+ uppercent+' %'+'</p>'
+							} else if (price.open > price.close) {
+								firstRow.innerHTML = '시 : <span style="color:#0000be;">'+open + '</span>' +
+										' 고 : <span style="color:#0000be;">'+high + '</span>' +
+										' 저 : <span style="color:#0000be;">'+low + '</span>' +
+										' 종 : <span style="color:#0000be;">'+close + '</span>' +
+										'<p style="color:#0000be;">-'+downgap+'  -'+
+										downpercent+' %'+'</p>'
+							}
+
+									// + price.toFixed(2);
+						}
+						else {
+							firstRow.innerText = '';
+						}
 					});
 
 				},
@@ -743,8 +789,23 @@
 
 		function candleChange(candle) {
 			currCandle = candle;
-			console.log('candle?->'+candle)
+			// console.log('candle?->'+candle)
 			chartApi();
+		}
+
+		var btnClicked = document.getElementsByClassName("c-buttonarea-button");
+
+		function handleClick(event) {
+
+			if (event.target.classList[1] === "btnClicked") {
+				event.target.classList.remove("btnClicked");
+			} else {
+				for (var i = 0; i < btnClicked.length; i++) {
+					btnClicked[i].classList.remove("btnClicked");
+				}
+
+				event.target.classList.add("btnClicked");
+			}
 		}
 
 </script>
@@ -791,11 +852,13 @@
 		<div class="d-flex justify-content-center mt-3 mb-3">
 			<div class="coinChart card">
 				<div class="coinChart c-buttonarea">
-					<button type="button" class="c-buttonarea-button" onclick="candleChange('minutes/1')">1분</button>
-					<button type="button" class="c-buttonarea-button" onclick="candleChange('minutes/30')">30분</button>
-					<button type="button" class="c-buttonarea-button" onclick="candleChange('minutes/60')">1시간</button>
-					<button type="button" class="c-buttonarea-button" onclick="candleChange('minutes/240')">4시간</button>
-					<button type="button" class="c-buttonarea-button" onclick="candleChange('days')">일</button>
+					<button type="button" class="c-buttonarea-button btnClicked" onclick="candleChange('minutes/1')" id="minutes/1">1분</button>
+					<button type="button" class="c-buttonarea-button" onclick="candleChange('minutes/30')" id="minutes/30">30분</button>
+					<button type="button" class="c-buttonarea-button" onclick="candleChange('minutes/60')" id="minutes/60">1시간</button>
+					<button type="button" class="c-buttonarea-button" onclick="candleChange('minutes/240')" id="minutes/240">4시간</button>
+					<button type="button" class="c-buttonarea-button" onclick="candleChange('days')" id="days">일</button>
+					<button type="button" class="c-buttonarea-button" onclick="candleChange('weeks')" id="weeks">주</button>
+					<button type="button" class="c-buttonarea-button" onclick="candleChange('months')" id="months">월</button>
 				</div>
 				<div class="coinChart c-chartarea" id="coinChart"></div>
 			</div>
