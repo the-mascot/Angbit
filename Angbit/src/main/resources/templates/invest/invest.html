@@ -655,7 +655,7 @@
 
 			// sendCoin = "currCoin="+currCoin;
 			// sendCandle = "currCandle="+currCandle;
-			console.log('currCoin->'+currCoin);
+			// console.log('currCoin->'+currCoin);
 			$("#coinChart").empty();
 
 			$.ajax({
@@ -717,9 +717,9 @@
 					}
 					chardat = chardat.filter(function() { return true; });
 					rechardat = [...chardat].reverse();
-					console.log(chardat);
-					console.log(typeof chardat);
-					console.log(Array.isArray(chardat))
+					// console.log(chardat);
+					// console.log(typeof chardat);
+					// console.log(Array.isArray(chardat))
 
 					lineSeries.setData(rechardat);
 
@@ -789,7 +789,7 @@
 
 		function candleChange(candle) {
 			currCandle = candle;
-			console.log('candle?->'+candle)
+			// console.log('candle?->'+candle)
 			chartApi();
 		}
 
