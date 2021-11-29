@@ -37,7 +37,7 @@
                   <div>
                 <button type="button" class="btn btn-outline-light me-2" onclick="location.href='/loginForm'" th:if="${session.sessionID==null}">로그인</button>
                 <button type="button" class="btn btn-outline-light me-2" onclick="location.href='/LogOutProcess'" th:if="${session.sessionID!=null}">로그아웃</button>
-                <button type="button" class="btn btn-outline-light me-2" onclick="location.href='/joinForm'" th:if="${session.sessionID!=null}">회원가입</button>
+                <button type="button" class="btn btn-outline-light me-2" onclick="location.href='/joinForm'" th:if="${session.sessionID==null}">회원가입</button>
               </div>
              </div>
 	    </div>

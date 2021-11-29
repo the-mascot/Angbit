@@ -43,7 +43,7 @@ public class ESController {
 		
 		System.out.println("ESController home Start...");
 		
-		return "/index";
+		return "index";
 	}
 	
 	@GetMapping("invest")
