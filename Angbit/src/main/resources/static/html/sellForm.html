@@ -32,3 +32,18 @@
   <input type="reset" class="sell-form-reset form-control me-3" value="초기화"><input type="button" class="sell-form-submit form-control bg-danger" id="buySubmit" value="매 수">
  </div>
 </form>
+
+<!--
+주문가능 = 현재 보유중인 해당 코인 수량
+수량 = 현재 선택한 코인의 판매 수량
+가격 =  내가 판매할 가격
+총액 =  수량 * 선택가격
+
+판매 퍼센티지 = <-만큼 현재 보유수량에서 판매 ex)보유 100 지정가 1,000에 20%일시 수량 20개 가격 200원 입력
+
+주문가능 수량 = currCoin -> SELECT coin_amt FROM coin WHERE id=sessionID, coincode = currCoin
+가격 = 변동 가능한 금액(시세 안쪽?)
+총액은 입력 불가. 계산 후 산출된 금액만 출력
+
+최소 주문 금액?
+-->
