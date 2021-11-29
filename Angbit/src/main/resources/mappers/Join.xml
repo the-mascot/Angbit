@@ -16,15 +16,30 @@
 		where id = #{id}
 	</select>
 	
-	<!-- result = session.selectOne("LoginChk", memberinfo); -->
+	<!-- MemberInfo getmemberinfo = session.selectOne("LoginChk", memberinfo); -->
 	<select id="LoginChk" parameterType="memberinfo" resultType="memberinfo">
 		select *
 		from memberinfo
 		where id = #{id}
 		and password = #{password}
 	</select>
-
-
+	
+	<!-- result = session.selectOne("FindPasswordProcess", memberinfo); -->
+	<select id="FindPasswordProcess" parameterType="memberinfo" resultType="int">
+		select count(*)
+		from memberinfo
+		where id = #{id}
+		and nickname = #{nickname}
+	</select>
+	
+	<!-- session.update("tempPw", memberinfo2); -->
+	<update id="tempPw" parameterType="memberinfo">
+		update memberinfo
+		set password = #{password}
+		where id = #{id}
+	</update>
+	
+	
 </mapper>
 
 

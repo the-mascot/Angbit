@@ -4,6 +4,10 @@ import com.oracle.Angbit.model.common.MemberInfo;
 
 public interface LoginService {
 
-	MemberInfo LoginChk(MemberInfo memberinfo);
+	MemberInfo LoginChk(String id, String pw);
+
+	int FindPasswordProcess(MemberInfo memberinfo);
+
+	void tempPw(String id, String tempPassword);
 
 }
