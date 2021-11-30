@@ -223,25 +223,17 @@ public class SHController {
         System.out.println("Quantity Called.");
         String currCoin = request.getParameter("currCoin"); // 불러 올 수량
         String id = (String) request.getSession().getAttribute("sessionID");
-        System.out.println("현재 페이지의 코인은?" + currCoin);
         Float sel = 0f;
         // 최초 호출시
         if (currCoin == null || currCoin == "") {
-            currCoin = "KRW-BTC";
+            currCoin = "BTC";
         }
-
-        currCoin = currCoin.substring(currCoin.indexOf("-") + 1);
-        System.out.println("로그인 중인가?"+id);
         if (id == null || id == "") {
-            System.out.println("로그인중이 아님 리턴");
             return sel;
         } else {
-            System.out.println("바뀌었나?" + currCoin);
             sel = ivs.getMyCoin(id, currCoin);
-            System.out.println("얼마나 가지고 있는가? ->"+sel);
             return sel;
         }
-
     }
 }
 

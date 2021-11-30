@@ -130,7 +130,9 @@ public class InvestDaoImpl implements InvestDao {
 		vo.put("id", id);
 		vo.put("currCoin", currCoin);
 		Float sel = seesion.selectOne("getMyCoin", vo);
-		System.out.println("선택된 계정의 sel"+sel);
+		if (sel==null) {
+			sel = 0f;
+		}
 		return sel;
 	}
 }
