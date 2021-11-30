@@ -18,6 +18,9 @@ main::after {
 
 /* Coin List Table */
 
+.coinlist-a {
+	font-family: 'Noto Sans KR', sans-serif;
+}
 
 #coinlist-card {
 	width: 450px;
