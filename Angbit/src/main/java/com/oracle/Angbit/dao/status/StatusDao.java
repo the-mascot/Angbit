@@ -12,7 +12,7 @@ import com.oracle.Angbit.model.status.TradeCoinInfo;
 public interface StatusDao {
 	List<CoinCoinInfo> listStatus(String id);
 	List<MemberInfo> listKrw(String id);
-	List<TradeCoinInfo> listY(String id);
+	List<TradeCoinInfo> listY(TradeCoinInfo trdCoin, String id);
 	List<TradeCoinInfo> listN(String id);
 	int priceTot(String id);
 	List<TradeCoinInfo> buyComList(String id);

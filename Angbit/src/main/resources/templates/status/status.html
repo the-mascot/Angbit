@@ -80,8 +80,11 @@ function onMessage(evt) {
 			
 			document.getElementById(coincode).innerText = gg.toLocaleString();
 			var coinloss = document.getElementById(coincode+'-loss').innerText = (gg-totPrice).toLocaleString();
+			var coinavg = document.getElementById(coincode+'-avg').innerText = (((gg/totPrice)-1)*100).toLocaleString()+' %';
+// 			평가금액 / 매수가격 - 1 * 100 %
 			console.log("coinloss -> "+coinloss); // 평가손익
 		}
+			// 평가손익 css
 			if(coinloss < '0') {
 				document.getElementById(coincode+'-loss').style.color = "blue";
 				document.getElementById(coincode+'-loss').style.fontWeight = "700";
@@ -92,12 +95,23 @@ function onMessage(evt) {
 				document.getElementById(coincode+'-loss').style.color = "black";
 				document.getElementById(coincode+'-loss').style.fontWeight = "700";
 			}
+			// 평가손익율 css
+			if(coinavg < '0') {
+				document.getElementById(coincode+'-avg').style.color = "blue";
+				document.getElementById(coincode+'-avg').style.fontWeight = "700";
+			} else if(coinavg > '0'){
+				document.getElementById(coincode+'-avg').style.color = "red";
+				document.getElementById(coincode+'-avg').style.fontWeight = "700";
+			} else if(coinavg == '0') {
+				document.getElementById(coincode+'-avg').style.color = "black";
+				document.getElementById(coincode+'-avg').style.fontWeight = "700";
+			}
 			
 		var sumtot = 0;
 		
 		for(var i = 0; i<statusList.length; i++){
 			sumtot += i;
-			document.getElementById(totPrice+'-tot').innerText = sumtot;
+			document.getElementById(coincode+'-tot').innerText = sumtot;
 		}
 			console.log("sumtot -> "+sumtot);
 	})
@@ -239,9 +253,10 @@ data = {
 	      <td th:text="${slist.coinname}+'('+${slist.coincode}+')'"></td>
 	      <td th:text="${#numbers.formatDecimal(slist.coin_amt,1,'COMMA',8,'POINT')}"></td>
 	      <td th:text="${#numbers.formatDecimal(slist.avg_price,1,'COMMA',0,'POINT')}"></td>
-	      <td th:id="${slist.coincode}+'-totPrice'" th:text="${#numbers.formatDecimal(slist.tot_price,1,'COMMA',0,'POINT')}"></td>
+	      <td th:text="${#numbers.formatDecimal(slist.tot_price,1,'COMMA',0,'POINT')}"></td>
 	      <td th:id="${slist.coincode}"></td>
-	      <td th:id="${slist.coincode}+'-loss'"></td>
+      	  <td th:id="${slist.coincode}+'-loss'"></td>
+      	  <td th:id="${slist.coincode}+'-avg'"></td>
 	    </tr>
     </th:block>
     <th:block data-th-if="${totPrice == 0}">

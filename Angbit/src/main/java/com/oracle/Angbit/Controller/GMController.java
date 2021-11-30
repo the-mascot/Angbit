@@ -11,10 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.oracle.Angbit.model.common.MemberInfo;
-import com.oracle.Angbit.model.common.Trade;
 import com.oracle.Angbit.model.status.CoinCoinInfo;
 import com.oracle.Angbit.model.status.StatusPaging;
 import com.oracle.Angbit.model.status.TradeCoinInfo;
@@ -52,7 +50,7 @@ public class GMController {
 		}
 		
 		@GetMapping("/status_y_history")
-		public String statusYHistory(Trade trd, HttpServletRequest request, String currentPage, Model model) {
+		public String statusYHistory(TradeCoinInfo trdCoin, HttpServletRequest request, String currentPage, Model model) {
 			System.out.println("GMController StatusYHistory Start...");
 			
 			HttpSession session = request.getSession();
@@ -63,10 +61,12 @@ public class GMController {
 			System.out.println("total.size -> "+total);
 			
 			StatusPaging pg = new StatusPaging(total, currentPage);
-			trd.setStart(pg.getStart());
-			trd.setEnd(pg.getEnd());
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			System.out.println("trd.getStart() ->"+trdCoin.getStart());
+			System.out.println("trd.getEnd() ->"+trdCoin.getEnd());
 			
-			List<TradeCoinInfo> tradeList = ss.yStatus(id);
+			List<TradeCoinInfo> tradeList = ss.yStatus(trdCoin, id);
 			model.addAttribute("yList", tradeList);
 			model.addAttribute("pg", pg);
 			return "/status/y_history";

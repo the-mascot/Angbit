@@ -1,6 +1,8 @@
 package com.oracle.Angbit.dao.status;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +48,14 @@ public class StatusDaoImpl implements StatusDao {
 
 //	체결내역(전체)
 	@Override
-	public List<TradeCoinInfo> listY(String id) {
+	public List<TradeCoinInfo> listY(TradeCoinInfo trdCoin, String id) {
 		System.out.println("StatusDaoImpl listY start...");
+		
+		Map param = new HashMap();
+		param.put("trdCoin", trdCoin);
+		param.put("id", id);
 		List<TradeCoinInfo> yList = null;
-		yList = session.selectList("YList", id);
+		yList = session.selectList("YList", param);
 		return yList;
 	}
 	

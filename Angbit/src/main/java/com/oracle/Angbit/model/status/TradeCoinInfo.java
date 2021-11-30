@@ -23,4 +23,11 @@ public class TradeCoinInfo {
 //	CoinInfo table
 	private String coinname;
 	
+	// 조회용
+	private String search;
+	private String keyword;
+	private String pageNum;  
+	private int start;
+	private int end;
+	
 }

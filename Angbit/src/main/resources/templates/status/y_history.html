@@ -103,9 +103,30 @@
 	<th:block th:if="${pg.startPage>pg.pageBlock}">
 		<a th:href="@{y_history?currentPage=${pg.startPage-pg.pageBlock}">[이전]</a>
 	</th:block>
-<!-- 	<th:block th:each="i:${pg(startPage, endPage)}"> -->
+<!-- 	<th:block th:each="i:${#number.sequence(pg.startPage, pg.endPage)}"> -->
 <!-- 		<a th:href="@{y_history?currentPage=${i}">[${i}]</a> -->
 <!-- 	</th:block> -->
+	<th:block th:if="${pg.endPage<pg.totalPage}">
+		<a th:href="@{y_history?currentPage=${pg.startPage+pg.pageBlock}">[다음]</a>
+	</th:block>
+	
+<!-- <nav aria-label="Page navigation example"> -->
+<!--   <ul class="pagination"> -->
+<!--     <li class="page-item"> -->
+<!--       <a class="page-link" href="#" aria-label="Previous"> -->
+<!--         <span aria-hidden="true">&laquo;</span> -->
+<!--       </a> -->
+<!--     </li> -->
+<!--     <li class="page-item"><a class="page-link" href="#">1</a></li> -->
+<!--     <li class="page-item"><a class="page-link" href="#">2</a></li> -->
+<!--     <li class="page-item"><a class="page-link" href="#">3</a></li> -->
+<!--     <li class="page-item"> -->
+<!--       <a class="page-link" href="#" aria-label="Next"> -->
+<!--         <span aria-hidden="true">&raquo;</span> -->
+<!--       </a> -->
+<!--     </li> -->
+<!--   </ul> -->
+<!-- </nav> -->
 	
 </main>
  <footer th:replace="common/footer :: footer"></footer>

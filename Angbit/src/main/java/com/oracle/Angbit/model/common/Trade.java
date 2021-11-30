@@ -19,10 +19,4 @@ public class Trade {
 	private int trd_div;
 	private int trd_stu;
 	
-	// 조회용
-	private String search;
-	private String keyword;
-	private String pageNum;  
-	private int start;
-	private int end;
 }
