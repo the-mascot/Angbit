@@ -1,6 +1,5 @@
 package com.oracle.Angbit.Controller;
 
-import java.lang.reflect.Member;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.oracle.Angbit.model.common.Board;
 import com.oracle.Angbit.model.common.MemberInfo;
@@ -55,16 +53,16 @@ public class DYController {
 	  return "board/coinBoard"; 
 	  }
 	
-
-	  @GetMapping(value="detailBoard")
+	  //게시판 상세보기
+	  @GetMapping(value="board_detailBoard")
 		public String detailBoard(String nickname, int b_num, Model model) {
 			System.out.println("DYController Start detail..." );
-			Board board = bs.detailBoard(b_num);
+			Board board = bs.detailBoard(b_num); // service->dao->xml->dao->service->여기
 			MemberInfo memberInfo = bs.detailMember(nickname);
 			
 			model.addAttribute("board",board);
 			model.addAttribute("memberInfo",memberInfo);
-			return "detailBoard";
+			return "board/detailBoard";
 
 		}
 	  
@@ -79,8 +77,8 @@ public class DYController {
 	  
 	  
 	  
-	//수정폼	
-		@GetMapping(value="updateForm")
+	//수정 폼에 자료를 가져와 띄우는거
+		@GetMapping(value="board_updateForm")
 		public String updateForm(String nickname, int b_num, Model model) {
 			System.out.println("DYController Start updateForm..." );
 			Board board = bs.detailBoard(b_num); 
@@ -89,9 +87,9 @@ public class DYController {
 			model.addAttribute("board",board);
 			model.addAttribute("memberInfo",memberInfo);
 			
-			return "updateForm";
+			return "board/updateForm";
 		}
-		
+	//실질적인 데이터베이스 수정 작업	
 		@PostMapping(value="update")
 	    public String update(Board board, Model model) {
 			int k = bs.update(board);
@@ -134,17 +132,13 @@ public class DYController {
 		
 		
 		
-		
-		
-		
-		
-		//삭제
-				@GetMapping("board_delete")
-				public String delete(int empno, Model model) {
+				//삭제
+				@PostMapping("delete")
+				public String delete(int b_num, Model model) {
 					System.out.println("DYController Start delete...");
-					int result = bs.Delete(empno);
+					int result = bs.Delete(b_num);
 					
-					model.addAttribute("delete", result);
+					model.addAttribute("result", result);
 					
 					return "redirect:getList"; 
 				}

@@ -81,6 +81,8 @@ public class BoardDaoImpl implements BoardDao {
 		return pagingbd;
 	}
 
+	
+	//detail,updateForm
 	@Override
 	public Board detailBoard(int b_num) {
 		System.out.println("BoardDaoImpl detail start..");
@@ -94,7 +96,6 @@ public class BoardDaoImpl implements BoardDao {
 		}
 	return board;
 	}
-
 	@Override
 	public MemberInfo detailMember(String nickname) {
 		System.out.println("BoardDaoImpl detail start..");
@@ -113,11 +114,11 @@ public class BoardDaoImpl implements BoardDao {
 	
 	//삭제기능
 		@Override
-		public int Delete(int empno) {
+		public int Delete(int b_num) {
 			System.out.println("BoardDaoImpl Delete Start...");
 			int result = 0;
 			try {
-				result  = session.delete("delete",empno);
+				result  = session.delete("delete",b_num);
 				System.out.println("BoardDaoImpl delete result->"+result);
 			} catch (Exception e) {
 				System.out.println("BoardDaoImpl delete Exception->"+e.getMessage());
@@ -130,7 +131,7 @@ public class BoardDaoImpl implements BoardDao {
 			System.out.println("BoardDaoImpl update start..");
 			int kkk = 0;
 			try {
-				kkk  = session.update("DYboardUpdate",board);
+				kkk  = session.update("dyBoardUpdate",board);
 			} catch (Exception e) {
 				System.out.println("BoardDaoImpl update Exception->"+e.getMessage());
 			}

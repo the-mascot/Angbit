@@ -34,10 +34,10 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public int Delete(int empno) {
+	public int Delete(int b_num) {
 		int result = 0;
 		System.out.println("BoardServiceImpl delete Start...");
-		result = bdao.Delete(empno);
+		result = bdao.Delete(b_num);
 		return result;
 	}
 
@@ -60,19 +60,20 @@ public class BoardServiceImpl implements BoardService {
 		return pagingbd;
 	}
 
+	
+	//detail,updateForm
 	@Override
 	public Board detailBoard(int b_num) {
-		System.out.println("BoardServiceImpl detail ...");
+		System.out.println("BoardServiceImpl detailBoard ...");
 		Board board = null;
 		
-		board = bdao.detailBoard(b_num);
+		board = bdao.detailBoard(b_num); //dao에서 리턴받은값 여기로
 		
-		return board;
+		return board;//리턴 컨트롤러로
 	}
-
 	@Override
 	public MemberInfo detailMember(String nickname) {
-		System.out.println("BoardServiceImpl detail ...");
+		System.out.println("BoardServiceImpl detailMember ...");
 		MemberInfo memberInfo = null;
 		
 		memberInfo = bdao.detailMember(nickname);
