@@ -16,6 +16,13 @@
 		where id = #{id}
 	</select>
 	
+	<!-- memberInfo = session.selectOne("chkNickname", nickname); -->
+	<select id="chkNickname" parameterType="memberinfo" resultType="memberinfo">
+		select *
+		from memberinfo
+		where nickname = #{nickname}
+	</select>
+	
 	<!-- MemberInfo getmemberinfo = session.selectOne("LoginChk", memberinfo); -->
 	<select id="LoginChk" parameterType="memberinfo" resultType="memberinfo">
 		select *
