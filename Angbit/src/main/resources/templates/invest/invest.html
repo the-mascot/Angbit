@@ -329,10 +329,16 @@
 					console.log("error : ",e);
 				}
 			});
-			
-			selectKRW();
+
 			chartApi();
-			
+
+			if ($('#order-buy-a').hasClass("active") == true) {
+				selectKRW();
+			} else {
+				availableQunatity();
+			}
+
+
 		};
 		
 		// API 정보 업데이트
@@ -593,7 +599,7 @@
 				e.preventDefault();
 				$('#order-buy-a').attr('class', 'nav-link active');
 				$('#order-sell-a').attr('class', 'nav-link');
-				
+
 				$.ajax({
 					type		:	'GET',
 					url			:	'html/buyForm.html',
@@ -604,17 +610,30 @@
 						console.log("error : ",e);
 					}
 				});
-				
+
 			});
-			
+
 			// 매도 클릭시
 			$('#order-sell-a').on('click', function(e) {
 				e.preventDefault();
 				$('#order-buy-a').attr('class', 'nav-link');
 				$('#order-sell-a').attr('class', 'nav-link active');
+
+				$.ajax({
+					type: 'GET',
+					url: 'html/sellForm.html',
+					success: function (data) {
+						$('#order-card-body').html(data);
+					},
+					error: function (e) {
+						console.log("error : ", e);
+					}
+				});
+
 				availableQunatity();
-				
+
 			});
+
 			
 			$('#trd_method-market').on('click', function() {
 				$('#order-unit_price-th').hide();
@@ -906,34 +925,30 @@
 			}
 		}
 
-		var sell_amt = null;
+		/* 매도 */
+
+		var sell_amt = null; // 매도 가능 수량
+
+
 
 		// 매도 가능 수량
 		function availableQunatity() {
 			const availQuan = document.getElementById('sell-avaliableKRW');
 			const selected = currCoin.substring(currCoin.indexOf('-')+1);
+
 			$.ajax({
-				type		:	'GET',
-				url			:	'html/sellForm.html',
-				success		:	function(data) {
-					$('#order-card-body').html(data);
-					// 매도 가능 수량 불러오기
-					$.ajax({
-						type		:	'GET',
-						url			:	'invest/sellQuantity',
-						data		:   {"currCoin" : selected},
-						success		:	function(data){
-							//불러오고?
-							sell_amt = data;
-							$('#sell-availableAmt').text(data.toFixed(8));
-							$('.selected').text(selected);
-							console.log('받아온 데이터'+data);
-							console.log('현재 선택된 코인'+selected);
-						}
-					})
+				type: 'GET',
+				url: 'invest/sellQuantity',
+				data: {"currCoin": selected},
+				success: function (data) {
+					sell_amt = data;
+					$('#sell-availableAmt').text(data.toFixed(8));
+					$('.selected').text(selected);
+					console.log('받아온 데이터' + data);
+					console.log('현재 선택된 코인' + selected);
 				},
-				error		:	function(e) {
-					console.log("error : ",e);
+			error        :    function (e) {
+				console.log("error : ", e);
 				}
 			});
 		}
@@ -957,7 +972,7 @@
 				}
 			}
 
-			if (cnt>sell_amt) {
+			if (cnt > sell_amt) {
 				console.log('초과')
 				alert('입력된 수량이 판매 가능 수량을 초과합니다.');
 				return false;
@@ -971,6 +986,12 @@
 
 			return true;
 		}
+
+		// $('#sell-unit_price, #sell-trd_amt').on('keyup',function () {
+		// 	let sell_price = $('#sell-trd_amt').val() * uncomma($('#sell-unit_price').val());
+		// 	console.log(sell_price);
+		// 	// $('#sell-trd_price').val(comma(sell_price));
+		// });
 
 </script>
 </head>
