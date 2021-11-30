@@ -22,5 +22,7 @@ public interface InvestDao {
 	void buyMarketPrice(OrderTrade orderTrade);
 
 	void buyLimitsPrice(OrderTrade orderTrade);
+
+	List<CoinInfo> searchCoin(String keyWord);
 	
 }

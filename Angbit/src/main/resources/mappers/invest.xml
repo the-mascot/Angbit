@@ -19,4 +19,7 @@
 		when not matched then
 			insert values(#{coincode}, #{id}, #{trd_amt}, #{trd_unit_price}, #{trd_price})
 	</update>
+	<select id="searchCoin" parameterType="String" resultType="CoinInfo">
+		select * from coininfo where coincode like '%#{keyWord}%' or coinname like '%#{keyWord}%'
+	</select>
 </mapper>
