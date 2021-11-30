@@ -21,6 +21,14 @@ public interface StatusService {
 	List<TradeCoinInfo> allDateSort30(String id);
 	List<TradeCoinInfo> allDateSort90(String id);
 	List<TradeCoinInfo> allDateSort180(String id);
-	MemberInfo memberLogin(MemberInfo member);
+	List<TradeCoinInfo> buyDateSort7(String id);
+	List<TradeCoinInfo> buyDateSort30(String id);
+	List<TradeCoinInfo> buyDateSort90(String id);
+	List<TradeCoinInfo> buyDateSort180(String id);
+	List<TradeCoinInfo> sellDateSort7(String id);
+	List<TradeCoinInfo> sellDateSort30(String id);
+	List<TradeCoinInfo> sellDateSort90(String id);
+	List<TradeCoinInfo> sellDateSort180(String id);
+	int total(String id);
 
 }

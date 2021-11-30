@@ -11,9 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.oracle.Angbit.model.common.MemberInfo;
+import com.oracle.Angbit.model.common.Trade;
 import com.oracle.Angbit.model.status.CoinCoinInfo;
+import com.oracle.Angbit.model.status.StatusPaging;
 import com.oracle.Angbit.model.status.TradeCoinInfo;
 import com.oracle.Angbit.service.status.StatusService;
 
@@ -49,56 +52,24 @@ public class GMController {
 		}
 		
 		@GetMapping("/status_y_history")
-		public String statusYHistory(HttpServletRequest request, Model model) {
+		public String statusYHistory(Trade trd, HttpServletRequest request, String currentPage, Model model) {
 			System.out.println("GMController StatusYHistory Start...");
 			
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_y_history id -> "+id);
 			
+			int total = ss.total(id);
+			System.out.println("total.size -> "+total);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trd.setStart(pg.getStart());
+			trd.setEnd(pg.getEnd());
+			
 			List<TradeCoinInfo> tradeList = ss.yStatus(id);
 			model.addAttribute("yList", tradeList);
+			model.addAttribute("pg", pg);
 			return "/status/y_history";
-		}
-		
-		@GetMapping("/status_n_history")
-		public String statusNHistory(HttpServletRequest request, Model model) {
-			System.out.println("GMController StatusNHistory Start...");
-			
-			HttpSession session = request.getSession();
-			String id = (String) session.getAttribute("sessionID");
-			System.out.println("status_n_history id -> "+id);
-			
-			List<TradeCoinInfo> tradeList = ss.nStatus(id);
-			System.out.println("GMController n_history tradeList.size ->"+tradeList.size());
-			model.addAttribute("nList", tradeList);
-			return "/status/n_history";
-		}
-		
-		@GetMapping("/status_y_history_buy")
-		public String statusBuycom(HttpServletRequest request, Model model) {
-			System.out.println("GMController status_y_history_buy Start...");
-			
-			HttpSession session = request.getSession();
-			String id = (String) session.getAttribute("sessionID");
-			System.out.println("status_y_history_buy id -> "+id);
-			
-			List<TradeCoinInfo> comBuyList = ss.comBuyList(id);
-			model.addAttribute("cbList", comBuyList);
-			return "/status/y_history_buy";
-		}
-		
-		@GetMapping("/status_y_history_sell")
-		public String statusSellcom(HttpServletRequest request, Model model) {
-			System.out.println("GMController status_y_history_buy Start...");
-			
-			HttpSession session = request.getSession();
-			String id = (String) session.getAttribute("sessionID");
-			System.out.println("status_n_history_buy id -> "+id);
-			
-			List<TradeCoinInfo> comSellList = ss.comSellList(id);
-			model.addAttribute("csList", comSellList);
-			return "/status/y_history_sell";
 		}
 		
 		@GetMapping("/status_y_history_sort7d")
@@ -157,4 +128,149 @@ public class GMController {
 			return "/status/y_history_sort180d"; 
 		}
 		
+		@GetMapping("/status_n_history")
+		public String statusNHistory(HttpServletRequest request, Model model) {
+			System.out.println("GMController StatusNHistory Start...");
+			
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("status_n_history id -> "+id);
+			
+			List<TradeCoinInfo> tradeList = ss.nStatus(id);
+			System.out.println("GMController n_history tradeList.size ->"+tradeList.size());
+			model.addAttribute("nList", tradeList);
+			return "/status/n_history";
+		}
+		
+		// 매수
+		@GetMapping("/status_y_history_buy")
+		public String statusBuycom(HttpServletRequest request, Model model) {
+			System.out.println("GMController status_y_history_buy Start...");
+			
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("status_y_history_buy id -> "+id);
+			
+			List<TradeCoinInfo> comBuyList = ss.comBuyList(id);
+			model.addAttribute("cbList", comBuyList);
+			return "/status/y_history_buy";
+		}
+		
+		@GetMapping("/status_y_history_buy_sort7d")
+		public String statusBuycomSort7d(HttpServletRequest request, Model model) {
+			System.out.println("GMController status_y_history_buy_sort7 Start...");
+			
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("status_y_history_buy id -> "+id);
+			
+			List<TradeCoinInfo> Buy7List = ss.buyDateSort7(id);
+			model.addAttribute("Buy7List", Buy7List);
+			return "/status/y_history_buy_sort7d";
+		}
+		
+		@GetMapping("/status_y_history_buy_sort30d")
+		public String statusBuycomSort30d(HttpServletRequest request, Model model) {
+			System.out.println("GMController status_y_history_buy_sort30 Start...");
+			
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("status_y_history_buy id -> "+id);
+			
+			List<TradeCoinInfo> Buy30List = ss.buyDateSort30(id);
+			model.addAttribute("Buy30List", Buy30List);
+			return "/status/y_history_buy_sort30d";
+		}
+		
+		@GetMapping("/status_y_history_buy_sort90d")
+		public String statusBuycomSort90d(HttpServletRequest request, Model model) {
+			System.out.println("GMController status_y_history_buy_sort90 Start...");
+			
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("status_y_history_buy id -> "+id);
+			
+			List<TradeCoinInfo> Buy90List = ss.buyDateSort90(id);
+			model.addAttribute("Buy90List", Buy90List);
+			return "/status/y_history_buy_sort90d";
+		}
+		
+		@GetMapping("/status_y_history_buy_sort180d")
+		public String statusBuycomSort180d(HttpServletRequest request, Model model) {
+			System.out.println("GMController status_y_history_buy_sort180 Start...");
+			
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("status_y_history_buy id -> "+id);
+			
+			List<TradeCoinInfo> Buy180List = ss.buyDateSort180(id);
+			model.addAttribute("Buy180List", Buy180List);
+			return "/status/y_history_buy_sort180d";
+		}
+		
+		// 매도
+		@GetMapping("/status_y_history_sell")
+		public String statusSellcom(HttpServletRequest request, Model model) {
+			System.out.println("GMController status_y_history_sell Start...");
+			
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("status_n_history_buy id -> "+id);
+			
+			List<TradeCoinInfo> comSellList = ss.comSellList(id);
+			model.addAttribute("csList", comSellList);
+			return "/status/y_history_sell";
+		}
+		
+		@GetMapping("/status_y_history_sell_sort7d")
+		public String statusSellcomsort7d(HttpServletRequest request, Model model) {
+			System.out.println("GMController status_y_history_sell_sort7 Start...");
+			
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("status_n_history_buy id -> "+id);
+			
+			List<TradeCoinInfo> Sell7List = ss.sellDateSort7(id);
+			model.addAttribute("Sell7List", Sell7List);
+			return "/status/y_history_sell_sort7d";
+		}
+		
+		@GetMapping("/status_y_history_sell_sort30d")
+		public String statusSellcomsort30d(HttpServletRequest request, Model model) {
+			System.out.println("GMController status_y_history_sell_sort7 Start...");
+			
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("status_n_history_buy id -> "+id);
+			
+			List<TradeCoinInfo> Sell30List = ss.sellDateSort30(id);
+			model.addAttribute("Sell30List", Sell30List);
+			return "/status/y_history_sell_sort30d";
+		}
+		
+		@GetMapping("/status_y_history_sell_sort90d")
+		public String statusSellcomsort90d(HttpServletRequest request, Model model) {
+			System.out.println("GMController status_y_history_sell_sort7 Start...");
+			
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("status_n_history_buy id -> "+id);
+			
+			List<TradeCoinInfo> Sell90List = ss.sellDateSort90(id);
+			model.addAttribute("Sell90List", Sell90List);
+			return "/status/y_history_sell_sort90d";
+		}
+		
+		@GetMapping("/status_y_history_sell_sort180d")
+		public String statusSellcomsort180d(HttpServletRequest request, Model model) {
+			System.out.println("GMController status_y_history_sell_sort7 Start...");
+			
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("status_n_history_buy id -> "+id);
+			
+			List<TradeCoinInfo> Sell180List= ss.sellDateSort180(id);
+			model.addAttribute("Sell180List", Sell180List);
+			return "/status/y_history_sell_sort180d";
+		}
 	}

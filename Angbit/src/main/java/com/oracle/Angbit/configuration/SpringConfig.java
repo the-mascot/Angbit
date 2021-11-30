@@ -28,6 +28,9 @@ public class SpringConfig implements WebMvcConfigurer {
 		registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/myInfo");
 		// 회원 상태 확인 인터셉터(로그인 시)
 		registry.addInterceptor(new WidrawInterceptor()).addPathPatterns("/gologin");
+		registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/statusList");
+		registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/status_y_history");
+		registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/status_n_history");
 	}
 	
 }

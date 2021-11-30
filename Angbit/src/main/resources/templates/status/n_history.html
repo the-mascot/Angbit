@@ -48,14 +48,14 @@
 	      <td th:text="${nlist.coinname}+'&#13;&#10;'+'('+${nlist.coincode}+')'"></td>
 	      <td th:if="${nlist.trd_div}==1" style="color: blue;">매도 대기</td>
 	      <td th:if="${nlist.trd_div}==0" style="color: red;">매수 대기</td>
-	      <td th:text="${nlist.trd_amt}"></td>
+	      <td th:text="${#numbers.formatDecimal(nlist.trd_amt,1,'COMMA',8,'POINT')}"></td>
 	      <td th:text="${#numbers.formatDecimal(nlist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
 	      <td th:text="${#numbers.formatDecimal(nlist.trd_price,1,'COMMA',0,'POINT')}"></td>
 	      <td th:text="${#dates.format(nlist.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
 	    </tr>
 	  </th:block>
 	  <th:block data-th-if="${nList.size == 0}">
-	  	<td colspan="7">데이터가 없습니다.</td>
+	  	<td colspan="7">매수 및 매도 대기 내역이 없습니다.</td>
 	  </th:block>
   </tbody>
 </table>
