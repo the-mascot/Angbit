@@ -1,5 +1,8 @@
 package com.oracle.Angbit.dao.invest;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.reflection.ReflectionException;
@@ -118,6 +121,23 @@ public class InvestDaoImpl implements InvestDao {
 		
 		seesion.insert("insertTrade", orderTrade);
 		seesion.update("updateKRW", orderTrade);
+	}
+
+	@Override
+	public List<CoinInfo> searchCoin(String keyWord) {
+
+		System.out.println("InvestDaoImpl searchCoin Start...");
+		List<CoinInfo> coinInfo = null;
+		
+		try {
+			coinInfo = seesion.selectList("searchCoin", keyWord);
+		} catch (Exception e) {
+			System.out.println("InvestDaoImpl searchCoin Exception->"+e.getMessage());
+			e.printStackTrace();
+		}
+		
+		
+		return null;
 	}
 
 }

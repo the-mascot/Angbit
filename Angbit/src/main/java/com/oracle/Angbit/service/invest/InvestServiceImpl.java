@@ -73,6 +73,15 @@ public class InvestServiceImpl implements InvestService {
 		System.out.println("InvestServiceImpl buyLimitsPrice Start...");
 		ivdao.buyLimitsPrice(orderTrade);
 	}
+
+	@Override
+	public List<CoinInfo> searchCoin(String keyWord) {
+
+		System.out.println("InvestServiceImpl buyLimitsPrice Start...");
+		List<CoinInfo> coinInfo = ivdao.searchCoin(keyWord);
+		
+		return coinInfo;
+	}
 	
 	
 	

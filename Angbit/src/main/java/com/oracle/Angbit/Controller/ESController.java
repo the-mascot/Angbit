@@ -160,6 +160,16 @@ public class ESController {
 		return msg;
 	}
 	
-	
+	@ResponseBody
+	@GetMapping("invest/searchCoin")
+	public List<CoinInfo> searchCoin(String keyWord) {
+		
+		System.out.println("ESController searchCoin Start...");
+		System.out.println("keyWord"+keyWord);
+		List<CoinInfo> coinInfo = ivs.searchCoin(keyWord);
+		
+		
+		return coinInfo;
+	}
 	
 }
