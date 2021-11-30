@@ -612,17 +612,7 @@
 				e.preventDefault();
 				$('#order-buy-a').attr('class', 'nav-link');
 				$('#order-sell-a').attr('class', 'nav-link active');
-				
-				$.ajax({
-					type		:	'GET',
-					url			:	'html/sellForm.html',
-					success		:	function(data) {
-						$('#order-card-body').html(data);
-					},
-					error		:	function(e) {
-						console.log("error : ",e);
-					}
-				});
+				availableQunatity();
 				
 			});
 			
@@ -914,6 +904,72 @@
 
 				event.target.classList.add("btnClicked");
 			}
+		}
+
+		var sell_amt = null;
+
+		// 매도 가능 수량
+		function availableQunatity() {
+			const availQuan = document.getElementById('sell-avaliableKRW');
+			const selected = currCoin.substring(currCoin.indexOf('-')+1);
+			$.ajax({
+				type		:	'GET',
+				url			:	'html/sellForm.html',
+				success		:	function(data) {
+					$('#order-card-body').html(data);
+					// 매도 가능 수량 불러오기
+					$.ajax({
+						type		:	'GET',
+						url			:	'invest/sellQuantity',
+						data		:   {"currCoin" : selected},
+						success		:	function(data){
+							//불러오고?
+							sell_amt = data;
+							$('#sell-availableAmt').text(data.toFixed(8));
+							$('.selected').text(selected);
+							console.log('받아온 데이터'+data);
+							console.log('현재 선택된 코인'+selected);
+						}
+					})
+				},
+				error		:	function(e) {
+					console.log("error : ",e);
+				}
+			});
+		}
+
+		function inSellAmt(evt) {
+			var charCode = (evt.which) ? evt.which : event.keyCode;
+			var cnt = parseFloat($('#sell-trd_amt').val());
+			console.log(cnt)
+			console.log(sell_amt)
+
+			if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
+				return false;
+			// Textbox value
+			var _value = event.srcElement.value;
+
+			// 소수점(.)이 두번 이상 나오지 못하게
+			var _pattern0 = /^\d*[.]\d*$/; // 현재 value값에 소수점(.) 이 있으면 . 입력불가
+			if (_pattern0.test(_value)) {
+				if (charCode == 46) {
+					return false;
+				}
+			}
+
+			if (cnt>sell_amt) {
+				console.log('초과')
+				alert('입력된 수량이 판매 가능 수량을 초과합니다.');
+				return false;
+			}
+
+			// 소수점 둘째자리까지만 입력가능
+			var _pattern2 = /^\d*[.]\d{8}$/; // 현재 value값이 소수점 둘째짜리 숫자이면 더이상 입력 불가
+			if (_pattern2.test(_value)) {
+				return false;
+			}
+
+			return true;
 		}
 
 </script>
