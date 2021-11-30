@@ -1,12 +1,12 @@
 package com.oracle.Angbit.model.common;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 public class MemberInfo {
 
 	private String id;

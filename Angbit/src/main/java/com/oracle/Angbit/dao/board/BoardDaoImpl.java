@@ -27,6 +27,7 @@ public class BoardDaoImpl implements BoardDao {
 		try {
 			boardList = session.selectList("boardList"); 					//Board.xml에서 가져갈 이름
 			System.out.println("BoardDaoImpl BoardList boardList.size()->"+boardList.size());
+			
 		} catch (Exception e) {
 			System.out.println("BoardDaoImpl BoardList Exception->"+e.getMessage());
 			e.printStackTrace();
@@ -36,21 +37,21 @@ public class BoardDaoImpl implements BoardDao {
 	}
 
 //nickname 가져오기
-	@Override
-	public List<MemberInfo> MemberList() {
-		System.out.println("BoardDaoImpl MemberList Start...");
-		List<MemberInfo> memberList = null;
-		
-		try {
-			memberList = session.selectList("memberList");
-			System.out.println("BoardDaoImpl MemberList memberList.size()->"+memberList.size());
-		} catch (Exception e) {
-			System.out.println("BoardDaoImpl MemberList Exception->"+e.getMessage());
-			e.printStackTrace();
-		}
-		
-		return memberList;
-	}
+//	@Override
+//	public List<MemberInfo> MemberList() {
+//		System.out.println("BoardDaoImpl MemberList Start...");
+//		List<MemberInfo> memberList = null;
+//		
+//		try {
+//			memberList = session.selectList("memberList");
+//			System.out.println("BoardDaoImpl MemberList memberList.size()->"+memberList.size());
+//		} catch (Exception e) {
+//			System.out.println("BoardDaoImpl MemberList Exception->"+e.getMessage());
+//			e.printStackTrace();
+//		}
+//		
+//		return memberList;
+//	}
 
 
 
@@ -136,6 +137,12 @@ public class BoardDaoImpl implements BoardDao {
 				System.out.println("BoardDaoImpl update Exception->"+e.getMessage());
 			}
 			return kkk;
+		}
+
+		@Override
+		public List<Board> listManager() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 		

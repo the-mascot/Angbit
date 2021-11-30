@@ -2,15 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="BoardDao">
-	<select id="boardList" resultType="Board">
-		select * from board
-	</select>
-	<select id="memberList" resultType="MemberInfo">
-		select * from MEMBERINFO
+	
+	<!-- getList -->
+	<select id="boardList" parameterType="Board" resultType="Board">
+		SELECT  *
+		FROM
+		 board bd
+		LEFT OUTER JOIN
+		 memberinfo mb
+		ON 
+		 bd.id = mb.id
+		ORDER BY bd.b_num DESC
 	</select>
 	
 	
-	<select id="dyboardTotal"></select>
+	<!-- total -->
+	<select id="dyboardTotal" resultType="int">
+		select count(*) FROM board
+	</select>
+	
 	<select id="pagingbd" parameterType="MemberInfo" resultType="Board">
 		SELECT *
 		FROM
@@ -36,12 +46,13 @@
 		 set    bd.b_num=#{b_num},
 		        bd.title=#{title}, 
 		        bd.uploaddate=#{uploaddate}, 
-		    	bd.views=#{views},  
+		    	bd.views=#{views} 
 		       
 		 where  bd.title=#{title}
 	</update>
 	
+	<!-- delete -->
 	<delete id="delete" parameterType="int">
-	delete from BOARD where b_num = #{b_num}
+		delete from BOARD where b_num = #{b_num}
 	</delete>
 </mapper>

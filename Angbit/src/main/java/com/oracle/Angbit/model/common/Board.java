@@ -2,11 +2,10 @@ package com.oracle.Angbit.model.common;
 
 import java.util.Date;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+
+@Data
 public class Board {
 	
 	private int b_num;
@@ -20,9 +19,10 @@ public class Board {
 	private int re_level;
 	private int re_step;
 	
+	private String nickname;
 	
 	// 조회용
-			private String search;   private String keyword;
-			private String pageNum;  
-			private int start; 		 private int end;
+	private String search;   private String keyword;
+	private String pageNum;  
+	private int start; 		 private int end;
 }

@@ -22,13 +22,12 @@ public class DYController {
 
 	//보드값가져오기
 	@GetMapping("board_list")
-	public String getList(Board board, MemberInfo memberInfo, Model model) {
+	public String getList(Board board, Model model) {
 		System.out.println("DYController getList Start...");
 		List<Board> boardList = bs.BoardList();
-		List<MemberInfo> memberList = bs.MemberList();
-		//System.out.println("memberList.get(0).getId() ->"+memberList.get(0).getId());
+		
 		model.addAttribute("boardList", boardList);
-		model.addAttribute("memberList", memberList);
+		
 		return "board/coinBoard";
 	}
 	
@@ -55,37 +54,25 @@ public class DYController {
 	
 	  //게시판 상세보기
 	  @GetMapping(value="board_detailBoard")
-		public String detailBoard(String nickname, int b_num, Model model) {
+		public String detailBoard(int b_num, Model model) {//html에서 넘겨받을 변수의 타입을 적는건가?
+		  
 			System.out.println("DYController Start detail..." );
 			Board board = bs.detailBoard(b_num); // service->dao->xml->dao->service->여기
-			MemberInfo memberInfo = bs.detailMember(nickname);
-			
 			model.addAttribute("board",board);
-			model.addAttribute("memberInfo",memberInfo);
+			
 			return "board/detailBoard";
 
 		}
-	  
-//	  @GetMapping(value = "detailBoard")
-//	  public String detailMember(String nickname, Model model) {
-//			System.out.println("DYController Start detail..." );
-//			MemberInfo memberInfo = bs.detailMember(nickname);
-//			model.addAttribute("memberInfo",memberInfo);
-//			return "detailBoard";
-//
-//		} 
-	  
-	  
 	  
 	//수정 폼에 자료를 가져와 띄우는거
 		@GetMapping(value="board_updateForm")
 		public String updateForm(String nickname, int b_num, Model model) {
 			System.out.println("DYController Start updateForm..." );
 			Board board = bs.detailBoard(b_num); 
-			MemberInfo memberInfo = bs.detailMember(nickname);
+			
 			
 			model.addAttribute("board",board);
-			model.addAttribute("memberInfo",memberInfo);
+			
 			
 			return "board/updateForm";
 		}
@@ -102,18 +89,14 @@ public class DYController {
 		
 		
 	//작성폼
-//		@GetMapping(value="writeForm")
-//		public String writeForm(Model model) {
-//		// 	Emp emp = null;
-//			List<Board> list = bs.listManager();
-//			System.out.println("DYController writeForm list.size->"+list.size());
-//			model.addAttribute("bdMngList",list);   // board Manager List
-//			
-//			List<MemberInfo> memberList = bs.MemberSelect();
-//			model.addAttribute("memList", memList); // memberInfo
-//			
-//			return "writeForm";
-//		}
+		@GetMapping(value="board_writeForm")
+		public String writeForm(Model model) {
+			List<Board> list = bs.listManager();
+			System.out.println("DYController writeForm list.size->"+list.size());
+			model.addAttribute("bdMngList",list);   // board Manager List
+			
+			return "writeForm";
+		}
 //		@PostMapping(value="write")
 //		public String write(Board board, Model model) {
 //			System.out.println("DYController Start write..." );
@@ -130,8 +113,7 @@ public class DYController {
 //			return returnStr;
 //		}	
 		
-		
-		
+
 				//삭제
 				@PostMapping("delete")
 				public String delete(int b_num, Model model) {
