@@ -19,13 +19,7 @@ public class StatusDaoImpl implements StatusDao {
 	@Autowired
 	private SqlSession session;
 	
-	@Override
-	public MemberInfo memberLogin(MemberInfo member) {
-		System.out.println("StatusDaoImpl login start...");
-		MemberInfo member2 = session.selectOne("login", member);
-		return member2;
-	}
-
+//	투자현황
 	@Override
 	public List<CoinCoinInfo> listStatus(String id) {
 		System.out.println("StatusDaoImpl listStatus start...");
@@ -41,24 +35,7 @@ public class StatusDaoImpl implements StatusDao {
 		krwList = session.selectList("KrwList", id);
 		return krwList;
 	}
-
-	@Override
-	public List<TradeCoinInfo> listY(String id) {
-		System.out.println("StatusDaoImpl listY start...");
-		List<TradeCoinInfo> yList = null;
-		yList = session.selectList("YList", id);
-//		System.out.println("YList.id->"+yList.get(3).getTrd_amt());
-		return yList;
-	}
-
-	@Override
-	public List<TradeCoinInfo> listN(String id) {
-		System.out.println("StatusDaoImpl listN start...");
-		List<TradeCoinInfo> nList = null;
-		nList = session.selectList("NList", id);
-		return nList;
-	}
-
+	
 	@Override
 	public int priceTot(String id) {
 		System.out.println("StatusDaoImpl priceTot start...");
@@ -67,20 +44,15 @@ public class StatusDaoImpl implements StatusDao {
 		return result;
 	}
 
+//	체결내역(전체)
 	@Override
-	public List<TradeCoinInfo> buyComList(String id) {
-		System.out.println("StatusDaoImpl buyComList start...");
-		List<TradeCoinInfo> buycList = session.selectList("CBuyList", id);
-		return buycList;
+	public List<TradeCoinInfo> listY(String id) {
+		System.out.println("StatusDaoImpl listY start...");
+		List<TradeCoinInfo> yList = null;
+		yList = session.selectList("YList", id);
+		return yList;
 	}
-
-	@Override
-	public List<TradeCoinInfo> sellComList(String id) {
-		System.out.println("StatusDaoImpl sellComList start...");
-		List<TradeCoinInfo> sellList = session.selectList("CSellList", id);
-		return sellList;
-	}
-
+	
 	@Override
 	public List<TradeCoinInfo> allDateSort7(String id) {
 		List<TradeCoinInfo> allDateSort7 = session.selectList("AllDateSort7", id);
@@ -108,6 +80,98 @@ public class StatusDaoImpl implements StatusDao {
 		System.out.println("StatusDaoImpl allDateSort180.size() -> "+allDateSort180.size());
 		return allDateSort180;
 	}
+
+//	체결내역(매수)
+	@Override
+	public List<TradeCoinInfo> buyComList(String id) {
+		System.out.println("StatusDaoImpl buyComList start...");
+		List<TradeCoinInfo> buycList = session.selectList("CBuyList", id);
+		return buycList;
+	}
+	
+	@Override
+	public List<TradeCoinInfo> buyDateSort7(String id) {
+		List<TradeCoinInfo> buyDateSort7 = session.selectList("buyDateSort7", id);
+		System.out.println("StatusDaoImpl buyDateSort7.size() -> "+buyDateSort7.size());
+		return buyDateSort7;
+	}
+
+	@Override
+	public List<TradeCoinInfo> buyDateSort30(String id) {
+		List<TradeCoinInfo> buyDateSort30 = session.selectList("buyDateSort30", id);
+		System.out.println("StatusDaoImpl buyDateSort30.size() -> "+buyDateSort30.size());
+		return buyDateSort30;
+	}
+
+	@Override
+	public List<TradeCoinInfo> buyDateSort90(String id) {
+		List<TradeCoinInfo> buyDateSort90 = session.selectList("buyDateSort90", id);
+		System.out.println("StatusDaoImpl buyDateSort90.size() -> "+buyDateSort90.size());
+		return buyDateSort90;
+	}
+
+	@Override
+	public List<TradeCoinInfo> buyDateSort180(String id) {
+		List<TradeCoinInfo> buyDateSort180 = session.selectList("buyDateSort180", id);
+		System.out.println("StatusDaoImpl buyDateSort180.size() -> "+buyDateSort180.size());
+		return buyDateSort180;
+	}
+
+//	체결내역(매도)
+	@Override
+	public List<TradeCoinInfo> sellComList(String id) {
+		System.out.println("StatusDaoImpl sellComList start...");
+		List<TradeCoinInfo> sellList = session.selectList("CSellList", id);
+		return sellList;
+	}
+
+	@Override
+	public List<TradeCoinInfo> sellDateSort7(String id) {
+		System.out.println("StatusDaoImpl sellDateSort7 start...");
+		List<TradeCoinInfo> sellDateSort7 = session.selectList("sellDateSort7", id);
+		System.out.println("StatusDaoImpl sellDateSort7.size()->" + sellDateSort7.size());
+		return sellDateSort7;
+	}
+
+	@Override
+	public List<TradeCoinInfo> sellDateSort30(String id) {
+		System.out.println("StatusDaoImpl sellDateSort30 start...");
+		List<TradeCoinInfo> sellDateSort30 = session.selectList("sellDateSort30", id);
+		System.out.println("StatusDaoImpl sellDateSort30.size()->" + sellDateSort30.size());
+		return sellDateSort30;
+	}
+
+	@Override
+	public List<TradeCoinInfo> sellDateSort90(String id) {
+		System.out.println("StatusDaoImpl sellDateSort90 start...");
+		List<TradeCoinInfo> sellDateSort90 = session.selectList("sellDateSort90", id);
+		System.out.println("StatusDaoImpl sellDateSort90.size()->" + sellDateSort90.size());
+		return sellDateSort90;
+	}
+
+	@Override
+	public List<TradeCoinInfo> sellDateSort180(String id) {
+		System.out.println("StatusDaoImpl sellDateSort180 start...");
+		List<TradeCoinInfo> sellDateSort180 = session.selectList("sellDateSort180", id);
+		System.out.println("StatusDaoImpl sellDateSort180.size()->" + sellDateSort180.size());
+		return sellDateSort180;
+	}
+
+	@Override
+	public List<TradeCoinInfo> listN(String id) {
+		System.out.println("StatusDaoImpl listN start...");
+		List<TradeCoinInfo> nList = null;
+		nList = session.selectList("NList", id);
+		return nList;
+	}
+
+	@Override
+	public int total(String id) {
+		int tot = 0;
+		tot = session.selectOne("StatusTotal", id);
+		return tot;
+	}
+
 
 
 

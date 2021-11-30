@@ -75,12 +75,12 @@ function onMessage(evt) {
 		console.log("totPrice -> "+totPrice);
 			
 		if('KRW-'+coincode == jason.cd){
-			var gg = amt * jason.tp
+			var gg = amt * jason.tp // 평가금액
 			console.log("gg -> "+gg);
 			
 			document.getElementById(coincode).innerText = gg.toLocaleString();
 			var coinloss = document.getElementById(coincode+'-loss').innerText = (gg-totPrice).toLocaleString();
-			console.log("coinloss -> "+coinloss);
+			console.log("coinloss -> "+coinloss); // 평가손익
 		}
 			if(coinloss < '0') {
 				document.getElementById(coincode+'-loss').style.color = "blue";

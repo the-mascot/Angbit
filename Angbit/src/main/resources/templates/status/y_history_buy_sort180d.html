@@ -7,6 +7,19 @@
 <!-- Common meta tag, Bootstrap, js -->
 <th:block th:replace="common/commonHead"></th:block>
 </head>
+<!-- <script type="text/javascript"> -->
+<!--  $("#buyC").click(function buyComplete(){ -->
+<!--  	$.ajax({ -->
+<!--  		type: 'GET', -->
+<!--  		url: "y_history_buy", -->
+<!--  		dataType: 'json', -->
+<!--  		success:function(data){ -->
+<!--  			console.log(data); -->
+<!--  			$('#buyC').val(data); -->
+<!--  		} -->
+<!--  	}) -->
+<!--  }) -->
+
 <!-- </script> -->
 <body>
 <!-- Common header -->
@@ -18,16 +31,16 @@
 </div>
 <div class="container">
 	<div class="col-4" style="float: left;" >기간 설정<p>
-		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history_sell'">전체</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sell_sort7d'">7일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sell_sort30d'">30일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sell_sort90d'">90일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sell_sort180d'">180일</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_buy'">전체</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_buy_sort7d'">7일</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_buy_sort30d'">30일</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_buy_sort90d'">90일</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history_buy_sort180d'">180일</button>
 	</div>
 	<div class="col-4" style="float: left">거래종류 설정<p>
 		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history'">전체</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_buy'">매수</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history_sell'">매도</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history_buy'">매수</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sell'">매도</button>
 	</div>
 	<div class="col-4" style="float: left; margin-top: 25px;"><p>
 		<a href="#">
@@ -51,9 +64,9 @@
     </tr>
   </thead>
   <tbody align="center" style="vertical-align:middle;">
-  	<th:block data-th-if="${csList.size != 0}">
-	    <tr th:each="cslist:${csList}">
-	      <th scope="row" th:switch="${cslist.coincode}">
+  	<th:block data-th-if="${Buy180List.size != 0}">
+	    <tr th:each="buy180List:${Buy180List}">
+	      <th scope="row" th:switch="${buy180List.coincode}">
 	      	<span th:case="ADA"><img class="table_images" alt="" th:src="@{images/status/ada.png}"></span>
 	      	<span th:case="AXS"><img class="table_images" alt="" th:src="@{images/status/axs.png}"></span>
 	      	<span th:case="BCH"><img class="table_images" alt="" th:src="@{images/status/bch.png}"></span>
@@ -70,19 +83,19 @@
 	      	<span th:case="XLM"><img class="table_images" alt="" th:src="@{images/status/xlm.png}"></span>
 	      	<span th:case="XRP"><img class="table_images" alt="" th:src="@{images/status/xrp.png}"></span>
 	      </th>
-	      <td th:text="${cslist.coinname}+'&#13;&#10;'+'('+${cslist.coincode}+')'"></td>
-	      <td th:if="${cslist.trd_div}==1" style="color: blue;">매도</td>
-	      <td th:if="${cslist.trd_div}==0" style="color: red;">매수</td>
+	      <td th:text="${buy180List.coinname}+'&#13;&#10;'+'('+${buy180List.coincode}+')'"></td>
+	      <td th:if="${buy180List.trd_div}==1" style="color: blue;">매도</td>
+	      <td th:if="${buy180List.trd_div}==0" style="color: red;">매수</td>
 	<!--       <td th:unless="${ylsit.trd_div}==0">매수</td> -->
-	      <td th:text="${#numbers.formatDecimal(cslist.trd_amt,1,'COMMA',8,'POINT')}"></td>
-	      <td th:text="${#numbers.formatDecimal(cslist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
-	      <td th:text="${#numbers.formatDecimal(cslist.trd_price,1,'COMMA',0,'POINT')}"></td>
-	      <td th:text="${#dates.format(cslist.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
+	      <td th:text="${#numbers.formatDecimal(buy180List.trd_amt,1,'COMMA',8,'POINT')}"></td>
+	      <td th:text="${#numbers.formatDecimal(buy180List.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
+	      <td th:text="${#numbers.formatDecimal(buy180List.trd_price,1,'COMMA',0,'POINT')}"></td>
+	      <td th:text="${#dates.format(buy180List.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
 	    </tr>
-    </th:block>
-    <th:block data-th-if="${csList.size == 0}">
-	  	<td colspan="7">데이터가 없습니다.</td>
-	</th:block>
+	 </th:block>
+	 <th:block data-th-if="${Buy180List.size == 0}">
+	  	<td colspan="7"><strong>180일 이내 매수내역이 없습니다.</strong></td>
+	 </th:block>
   </tbody>
 </table>
 </main>
