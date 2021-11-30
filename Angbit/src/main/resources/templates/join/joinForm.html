@@ -54,8 +54,27 @@ function chkID(Vdeptno){
 		url : "IDchk",
 		data : {id : Vdeptno},
 		dataType : 'text',
+		success : function(data1){
+			$('#msg1').html(data1);
+		}
+	});
+}
+</script>
+
+<script type="text/javascript">
+function chkNickname(Vdeptno){
+	$.ajax({
+		url : "chkNickname",
+		data : {nickname : Vdeptno},
+		dataType : 'text',
 		success : function(data){
-			$('#msg').html(data);
+			if(data == "사용 가능한 닉네임입니다."){
+				$('#msg2').html(data);
+				$("#submit").removeAttr("disabled");
+			} else {
+				$('#msg2').html(data);
+				$("#submit").attr("disabled", "disabled");
+			}
 		}
 	});
 }
@@ -66,7 +85,6 @@ function chkID(Vdeptno){
 	  $('[data-toggle="tooltip"]').tooltip()
 	})
 </script>
-
 
 
 <body>
@@ -86,7 +104,7 @@ function chkID(Vdeptno){
 		<br>
 			<div class="form-floating mb-1">
 			  <input type="email" class="form-control input-sm" id="id" name="id" placeholder="Id">
-			  <input type="button" value="중복 확인" onclick="chkID(joinfrm.id.value)"> <font color="red"><span id="msg"></span></font> 
+			  <input type="button" value="중복 확인" onclick="chkID(joinfrm.id.value)"> <font color="red"><span id="msg1"></span></font> 
 			  <label for="floatingInput">이메일</label>
 		    </div>
 			
@@ -105,12 +123,14 @@ function chkID(Vdeptno){
 			<div class="form-floating mb-1">
 			  <input type="text" class="form-control input-sm" id="nickname" name="nickname" placeholder="name@example.com">
 			  <label for="floatingInput">닉네임</label>
-			  <font color="gray">이메일과 닉네임은 '비밀번호 찾기'에 쓰여집니다.</font>  
+			  <input type="button" value="중복 확인" onclick="chkNickname(joinfrm.nickname.value)"> <font color="red"><span id="msg2"></span></font> 
+			  <br> <font color="gray">이메일과 닉네임은 '비밀번호 찾기'에 쓰여집니다.</font>  
 		    </div>
-		
+		    
 			<div class="signbtn">
-				<button type="submit" class="btn btn-warning btn-lg btn-block col-lg-12">&nbsp&nbsp&nbsp&nbsp&nbsp 가입하기 :) &nbsp&nbsp&nbsp&nbsp&nbsp</button></div>
+			    <button type="submit" id="submit" class="btn btn-warning btn-lg btn-block col-lg-12" disabled="disabled">&nbsp&nbsp&nbsp&nbsp&nbsp 가입하기 :) &nbsp&nbsp&nbsp&nbsp&nbsp</button></div>
 			</div>
+			
 	</form>
 </div>
 
