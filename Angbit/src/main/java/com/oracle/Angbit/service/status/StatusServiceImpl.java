@@ -41,9 +41,9 @@ public class StatusServiceImpl implements StatusService {
 	}
 //	체결내역(전체)
 	@Override
-	public List<TradeCoinInfo> yStatus(String id) {
+	public List<TradeCoinInfo> yStatus(TradeCoinInfo trdCoin, String id) {
 		System.out.println("StatusServiceImpl yStatus start...");
-		List<TradeCoinInfo> listY = sd.listY(id); 
+		List<TradeCoinInfo> listY = sd.listY(trdCoin, id); 
 		return listY;
 	}
 	
