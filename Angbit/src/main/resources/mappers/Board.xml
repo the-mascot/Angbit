@@ -8,6 +8,8 @@
 	<select id="memberList" resultType="MemberInfo">
 		select * from MEMBERINFO
 	</select>
+	
+	
 	<select id="dyboardTotal"></select>
 	<select id="pagingbd" parameterType="MemberInfo" resultType="Board">
 		SELECT *
@@ -18,22 +20,28 @@
 		  )
 			WHERE rn between #{start} and #{end} 
 	</select>
-	<select id="dyBoardSelOne" parameterType="String" resultType="Board">
+	
+	
+	<!-- detail, updateForm -->
+	<select id="dyBoardSelOne" parameterType="int" resultType="Board">
 		select * from Board where b_num = #{b_num}
 	</select>
 	<select id="dyMemberSelOne" parameterType="String" resultType="MemberInfo">
 		select nickname from memberInfo where nickname = #{nickname}
 	</select>
 	
-	<update id="DYboardUpdate" parameterType="Board">
-		 update board as bd, memberinfo as mb 
+	<!-- update -->
+	<update id="dyBoardUpdate" parameterType="Board">
+		 update board
 		 set    bd.b_num=#{b_num},
 		        bd.title=#{title}, 
 		        bd.uploaddate=#{uploaddate}, 
 		    	bd.views=#{views},  
-		        mb.nickname=#{nickname} 
+		       
 		 where  bd.title=#{title}
 	</update>
 	
-	<select id="delete"></select>
+	<delete id="delete" parameterType="int">
+	delete from BOARD where b_num = #{b_num}
+	</delete>
 </mapper>

@@ -17,7 +17,7 @@
 <header th:replace="common/header :: header"></header>
 
 <main>
-	<h2>게시글 상세화면</h2>
+	<h2>게시글 작성</h2>
 	<form action="update" method="post">
   	<input type="hidden" name="title" value="${board.title }">
          
@@ -25,12 +25,9 @@
 		<tr><th>순번</th><td th:text="${board.b_num }"></td></tr>
 		<tr><th>제목</th><td>
 	    	<input type="text" name="title" required="required" th:value="${board.title }" ></td></tr>
-		<tr><th>작성일</th><td>
-	    	<input type="date" name="uploaddate" 	required="required" th:value="${board.uploaddate}"></td></tr>
-		<tr><th>조회수</th><td>
-	    	<input type="number" name="views" required="required" th:value="${board.views }"></td></tr>
-		<tr><th>닉네임</th><td>
-	    	<input type="date" name="nickname" 	th:value="${memberInfo.nickname }"></td></tr>
+		<tr><th>작성일</th><td th:text="${board.uploaddate}"></td></tr>
+		<tr><th>조회수</th><td th:text="${board.views}"></td></tr>
+		<tr><th>닉네임</th><td th:text="${memberInfo.nickname}"></td></tr>
 		
 		<tr><td colspan="2">
 	   	<input type="submit" th:value="확인">

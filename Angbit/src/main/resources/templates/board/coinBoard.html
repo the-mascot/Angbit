@@ -21,6 +21,8 @@
 <p>kkk 수정시 전달 메시지 : ${kkk} </p>
 <p>kk3 수정시 전달 메시지 : ${kk3} </p>
 
+<a href="updateForm.html">수정</a>
+
 <div class="container">
 	<div class="freeboard"><p>자유게시판</p></div>
 	<div class="between"></div>
@@ -42,7 +44,7 @@
 		
 		            <tr th:each="blist : ${boardList}">
 		               <td th:text="${blist.b_num}"></td>
-		               <td th:text="${blist.title}"></td>
+		               <td><a th:href="@{board_detailBoard( b_num=${blist.b_num})}" th:text=${blist.title}></a></td>
 		               <td th:text="${blist.uploaddate}"></td>
 		               <td th:text="${blist.views}"></td>
 		               
@@ -58,7 +60,7 @@
 
 <!-- 페이지 단락 넘김 -->
 		<div class="wrapper_paging">
-			<th:if = "${pg.startPage > pg.pageBlock}">
+			<th:if = "${pg.startPage} > pg.pageBlock}">
 				<a th:href="@{ board_bdPaging(currentPage=${pg.startPage-pg.pageBlock}) }">[이전]</a>
 			</th:if>
 			<th:each test ="i : begin='${pg.startPage}' end='${pg.endPage}'">

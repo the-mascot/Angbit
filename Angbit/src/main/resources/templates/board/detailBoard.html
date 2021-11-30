@@ -16,7 +16,27 @@
 <!-- common 헤더 -->
 <header th:replace="common/header :: header"></header>
 
-<main></main>
+<main>
+<h2>게시글상세</h2> 
+<table class="table">
+	<tr><th>순번</th><td th:text="${board.b_num }"></td></tr>
+	<tr><th>제목</th><td th:text="${board.title }"></td></tr>
+	<tr><th>작성일</th><td th:text="${board.uploaddate }"></td></tr>
+	<tr><th>조회수</th><td th:text="${board.views }"></td></tr>
+	<tr><th>닉네임</th><td th:text="${memberInfo.nickname }"></td></tr>
+	
+	<tr><th>내용</th><td th:text="${board.content}"></td></tr>
+	
+	<tr><td colspan="2">
+	    <input type="button" value="목록" 
+			th:onclick="|board_list|">
+		<input type="button" value="수정" 
+			onclick="location.href='board_updateForm?b_num=${board.b_num}'">
+		<input type="button" value="삭제" 
+			onclick="location.href='delete?b_num=${board.b_num}'"></td></tr>
+</table>
+
+</main>
 
 
 <!-- footer -->
