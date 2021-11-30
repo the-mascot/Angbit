@@ -1,6 +1,8 @@
 package com.oracle.Angbit.dao.invest;
 
 import java.util.HashMap;
+import static org.hamcrest.CoreMatchers.nullValue;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -135,4 +137,21 @@ public class InvestDaoImpl implements InvestDao {
 		}
 		return sel;
 	}
+  
+	public List<CoinInfo> searchCoin(String keyWord) {
+
+		System.out.println("InvestDaoImpl searchCoin Start...");
+		List<CoinInfo> coinInfo = null;
+		
+		try {
+			coinInfo = seesion.selectList("searchCoin", keyWord);
+		} catch (Exception e) {
+			System.out.println("InvestDaoImpl searchCoin Exception->"+e.getMessage());
+			e.printStackTrace();
+		}
+		
+		
+		return null;
+	}
+
 }

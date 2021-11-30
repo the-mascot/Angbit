@@ -80,4 +80,13 @@ public class InvestServiceImpl implements InvestService {
 		System.out.println("getMyCoin Service Called.");
 		return ivdao.getMyCoin(id, currCoin);
 	}
+  
+	public List<CoinInfo> searchCoin(String keyWord) {
+
+		System.out.println("InvestServiceImpl buyLimitsPrice Start...");
+		List<CoinInfo> coinInfo = ivdao.searchCoin(keyWord);
+		
+		return coinInfo;
+	}
+	
 }

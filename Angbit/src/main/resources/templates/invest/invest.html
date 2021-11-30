@@ -515,7 +515,24 @@
 	            return true;
 	    }
 		
-
+		// coinList 검색
+		function searchCoin(obj) {
+			console.log('keyWord->'+obj.value.toUpperCase())
+			var keyWord = 'keyWord='+obj.value.toUpperCase();
+			$.ajax({
+				type		:	'GET',
+				url			:	'invest/searchCoin',
+				data		:	keyWord,
+				contentType : 	'application/json; charset=UTF-8',
+			    dataType 	: 	'json',
+				success		:	function(json) {
+					
+				},
+				error		:	function(e) {
+					console.log("error : ",e);
+				}
+			}); 
+		}
 		
 		$(document).ready(function(){ 
 			// coinTitle에서 정보 클릭시
@@ -577,6 +594,17 @@
 				$('#order-buy-a').attr('class', 'nav-link active');
 				$('#order-sell-a').attr('class', 'nav-link');
 				
+				$.ajax({
+					type		:	'GET',
+					url			:	'html/buyForm.html',
+					success		:	function(data) {
+						$('#order-card-body').html(data);
+					},
+					error		:	function(e) {
+						console.log("error : ",e);
+					}
+				});
+				
 			});
 			
 			// 매도 클릭시
@@ -588,13 +616,25 @@
 				
 			});
 			
-			$('input:radio[name=trd_method]').on('click', function() {
-				if($('input:radio[name=trd_method]:checked').val() == 'limits') {
-					$('#order-div-avaliableKRW').show();
-				} else if($('input:radio[name=trd_method]:checked').val() == 'market') {
-					$('#order-div-avaliableKRW').hide();
-				}
-			});
+			$('#trd_method-market').on('click', function() {
+				$('#order-unit_price-th').hide();
+				$('#order-unit_price').hide();
+				$('#order-trd_amt-th').hide();
+				$('#order-trd_amt').hide();
+				$('#order-trd_price').prop('readonly', false);
+				document.getElementById('order-trd_amt').value = 0;
+				document.getElementById('order-trd_price').value = 0;
+			}); 
+			
+			$('#trd_method-limits').on('click', function() {
+				$('#order-unit_price-th').show();
+				$('#order-unit_price').show();
+				$('#order-trd_amt-th').show();
+				$('#order-trd_amt').show();
+				$('#order-trd_price').prop('readonly', true);
+				document.getElementById('order-trd_amt').value = 0;
+				document.getElementById('order-trd_price').value = 0;
+			}); 
 			
 			
 			// order 가격, 수량 입력시 주문총액(trd_price) 계산
@@ -610,9 +650,10 @@
 				var unit_price =uncomma($('#order-unit_price').val());
 				var trd_amt = price / unit_price;
 				
-				//$('#order-trd_amt').val(trd_amt.toFixed(8));
-				$('#order-trd_amt').val(trd_amt.toFixed(8));
-				$('#order-trd_price').val(price.toLocaleString());
+				if(trd_amt >= 0) {
+					$('#order-trd_amt').val(trd_amt.toFixed(8));
+					$('#order-trd_price').val(price.toLocaleString());
+				}
 			});
 			
 			// 매수 요청
@@ -632,14 +673,61 @@
 				} 
 				
 				else {
-					buyCoin();
+					if($('input[name=trd_method]:checked').val() == 'limits') {
+						console.log('지정가 매수시작')
+						buyLimitsCoin();
+					} else {
+						console.log('시장가 매수시작')
+						buyCoin();
+					}
 				}
 			});
 			
 		});
 		
+ 		// 현재가 업데이트
+		function buyLimitsCoin() {
+			sendData = "currCoin="+currCoin;
+			$.ajax({
+				type		:	'GET',
+				url			:	'invest/investApi',
+				data		:	sendData,
+	 			contentType : 	'application/json; charset=UTF-8',
+			    dataType 	: 	'json',
+				success		:	function(data) {
+					document.getElementById('order-unit_price').value = data[1].trade_price.toLocaleString();
+					console.log('trade_price->'+data[1].trade_price.toLocaleString())
+					buyCoin();
+				},
+				error		:	function(e) {
+					console.log("error : ",e);
+				}
+			});
+		};
+		
+	 	// 시장가 매수 주문
+		function buyCoin() {
+			sendData = "currCoin="+currCoin;
+			$.ajax({
+				type		:	'GET',
+				url			:	'invest/investApi',
+				data		:	sendData,
+	 			contentType : 	'application/json; charset=UTF-8',
+			    dataType 	: 	'json',
+				success		:	function(data) {
+					document.getElementById('order-unit_price').value = data[1].trade_price.toLocaleString();
+					console.log('trade_price->'+data[1].trade_price.toLocaleString())
+					buyCoin();
+				},
+				error		:	function(e) {
+					console.log("error : ",e);
+				}
+			});
+		};
+		
 		// 매수 주문
 		function buyCoin() {
+			console.log("buyCoin시작")
 			var trd_amt = $('#order-trd_amt').val();
 			var trd_price = uncomma($('#order-trd_price').val());
 			var trd_unit_price = uncomma($('#order-unit_price').val());
@@ -1093,29 +1181,33 @@
 								<input type="radio" class="form-check-input" id="trd_method-market" name="trd_method" value="market">시장가
 							</div>
 						</div>
-						<div class="d-flex justify-content-between mb-3" id="order-div-avaliableKRW">
-							<div>주문가능</div><div><span class="mb-1" id="order-avaliableKRW"></span><span class="ms-1 mb-0">KRW</span></div>
+						<div class="d-flex justify-content-between mb-3">
+							<div id="order-avaliableKRW-th">주문가능</div><div><span class="mb-1" id="order-avaliableKRW"></span><span class="ms-1 mb-0" id="order-avaliableKRW-unit">KRW</span></div>
 						</div>
 						<div class="d-flex justify-content-between mb-3">
-							<div>매수가격</div><input type="text" class="order-form form-control" id="order-unit_price" name="trd_unit_price" onkeyup="inUnitPrice(this)">
+							<div id="order-unit_price-th">매수가격</div><input type="text" class="order-form form-control" id="order-unit_price" name="trd_unit_price" onkeyup="inUnitPrice(this)">
 						</div>
 						<div class="d-flex justify-content-between mb-3">
-							<div>주문수량</div>
-							<div>
-								<input type="text" class="order-form form-control" id="order-trd_amt" name="trd_amt" value="0" onkeypress="return inTrdAmt(event)">
-								<div class="d-flex justify-content-between mt-1">
-									<input type="button" class="order-form-amt-butn form-control" value="10%">
-									<input type="button" class="order-form-amt-butn form-control" value="25%">
-									<input type="button" class="order-form-amt-butn form-control" value="50%">
-									<input type="button" class="order-form-amt-butn form-control" value="100%">
-								</div>
+							<div id="order-trd_amt-th">주문수량</div>
+							<div><input type="text" class="order-form form-control" id="order-trd_amt" name="trd_amt" value="0" onkeypress="return inTrdAmt(event)"></div>
+						</div>
+						<div class="d-flex justify-content-end mb-3">
+							<div class="d-flex justify-content-between mt-1" id="order-div-amt-butn">
+								<input type="button" class="order-form-amt-butn form-control" value="10%">
+								<input type="button" class="order-form-amt-butn form-control" value="25%">
+								<input type="button" class="order-form-amt-butn form-control" value="50%">
+								<input type="button" class="order-form-amt-butn form-control" value="100%">
 							</div>
-						</div>
+						</div>	
 						<div class="d-flex justify-content-between mb-3">
-							<div>주문총액(KRW)</div><input type="text" class="order-form form-control" id="order-trd_price" name="trd_price" value="0" readonly="readonly">
+							<div>주문총액(KRW)</div><input type="text" class="order-form form-control" id="order-trd_price" name="trd_price" value="0" readonly="readonly" onkeyup="inUnitPrice(this)">
 						</div>
 						<p class="text-end" style="font-size: 14px;">최소주문금액 : 5,000 KRW / 수수료 : 없음</p>
-						<div class="d-flex justify-content-center">
+						<div th:if="${session.sessionID == null}" class="d-flex justify-content-center">
+							<button type="button" class="order-form-reset form-control me-3" onclick="location.href='/joinForm'">회원가입</button>
+							<button type="button" class="order-form-submit form-control bg-danger" onclick="location.href='/loginForm'">로그인</button>
+						</div>
+						<div th:if="${session.sessionID != null}" class="d-flex justify-content-center">
 							<input type="reset" class="order-form-reset form-control me-3" value="초기화"><input type="button" class="order-form-submit form-control bg-danger" id="buySubmit" value="매 수">
 						</div>
 					</form>
@@ -1138,9 +1230,8 @@
 	</section>
 	<section class="section2">
 	    <div class="card mt-5" id="coinlist-card">
-
 	    	<div class="card-header">
-	    		<input type="text" class="form-control" placeholder="코인명/심볼검색" style="font-size: 14px;">
+	    		<input type="text" class="form-control" placeholder="코인명/심볼검색" style="font-size: 14px;" onkeyup="searchCoin(this)">
 	    	</div>
 	        <div class="card-body">
             	<div class="table-responsive">
