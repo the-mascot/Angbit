@@ -2,6 +2,7 @@ package com.oracle.Angbit.dao.invest;
 
 import java.util.List;
 
+import com.oracle.Angbit.model.common.Coin;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.oracle.Angbit.model.common.CoinInfo;
@@ -22,5 +23,6 @@ public interface InvestDao {
 	void buyMarketPrice(OrderTrade orderTrade);
 
 	void buyLimitsPrice(OrderTrade orderTrade);
-	
+
+    Float getMyCoin(String id, String currCoin);
 }

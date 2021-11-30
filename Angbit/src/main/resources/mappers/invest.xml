@@ -19,4 +19,7 @@
 		when not matched then
 			insert values(#{coincode}, #{id}, #{trd_amt}, #{trd_unit_price}, #{trd_price})
 	</update>
+	<select id="getMyCoin" parameterType="hashmap" resultType="float">
+		SELECT NVL(coin_amt, 0) FROM coin WHERE id=#{id} and coincode = #{currCoin}
+	</select>
 </mapper>

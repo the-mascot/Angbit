@@ -584,17 +584,9 @@
 				e.preventDefault();
 				$('#order-buy-a').attr('class', 'nav-link');
 				$('#order-sell-a').attr('class', 'nav-link active');
+				availableQunatity();
 				
-				$.ajax({
-					type		:	'GET',
-					url			:	'html/sellForm.html',
-					success		:	function(data) {
-						$('#order-card-body').html(data);
-					},
-					error		:	function(e) {
-						console.log("error : ",e);
-					}
-				});
+
 				
 			});
 			
@@ -826,6 +818,32 @@
 
 				event.target.classList.add("btnClicked");
 			}
+		}
+
+		// 매도 가능 수량
+		function availableQunatity() {
+			const availQuan = document.getElementById('sell-avaliableKRW');
+			$.ajax({
+				type		:	'GET',
+				url			:	'html/sellForm.html',
+				success		:	function(data) {
+					$('#order-card-body').html(data);
+					// 매도 가능 수량 불러오기
+					$.ajax({
+						type		:	'GET',
+						url			:	'invest/sellQuantity',
+						data		:   {"currCoin" : currCoin},
+						success		:	function(data){
+							//불러오고?
+							$('#sell-avaliableKRW').text(data);
+							console.log('받아온 데이터'+data);
+						}
+					})
+				},
+				error		:	function(e) {
+					console.log("error : ",e);
+				}
+			});
 		}
 
 </script>

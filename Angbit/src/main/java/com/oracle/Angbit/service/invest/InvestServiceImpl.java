@@ -2,6 +2,7 @@ package com.oracle.Angbit.service.invest;
 
 import java.util.List;
 
+import com.oracle.Angbit.model.common.Coin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -73,7 +74,10 @@ public class InvestServiceImpl implements InvestService {
 		System.out.println("InvestServiceImpl buyLimitsPrice Start...");
 		ivdao.buyLimitsPrice(orderTrade);
 	}
-	
-	
-	
+
+	@Override
+	public Float getMyCoin(String id, String currCoin) {
+		System.out.println("getMyCoin Service Called.");
+		return ivdao.getMyCoin(id, currCoin);
+	}
 }

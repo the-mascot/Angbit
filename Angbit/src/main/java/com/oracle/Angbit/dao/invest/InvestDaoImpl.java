@@ -1,7 +1,10 @@
 package com.oracle.Angbit.dao.invest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.oracle.Angbit.model.common.Coin;
 import org.apache.ibatis.reflection.ReflectionException;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,4 +123,14 @@ public class InvestDaoImpl implements InvestDao {
 		seesion.update("updateKRW", orderTrade);
 	}
 
+	@Override
+	public Float getMyCoin(String id, String currCoin) {
+		System.out.println("getMyCoin Dao Called.");
+		Map vo = new HashMap();
+		vo.put("id", id);
+		vo.put("currCoin", currCoin);
+		Float sel = seesion.selectOne("getMyCoin", vo);
+		System.out.println("선택된 계정의 sel"+sel);
+		return sel;
+	}
 }
