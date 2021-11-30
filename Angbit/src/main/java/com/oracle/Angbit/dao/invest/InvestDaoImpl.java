@@ -1,7 +1,12 @@
 package com.oracle.Angbit.dao.invest;
 
+import java.util.HashMap;
+import static org.hamcrest.CoreMatchers.nullValue;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import com.oracle.Angbit.model.common.Coin;
 import org.apache.ibatis.reflection.ReflectionException;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,6 +123,35 @@ public class InvestDaoImpl implements InvestDao {
 		
 		seesion.insert("insertTrade", orderTrade);
 		seesion.update("updateKRW", orderTrade);
+	}
+
+	@Override
+	public Float getMyCoin(String id, String currCoin) {
+		System.out.println("getMyCoin Dao Called.");
+		Map vo = new HashMap();
+		vo.put("id", id);
+		vo.put("currCoin", currCoin);
+		Float sel = seesion.selectOne("getMyCoin", vo);
+		if (sel==null) {
+			sel = 0f;
+		}
+		return sel;
+	}
+  
+	public List<CoinInfo> searchCoin(String keyWord) {
+
+		System.out.println("InvestDaoImpl searchCoin Start...");
+		List<CoinInfo> coinInfo = null;
+		
+		try {
+			coinInfo = seesion.selectList("searchCoin", keyWord);
+		} catch (Exception e) {
+			System.out.println("InvestDaoImpl searchCoin Exception->"+e.getMessage());
+			e.printStackTrace();
+		}
+		
+		
+		return null;
 	}
 
 }

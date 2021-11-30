@@ -186,6 +186,10 @@ main::after {
 	text-align: right;
 }
 
+#order-div-amt-butn {
+	width: 280px;
+}
+
 .order-form-amt-butn {
 	width: 60px;
 }

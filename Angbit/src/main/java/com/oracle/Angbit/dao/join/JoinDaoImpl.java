@@ -36,6 +36,18 @@ public class JoinDaoImpl implements JoinDao {
 		}
 		return memberInfo;
 	}
+
+	@Override
+	public MemberInfo chkNickname(String nickname) {
+		System.out.println("JoinDaoImpl - chkNickname 시작");
+		MemberInfo memberInfo = null;
+		try {
+			memberInfo = session.selectOne("chkNickname", nickname);
+		} catch (Exception e) {
+			System.out.println("JoinDaoImpl - chkNickname Exception -> " + e.getMessage());
+		}
+		return memberInfo;
+	}
 	
 	
 	

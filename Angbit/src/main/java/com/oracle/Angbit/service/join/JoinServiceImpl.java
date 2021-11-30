@@ -33,6 +33,15 @@ public class JoinServiceImpl implements JoinService {
 		return memberInfo;
 	}
 
+	@Override
+	public MemberInfo chkNickname(String nickname) {
+		System.out.println("JoinServiceImpl - chkNickname 시작");
+		
+		MemberInfo memberInfo = jd.chkNickname(nickname);
+		
+		return memberInfo;
+	}
+
 
 	
 	

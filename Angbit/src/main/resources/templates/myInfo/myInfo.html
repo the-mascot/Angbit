@@ -167,10 +167,11 @@
 		}
 
 		function submitExec(){
-				if (confirm("닉네임을 변경하시겠습니까?\n변경 후 7일 이내에는 다시 변경하실 수 없습니다.")){
+				if (confirm("닉네임을 변경하시겠습니까?")){
 					const nickname = getNicknameFromInput();
 					const redundantError = document.querySelector(".u-p-nickname-redundant-error");
 					redundantError.innerHTML = "";
+					let msg = document.getElementsByClassName("welcomemsg")[0];
 
 					$.ajax({
 						type: 'POST',
@@ -184,6 +185,7 @@
 								setNewNicknameToPage(data);
 								toggleBtns();
 								showSuccessAlert();
+								msg.innerText = '환영합니다, '+nickname+'님';
 							} else if (data==0) {
 								submitBtn.disabled = true;
 								redundantError.innerHTML = "이미 존재하는 닉네임입니다."

@@ -27,13 +27,13 @@
 					        			</li>
 					      			</ul>	
 					    		</div>
-							  	<a class="navbar-brand" href="#" style="padding-left: 15px">랭킹</a>
+							  	<a class="navbar-brand" href="RankPage" style="padding-left: 15px">랭킹</a>
 					    		<a class="navbar-brand" href="board_list" style="padding-left: 15px">게시판</a>
 					    		<a class="navbar-brand" href="myInfo" style="padding-left: 15px">마이페이지</a>
 					  	  </div>
 					</nav>
 				</ul>
-               <div th:if="${session.sessionID!=null}"><span style="color:white;" th:text="'환영합니다. '+ ${session.sessionNickName} + ' 님 '"></span></div> &nbsp&nbsp
+               <div th:if="${session.sessionID!=null}"><span class="welcomemsg" style="color:white;" th:text="'환영합니다. '+ ${session.sessionNickName} + ' 님 '"></span></div> &nbsp&nbsp
                   <div>
                 <button type="button" class="btn btn-outline-light me-2" onclick="location.href='/loginForm'" th:if="${session.sessionID==null}">로그인</button>
                 <button type="button" class="btn btn-outline-light me-2" onclick="location.href='/LogOutProcess'" th:if="${session.sessionID!=null}">로그아웃</button>

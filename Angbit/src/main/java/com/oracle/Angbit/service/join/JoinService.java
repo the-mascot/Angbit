@@ -8,4 +8,6 @@ public interface JoinService {
 
 	MemberInfo IDchk(String id);
 
+	MemberInfo chkNickname(String nickname);
+
 }

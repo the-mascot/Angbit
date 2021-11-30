@@ -63,16 +63,35 @@ public class SWController {
 	@GetMapping(value = "IDchk", produces = "application/text;charset=UTF-8")
 	public String IDchk(String id) {
 		System.out.println("SWController - IDchk 시작~");
-		String msg = "";
+		String msg1 = "";
 		
 		MemberInfo memberInfo = js.IDchk(id);
 		if (memberInfo != null) {
-			msg = "중복된 이메일 아이디 입니다.";
+			msg1 = "중복된 이메일 아이디 입니다.";
 		} else {
-			msg = "사용 가능한 이메일 아이디입니다.";
+			msg1 = "사용 가능한 이메일 아이디입니다.";
 		}
-		System.out.println("msg의 값은? -> " + msg);
-		return msg;
+		System.out.println("msg1의 값은? -> " + msg1);
+		return msg1;
+	}
+	
+//	chkNickname(joinfrm.nickname.value)
+	// 회원가입 페이지에서 닉네임 '중복확인' 버튼을 누르면 동작하는 Ajax 컨트롤러
+	@ResponseBody
+	@GetMapping(value = "chkNickname", produces = "application/text;charset=UTF-8")
+	public String chkNickname(String nickname) {
+		System.out.println("SWController - chkNickname 시작~");
+		String msg2 = "";
+		
+		MemberInfo memberInfo = js.chkNickname(nickname);
+		if (memberInfo != null) {
+			msg2 = "중복된 닉네임 입니다.";
+		} else {
+			msg2 = "사용 가능한 닉네임입니다.";
+		}
+		System.out.println("msg2의 값은? -> " + msg2);
+		
+		return msg2;
 	}
 	
 	// 메인페이지 우측 상단에 '로그인' 버튼을 누르면 loginForm 페이지로 이동하는 컨트롤러
@@ -163,6 +182,14 @@ public class SWController {
     	}
     	return returnStr;
     }
+    
+	// 메인페이지 상단에 '랭킹' 버튼을 누르면 RankPage 페이지로 이동하는 컨트롤러
+	@RequestMapping(value = "RankPage")
+	public String RankPage(Model model) {
+		System.out.println("SWController - RankPage");
+		
+		return "rank/RankPage";
+	}
     
 	
 	
