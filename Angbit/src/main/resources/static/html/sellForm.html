@@ -2,21 +2,20 @@
  <div class="d-flex justify-content-between mb-5">
   <div>주문구분</div>
   <div>
-   <input type="radio" class="form-check-input" name="sell_method" value="limits" checked="checked">지정가
-   <input type="radio" class="form-check-input" name="sell_method" value="market">시장가
+   <input type="radio" class="form-check-input" name="sell_method" value="limits" checked="checked" onclick="sellLimits()">지정가
+   <input type="radio" class="form-check-input" name="sell_method" value="market" onclick="sellMarket()">시장가
   </div>
  </div>
  <div class="d-flex justify-content-between mb-3" id="sell-div-available">
   <div>주문가능</div><div><span class="mb-1" id="sell-availableAmt"></span><span class="selected ms-1 mb-0">KRW</span></div>
  </div>
- <div class="d-flex justify-content-between mb-3">
-  <div>매도가격</div><input type="text" class="sell-form form-control" id="sell-unit_price" name="sell_unit_price" onkeyup="inUnitPrice(this)">
+ <div class="d-flex justify-content-between mb-3 ">
+  <div id="sell-unit_price-th">매도가격</div><input type="text" class="sell-form form-control" id="sell-unit_price" name="sell_unit_price" onkeyup="inUnitPrice(this), inputEvent(this)">
  </div>
  <div class="d-flex justify-content-between mb-3">
-  <div>주문수량</div>
+  <div id="sell-trd_amt-th">매도수량</div>
   <div>
-   <input type="text" class="sell-form form-control" id="sell-trd_amt" name="sell-trd_amt" value="0" onkeypress="return inSellAmt(event)">
-<!--   <input type="text" class="sell-form form-control" id="sell-trd_amt" name="sell-trd_amt" value="0">-->
+   <input type="text" class="sell-form form-control" id="sell-trd_amt" name="sell-trd_amt" value="0" onkeydown="return amtChk()" onkeypress="return inSellAmt(event)" onkeyup="inputEvent(this)">
    <div class="d-flex justify-content-between mt-1">
     <input type="button" class="sell-form-amt-butn form-control" value="10%">
     <input type="button" class="sell-form-amt-butn form-control" value="25%">
@@ -26,14 +25,13 @@
   </div>
  </div>
  <div class="d-flex justify-content-between mb-3">
-  <div>주문총액(KRW)</div><input type="text" class="sell-form form-control" id="sell-trd_price" name="trd_price" value="0" readonly="readonly">
+  <div id="sell-trd_price-th">주문총액(KRW)</div><input type="text" class="sell-form form-control" id="sell-trd_price" name="trd_price" value="0" readonly="readonly">
  </div>
  <p class="text-end" style="font-size: 14px;">최소주문금액 : 5,000 KRW / 수수료 : 없음</p>
  <div class="d-flex justify-content-center">
-  <input type="reset" class="sell-form-reset form-control me-3" value="초기화"><input type="button" class="sell-form-submit form-control bg-danger" id="buySubmit" value="매 수">
+  <input type="reset" class="sell-form-reset form-control me-3" value="초기화"><input type="button" class="sell-form-submit form-control bg-danger" onclick="sellSubmit()" value="매 수">
  </div>
 </form>
-
 <!--
 주문가능 = 현재 보유중인 해당 코인 수량//
 수량 = 현재 선택한 코인의 판매 수량
@@ -48,11 +46,3 @@
 
 최소 주문 금액?
 -->
-
-<!-- $('input:radio[name=sell_method]').on('click', function() {-->
-<!-- 	if($('input:radio[name=sell_method]:checked').val() == 'limits') {-->
-<!-- 		$('#sell-div-available').show();-->
-<!--	} else if($('input:radio[name=sell_method]:checked').val() == 'market') {-->
-<!-- 		$('#sell-div-available').hide();-->
-<!-- 	}-->
-<!-- });-->
