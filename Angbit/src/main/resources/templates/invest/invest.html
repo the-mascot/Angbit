@@ -671,10 +671,10 @@
 				else {
 					if($('input[name=trd_method]:checked').val() == 'limits') {
 						console.log('지정가 매수시작')
-						buyLimitsCoin();
+						buyCoin();
 					} else {
 						console.log('시장가 매수시작')
-						buyCoin();
+						buyMarketCoin();
 					}
 				}
 			});
@@ -795,7 +795,7 @@
 		};
 
 	 	// 시장가 매수 주문
-		function buyLimitsCoin() {
+		function buyMarketCoin() {
 			sendData = "currCoin="+currCoin;
 			$.ajax({
 				type		:	'GET',
