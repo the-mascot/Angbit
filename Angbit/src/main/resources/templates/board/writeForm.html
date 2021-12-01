@@ -2,61 +2,56 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>작성</title>
-<script type="text/javascript">
-  function chk() {
-	if (!frm.empno.value) {
-		alert("사번을 입력한 후에 확인하세요");
-		frm.empno.focus();
-		return false;
-	} else location.href="confirm?empno="+frm.empno.value;
-  }
-</script>
-
+<title>세부내용</title>
 
 <!-- Common meta tag, Bootstrap, js -->
 <th:block th:replace="common/commonHead"></th:block>
 
 <!-- Jquery -->
-<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
+<script
+	th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
 
 </head>
 <body>
 
-<!-- common 헤더 -->
-<header th:replace="common/header :: header"></header>
+	<!-- common 헤더 -->
+	<header th:replace="common/header :: header"></header>
 
-<main>
-<h2>게시글 작성</h2>
- <th:if test="${msg!=null}">${msg}</th:if>
- <form action="write" method="post" name="frm" >
- 
-   <table>
- 	<tr><th>사번</th><td><input type="number" name="b_num" 
-		required="required" maxlength="4" value="${empno }">
-		<input type="button" value="중복확인" 	onclick="chk()"> </td></tr>
-	
-	<tr><th>제목</th><td><input type="text" name="job" 	required="required"></td></tr>
-	<tr><th>내용</th><td><input type="number" name="sal" 	required="required"></td></tr>
-	<tr><th>글쓴이</th><td><input type="date" name="hiredate" required="required" th:text="${nickname}"></td></tr>
-	
- 	<tr><th>관리자사번</th><td>
-		<select name="mgr">
-			<th:forEach var="emp" items="${empMngList}">
-				<option value="${emp.empno}">${emp.ename}</option>
-			</th:forEach>  
-		</select></td>
-	</tr>
- 	
-  	<tr><td colspan="2"><input type="submit" th:value="확인"></td></tr> 
-   </table>
-  </form>
+	<main>
+		<h2>게시글 등록</h2>
 
-</main>
+		<form action="writeProcess">
+			<table class="table">
 
+				<tr>
+					<th>제목</th>
+					<th><input type="text" id="title" name="title">
+				</tr>
+				
+				<tr>
+					<th>작성자</th>
+					<th>
+					<div th:if="${session.sessionID!=null}">
+					<span class="welcomemsg" style="color:black;" th:text="${session.sessionNickName}">
+					</span>
+					</div>
+					</th>
+					
+					<th hidden="${session.sessionID}" id="id" name="id"><span class="welcomemsg" style="color:black;" th:text="${session.sessionNickName}">
+					</span></th>
+				</tr>
+				
+				<tr>
+					<th>내용</th>
+					<th><input type="text" id="content" name="content">
+				</tr>
 
-<!-- footer -->
-<footer th:replace="common/footer :: footer"></footer>
+				<tr>
+					<td colspan="2"><button type="submit"> 글쓰기 </button></td>
+			</table>
+		</form>
 
+		<!-- footer -->
+		<footer th:replace="common/footer :: footer"></footer>
 </body>
 </html>

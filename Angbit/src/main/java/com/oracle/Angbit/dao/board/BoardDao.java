@@ -13,10 +13,13 @@ public interface BoardDao {
 	//List<MemberInfo> MemberList();
 	int Delete(int empno);
 	int total();
-	
 	List<Board> pagingBd(Board board);
 	Board detailBoard(int b_num);
 	int update(Board board);
-	List<Board> listManager();
+	
+	Board writeBoard(int b_num);
+	
+	int insert(Board board);
+	
 	
 }
