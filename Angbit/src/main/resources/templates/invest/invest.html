@@ -979,7 +979,7 @@
 			}
 
 			// 소수점 둘째자리까지만 입력가능
-			var _pattern2 = /^\d*[.]\d{8}$/; // 현재 value값이 소수점 둘째짜리 숫자이면 더이상 입력 불가
+			var _pattern2 = /^\d*[.]\d{7}$/; // 현재 value값이 소수점 둘째짜리 숫자이면 더이상 입력 불가
 			if (_pattern2.test(_value)) {
 				return false;
 			}
@@ -987,11 +987,11 @@
 			return true;
 		}
 
-		// $('#sell-unit_price, #sell-trd_amt').on('keyup',function () {
-		// 	let sell_price = $('#sell-trd_amt').val() * uncomma($('#sell-unit_price').val());
-		// 	console.log(sell_price);
-		// 	// $('#sell-trd_price').val(comma(sell_price));
-		// });
+		$('#sell-unit_price, #sell-trd_amt').on('keyup',function () {
+			const sell_price = $('#sell-trd_amt').val() * uncomma($('#sell-unit_price').val());
+			console.log(sell_price);
+			// $('#sell-trd_price').val(comma(sell_price));
+		});
 
 </script>
 </head>
