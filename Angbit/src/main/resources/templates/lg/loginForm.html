@@ -8,12 +8,28 @@
 
 <link th:href="@{/css/joinForm.css}" rel="stylesheet">
 
+<script type="text/javascript">
+function chkLogin() {
+	if(Loginfrm.id.value == ""){
+		alert("이메일 아이디가 입력되지 않았습니다.")
+		Loginfrm.id.focus();
+		return false;
+	}
+	if(Loginfrm.password.value == "") {
+		alert("비밀번호가 입력되지 않았습니다.");
+		Loginfrm.password.focus();
+		return false;
+	}
+	return true;
+}
+</script>
+
 <body>
 
 <header th:replace="common/header :: header"></header>
 
 <div class="wrapper_join">
-	<form action="LoginProcess" id="joinfrm" onsubmit="return chkJoin()" method="post">
+	<form action="LoginProcess" id="Loginfrm" onsubmit="return chkLogin()" method="post">
 <div class="container_join">
 			
 		<div class="signinfo">
@@ -39,8 +55,6 @@
 			</div>
 	</form>
 </div>
-
-
 
 <footer th:replace="common/footer :: footer"></footer>
 
