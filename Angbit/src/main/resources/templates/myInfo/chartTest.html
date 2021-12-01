@@ -50,12 +50,13 @@
 <main>
 	<div class="chart" id="chart" style="overflow:visible!important;"></div>
 	<section class="section1">
+		<div class="test1 btnaaa"></div>
+		<div class="test2 btnbbb"></div>
 		<button onclick="chartApi()">차트1번</button>
-		<button onclick="chartApi2()">차트2번</button>
+		<button onclick="testbtn()">테스트 버튼</button>
 		<button onclick="location.href='gologin'">눌러3</button>
 		<button onclick="location.href='logout'">로그아웃</button>
 		<div id="container" style="height: 400px; min-width: 310px"></div>
-
 	</section>
 
 </main>
@@ -299,6 +300,11 @@
 		})
 
 	};
+
+	function testbtn() {
+
+		console.log(name);
+	}
 
 
 
