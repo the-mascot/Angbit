@@ -347,10 +347,15 @@
 
 			document.getElementById('coinTitle-coinname').innerText = document.getElementById(currCoincode).innerText;
 			document.getElementById('coinTitle-coincode').innerText = currCoin;
-
-			document.getElementById('order-unit_price').value = jason[1].trade_price.toLocaleString();
-			document.getElementById('order-trd_amt').value = 0;
-			document.getElementById('order-trd_price').value = 0;
+			if ($('#order-buy-a').hasClass("active") == true) {
+				document.getElementById('order-unit_price').value = jason[1].trade_price.toLocaleString();
+				document.getElementById('order-trd_amt').value = 0;
+				document.getElementById('order-trd_price').value = 0;
+			} else {
+				document.getElementById('sell-unit_price').value = jason[1].trade_price.toLocaleString();
+				document.getElementById('sell-trd_amt').value = 0;
+				document.getElementById('sell-trd_price').value = 0;
+			}
 
 			// 체결 테이블 업데이트
 			for(var i = 0; i < jason[2].length; i++) {
@@ -621,14 +626,13 @@
 					url: 'html/sellForm.html',
 					success: function (data) {
 						$('#order-card-body').html(data);
+						availableQunatity();
+						upUnitPrice()
 					},
 					error: function (e) {
 						console.log("error : ", e);
 					}
 				});
-
-				availableQunatity();
-
 			});
 
 
@@ -739,7 +743,6 @@
 			document.getElementById('order-trd_price').readOnly = true;
 			document.getElementById('order-trd_amt').value = 0;
 			document.getElementById('order-trd_price').value = 0;
-
 		}
 
  		// 주문 현재가 업데이트
@@ -752,7 +755,11 @@
 	 			contentType : 	'application/json; charset=UTF-8',
 			    dataType 	: 	'json',
 				success		:	function(data) {
-					document.getElementById('order-unit_price').value = data[1].trade_price.toLocaleString();
+					if ($('#order-buy-a').hasClass("active") == true) {
+						document.getElementById('order-unit_price').value = data[1].trade_price.toLocaleString();
+					} else {
+						document.getElementById('sell-unit_price').value = data[1].trade_price.toLocaleString();
+					}
 				},
 				error		:	function(e) {
 					console.log("error : ",e);
@@ -962,9 +969,7 @@
 		}
 
 		/* 매도 */
-
 		var sell_amt = null; // 매도 가능 수량
-
 
 
 		// 매도 가능 수량
@@ -982,6 +987,7 @@
 					$('.selected').text(selected);
 					console.log('받아온 데이터' + data);
 					console.log('현재 선택된 코인' + selected);
+					upUnitPrice();
 				},
 			error        :    function (e) {
 				console.log("error : ", e);
@@ -989,11 +995,11 @@
 			});
 		}
 
+
+
+
 		function inSellAmt(evt) {
 			var charCode = (evt.which) ? evt.which : event.keyCode;
-			var cnt = parseFloat($('#sell-trd_amt').val());
-			console.log(cnt)
-			console.log(sell_amt)
 
 			if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
 				return false;
@@ -1008,26 +1014,134 @@
 				}
 			}
 
-			if (cnt > sell_amt) {
-				console.log('초과')
-				alert('입력된 수량이 판매 가능 수량을 초과합니다.');
-				return false;
-			}
-
 			// 소수점 둘째자리까지만 입력가능
 			var _pattern2 = /^\d*[.]\d{7}$/; // 현재 value값이 소수점 둘째짜리 숫자이면 더이상 입력 불가
 			if (_pattern2.test(_value)) {
 				return false;
 			}
 
+			console.log('보유 수량->'+sell_amt)
+
 			return true;
 		}
 
 		$('#sell-unit_price, #sell-trd_amt').on('keyup',function () {
-			const sell_price = $('#sell-trd_amt').val() * uncomma($('#sell-unit_price').val());
+			let sell_price = $('#sell-trd_amt').val() * uncomma($('#sell-unit_price').val());
 			console.log(sell_price);
 			// $('#sell-trd_price').val(comma(sell_price));
 		});
+
+		function inputEvent(key) {
+			let sell_price = $('#sell-trd_amt').val() * uncomma($('#sell-unit_price').val());
+			$('#sell-trd_price').val(comma(sell_price));
+		}
+
+		// 시장가 클릭시
+		function sellMarket() {
+			console.log('sellMarkets 시작')
+			document.getElementById('sell-unit_price-th').style.display ='none'; // 매도 가격 텍스트
+			document.getElementById('sell-unit_price').style.display ='none'; // 매도 가격
+			document.getElementById('sell-trd_amt-th').style.display ='none'; // ?
+			document.getElementById('sell-trd_amt').style.display =''; // 주문 수량
+			document.getElementById('sell-trd_price').style.display = 'none'; //  주문 총액
+			document.getElementById('sell-trd_amt').value = 0; // 주문 수량 value
+			document.getElementById('sell-trd_price').value = 0; // 주문 총액
+			document.getElementById('sell-trd_price-th').style.display = 'none'; // 주문 총액 헤더
+			upUnitPrice();
+		}
+
+		// 지정가 클릭시
+		function sellLimits() {
+			console.log('sellLimits 시작')
+			document.getElementById('sell-unit_price-th').style.display = '';
+			document.getElementById('sell-unit_price').style.display = '';
+			document.getElementById('sell-trd_amt-th').style.display = '';
+			document.getElementById('sell-trd_amt').style.display = '';
+			document.getElementById('sell-trd_price').readOnly = true;
+			document.getElementById('sell-trd_amt').value = 0;
+			document.getElementById('sell-trd_price').value = 0;
+		}
+
+		function sellSubmit() {
+			var sell_amt = uncomma($('#sell-trd_amt').val()) * 1; // 판매할 수량
+			var avail_amt = uncomma($('#sell-availableAmt').text()) * 1; // 판매 가능 수량
+			// var sell_price = uncomma($('#sell-unit_price').val()) * 1; // 매도 가격
+			if(avail_amt * 1 < sell_amt * 1) {
+				$('#modal-msg').text('주문가능 수량이 부족합니다')
+				$('#warmModal').modal('toggle');
+			} else if(uncomma($('#sell-unit_price').val()) * 1 <= 0) {
+				$('#modal-msg').text('판매가격을 확인하세요');
+				$('#warmModal').modal('toggle');
+			} else if($('#sell-trd_amt').val() <= 0) {
+				$('#modal-msg').text('판매할 수량을 입력하세요');
+				$('#warmModal').modal('toggle');
+			}
+
+			else {
+				if($('input[name=sell_method]:checked').val() == 'limits') {
+					console.log('지정가 매도시작')
+					sellCoin();
+				} else {
+					console.log('시장가 매도시작')
+					sellLimitsCoin();
+				}
+			}
+		};
+
+		function amtChk() {
+
+			let cnt = $('#sell-trd_amt').val();
+			if (cnt > sell_amt) {
+				console.log('초과')
+				alert('입력된 수량이 판매 가능 수량을 초과합니다.');
+				return false;
+			}
+		}
+
+		// 시장가 매도
+		function sellLimitsCoin() {
+			sendData = "currCoin="+currCoin;
+			$.ajax({
+				type		:	'GET',
+				url			:	'invest/investApi',
+				data		:	sendData,
+				contentType : 	'application/json; charset=UTF-8',
+				dataType 	: 	'json',
+				success		:	function(data) {
+					document.getElementById('order-unit_price').value = data[1].trade_price.toLocaleString();
+					console.log('trade_price->'+data[1].trade_price.toLocaleString())
+					sellCoin();
+				},
+				error		:	function(e) {
+					console.log("error : ",e);
+				}
+			});
+		};
+
+		// 매도 주문
+		function sellCoin() {
+			console.log("buyCoin시작")
+			var trd_amt = $('#order-trd_amt').val();
+			var trd_price = uncomma($('#order-trd_price').val());
+			var trd_unit_price = uncomma($('#order-unit_price').val());
+			var trd_method = $("input[name='trd_method']:checked").val();
+			var formData = 'trd_method='+trd_method+'&trd_unit_price='+trd_unit_price+'&trd_amt='+trd_amt+'&trd_price='+trd_price+'&coincode='+currCoincode;
+			$.ajax({
+				type		:	'POST',
+				url			:	'invest/buyCoin',
+				data		:	formData,
+				success		:	function(msg) {
+					$('#modal-msg').text(msg);
+					$('#warmModal').modal('toggle');
+					selectKRW();
+				},
+				error		:	function(e) {
+					console.log("error : ",e);
+				}
+			});
+		}
+
+
 
 </script>
 </head>
