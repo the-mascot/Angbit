@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.oracle.Angbit.model.common.Board;
-import com.oracle.Angbit.model.common.MemberInfo;
+
 import com.oracle.Angbit.service.board.BoardService;
 import com.oracle.Angbit.service.board.Paging;
 

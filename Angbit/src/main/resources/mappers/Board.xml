@@ -36,9 +36,7 @@
 	<select id="dyBoardSelOne" parameterType="int" resultType="Board">
 		select * from Board where b_num = #{b_num}
 	</select>
-	<select id="dyMemberSelOne" parameterType="String" resultType="MemberInfo">
-		select nickname from memberInfo where nickname = #{nickname}
-	</select>
+	
 	
 	<!-- update -->
 	<update id="dyBoardUpdate" parameterType="Board">

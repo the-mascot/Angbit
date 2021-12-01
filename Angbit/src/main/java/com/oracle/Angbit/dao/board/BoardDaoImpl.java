@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.oracle.Angbit.model.common.Board;
-import com.oracle.Angbit.model.common.MemberInfo;
+
 
 
 
@@ -36,25 +36,7 @@ public class BoardDaoImpl implements BoardDao {
 		return boardList;
 	}
 
-//nickname 가져오기
-//	@Override
-//	public List<MemberInfo> MemberList() {
-//		System.out.println("BoardDaoImpl MemberList Start...");
-//		List<MemberInfo> memberList = null;
-//		
-//		try {
-//			memberList = session.selectList("memberList");
-//			System.out.println("BoardDaoImpl MemberList memberList.size()->"+memberList.size());
-//		} catch (Exception e) {
-//			System.out.println("BoardDaoImpl MemberList Exception->"+e.getMessage());
-//			e.printStackTrace();
-//		}
-//		
-//		return memberList;
-//	}
-
-
-
+//페이징
 	@Override
 	public int total() {
 		int tot = 0;
@@ -95,23 +77,8 @@ public class BoardDaoImpl implements BoardDao {
 		} catch (Exception e) {
 			System.out.println("BoardDaoImpl detail Exception->"+e.getMessage());
 		}
-	return board;
+		return board;
 	}
-	@Override
-	public MemberInfo detailMember(String nickname) {
-		System.out.println("BoardDaoImpl detail start..");
-		MemberInfo memberInfo = new MemberInfo();
-		try {
-			//                       mapper ID   ,    Parameter
-			memberInfo = session.selectOne("dyMemberSelOne",    nickname);
-			System.out.println("BoardDaoImpl detail getNickname->"+memberInfo.getNickname());
-		} catch (Exception e) {
-			System.out.println("BoardDaoImpl detail Exception->"+e.getMessage());
-		}
-	return memberInfo;
-	}
-	
-	
 	
 	//삭제기능
 		@Override
