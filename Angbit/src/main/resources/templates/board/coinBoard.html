@@ -17,11 +17,11 @@
 <!-- 몸통 -->
 <main>
 
-<a href="writeForm">글작성</a>
-<p>kkk 수정시 전달 메시지 : ${kkk} </p>
-<p>kk3 수정시 전달 메시지 : ${kk3} </p>
+<a th:href="@{board_writeForm}">글작성</a>  <!-- 로그인 시 그 정보 보내주기 -->   
 
-<a href="updateForm.html">수정</a>
+<div th:text="${result}">fff</div>
+
+<!-- <a th:href="@{board_updateForm}">수정</a> -->
 
 <div class="container">
 	
@@ -49,7 +49,7 @@
 		            <tr th:each="blist : ${boardList}">
 		               <td th:text="${blist.b_num}"></td>
 		               <td><a th:href="@{board_detailBoard( b_num=${blist.b_num})}" th:text="${blist.title}"></a></td>
-		               <td th:text="${blist.uploaddate}"></td>
+		               <td th:text="${#dates.format(blist.uploaddate, 'yyyy-MM-dd')}"></td>  
 		               <td th:text="${blist.views}"></td>
 		               <td th:text="${blist.nickname}"></td>
 		            </tr>

@@ -68,22 +68,29 @@ public class BoardServiceImpl implements BoardService {
 	//update
 	@Override
 	public int update(Board board) {
-		System.out.println("BoardServiceImpl update ...");
-		int kkk = 0;
-		kkk = bdao.update(board);
+		System.out.println("BoardServiceImpl update start...");
+		int result = bdao.update(board);
+		return result;
+	}
+
+	@Override
+	public Board writeBoard(int b_num) {
+		
+		System.out.println("BoardServiceImpl writeBoard start...");
+		Board board = bdao.writeBoard(b_num);
+		return board;
+	}
+
+	@Override
+	public int insert(Board board) {
+		System.out.println("BoardServiceImpl insert start...");
+		int kkk=0;
+		kkk = bdao.insert(board);
+		
 		return kkk;
 	}
 	
-	//writeform
-	@Override
-	public List<Board> listManager() {
-		List<Board> boardList = null;
-		System.out.println("BoardServiceImpl listmanager ...");
-		boardList = bdao.listManager();
-		System.out.println("BoardServiceImpl listManager boardList.size()->"+boardList.size());
-		
-		return boardList;
-	}
+	
 
 	
 	
