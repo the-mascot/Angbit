@@ -14,6 +14,9 @@
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <script type="text/javascript">
+var ChkID = null;
+var ChkNickname = null;
+
 function chkJoin() {
 	if(joinfrm.id.value == ""){
 		alert("이메일 아이디가 입력되지 않았습니다.")
@@ -46,9 +49,7 @@ function chkJoin() {
 		}
 	return true;
 }
-</script>
 
-<script type="text/javascript">
 function chkID(Vdeptno){
 	$.ajax({
 		url : "IDchk",
@@ -56,34 +57,52 @@ function chkID(Vdeptno){
 		dataType : 'text',
 		success : function(data1){
 			$('#msg1').html(data1);
+				
+			if(data1 == "사용 가능한 이메일 아이디입니다."){
+				ChkID = "아이디체크";
+			} else {
+				$("#submit").attr("disabled", "disabled");
+				ChkID = null;
+			}
+			
+			if(ChkID === "아이디체크" && ChkNickname === "닉네임체크"){
+				$("#submit").removeAttr("disabled");
+			} else {
+				$("#submit").attr("disabled", "disabled");
+			}
+			
 		}
 	});
 }
-</script>
 
-<script type="text/javascript">
 function chkNickname(Vdeptno){
 	$.ajax({
 		url : "chkNickname",
 		data : {nickname : Vdeptno},
 		dataType : 'text',
 		success : function(data){
+			$('#msg2').html(data);
+			
 			if(data == "사용 가능한 닉네임입니다."){
-				$('#msg2').html(data);
+				ChkNickname = "닉네임체크";
+			} else {
+				$("#submit").attr("disabled", "disabled");
+				ChkNickname = null;
+			}
+			
+			if(ChkID === "아이디체크" && ChkNickname === "닉네임체크"){
 				$("#submit").removeAttr("disabled");
 			} else {
-				$('#msg2').html(data);
 				$("#submit").attr("disabled", "disabled");
 			}
+			
 		}
 	});
 }
-</script>
 
-<script type="text/javascript">
-	$(function () {
-	  $('[data-toggle="tooltip"]').tooltip()
-	})
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip()
+})
 </script>
 
 
