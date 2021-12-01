@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.oracle.Angbit.model.common.Board;
 
@@ -87,10 +88,8 @@ public class DYController {
 		
 	//작성폼 - 아이디 받아서 해보기
 		@GetMapping(value="board_writeForm")
-		public String writeForm(int b_num, Model model) {
+		public String writeForm(Model model) {
 			System.out.println("DYController Start writeForm..." );
-			Board board = bs.writeBoard(b_num);
-			model.addAttribute("board",board);  //join한 보드  
 			
 			return "board/writeForm";
 		}
@@ -107,16 +106,32 @@ public class DYController {
 			}
 		    
 			return returnStr;
-		}	
-		
+		}
 
-				//삭제
-				@PostMapping("delete")
-				public String delete(int b_num, Model model) {
-					System.out.println("DYController Start delete...");
-					int result = bs.Delete(b_num);
-					model.addAttribute("result", result);
-					
-					return "redirect:getList"; 
-				}
+		// 삭제
+		@PostMapping("delete")
+		public String delete(int b_num, Model model) {
+			System.out.println("DYController Start delete...");
+			int result = bs.Delete(b_num);
+			model.addAttribute("result", result);
+
+			return "redirect:getList";
+		}
+		
+		// 제목, 글내용 작성 후 글쓰기 버튼을 눌렀을 때, DB에 저장되는 컨트롤러
+		@RequestMapping(value = "writeProcess")
+		public String writeProcess(Model model, Board board) {
+			System.out.println("DYController - DYController 시작");
+			System.out.println("board.getTitle() -> " + board.getTitle());
+			System.out.println("board.getContent() -> " + board.getContent());
+			System.out.println("board.getId() -> " + board.getId());
+			
+			return null;
+		}
+				
+				
+				
+				
+				
+				
 }
