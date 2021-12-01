@@ -22,8 +22,8 @@ public interface InvestService {
 
 	void buyLimitsPrice(OrderTrade orderTrade);
 
-  Float getMyCoin(String id, String currCoin);
+	Float getMyCoin(String id, String currCoin);
 	
-  List<CoinInfo> searchCoin(String keyWord);
+	List<CoinInfo> searchCoin(String keyWord);
 	
 }
