@@ -24,7 +24,10 @@
 <a href="updateForm.html">수정</a>
 
 <div class="container">
+	
 	<div class="freeboard"><p>자유게시판</p></div>
+	
+	
 	<div class="between"></div>
 
 
@@ -42,25 +45,22 @@
 		       </thead>
 		       <tbody>
 		
+		          		            
 		            <tr th:each="blist : ${boardList}">
 		               <td th:text="${blist.b_num}"></td>
-		               <td><a th:href="@{board_detailBoard( b_num=${blist.b_num})}" th:text=${blist.title}></a></td>
+		               <td><a th:href="@{board_detailBoard( b_num=${blist.b_num})}" th:text="${blist.title}"></a></td>
 		               <td th:text="${blist.uploaddate}"></td>
 		               <td th:text="${blist.views}"></td>
-		               
-		               <th:block th:each="mlist : ${memberList}">
-		               <th:block th:switch="${blist.id}">
-		               	<td th:case="${mlist.id}" th:text="${mlist.nickname}"></td>
-		               </th:block>
-		               </th:block>
-		               
+		               <td th:text="${blist.nickname}"></td>
 		            </tr>
+		            
+		            
 		       </tbody>
 		</table>
 
 <!-- 페이지 단락 넘김 -->
-		<div class="wrapper_paging">
-			<th:if = "${pg.startPage} > pg.pageBlock}">
+<!-- 		<div class="wrapper_paging">
+			<th:if = "#{pg.startPage}">
 				<a th:href="@{ board_bdPaging(currentPage=${pg.startPage-pg.pageBlock}) }">[이전]</a>
 			</th:if>
 			<th:each test ="i : begin='${pg.startPage}' end='${pg.endPage}'">
@@ -69,7 +69,7 @@
 			<th:if test="${pg.endPage < pg.totalPage }">
 				<a th:href="@{ board_bdPaging(currentPage=${pg.startPage+pg.pageBlock}) }">[다음]</a>
 			</th:if>
-		</div>	
+		</div>	 -->
 		
 	</div>
 </div>

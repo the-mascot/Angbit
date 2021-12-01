@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.oracle.Angbit.dao.board.BoardDao;
 import com.oracle.Angbit.model.common.Board;
-import com.oracle.Angbit.model.common.MemberInfo;
+
 
 
 
@@ -24,13 +24,6 @@ public class BoardServiceImpl implements BoardService {
 		System.out.println("BoardServiceImpl BoardList Start...");
 		List<Board> boardList = bdao.BoardList();
 		return boardList;
-	}
-
-	@Override
-	public List<MemberInfo> MemberList() {
-		System.out.println("BoardServiceImpl MemberList Start...");
-		List<MemberInfo> memberList = bdao.MemberList();
-		return memberList;
 	}
 
 	@Override
@@ -71,22 +64,25 @@ public class BoardServiceImpl implements BoardService {
 		
 		return board;//리턴 컨트롤러로
 	}
-	@Override
-	public MemberInfo detailMember(String nickname) {
-		System.out.println("BoardServiceImpl detailMember ...");
-		MemberInfo memberInfo = null;
-		
-		memberInfo = bdao.detailMember(nickname);
-		
-		return memberInfo;
-	}
 	
+	//update
 	@Override
 	public int update(Board board) {
 		System.out.println("BoardServiceImpl update ...");
 		int kkk = 0;
 		kkk = bdao.update(board);
 		return kkk;
+	}
+	
+	//writeform
+	@Override
+	public List<Board> listManager() {
+		List<Board> boardList = null;
+		System.out.println("BoardServiceImpl listmanager ...");
+		boardList = bdao.listManager();
+		System.out.println("BoardServiceImpl listManager boardList.size()->"+boardList.size());
+		
+		return boardList;
 	}
 
 	

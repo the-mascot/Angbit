@@ -2,7 +2,7 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 	<typeAliases>
-		<typeAlias alias="CoinInfo" type="com.oracle.Angbit.model.common.CoinInfo"/>
+		<typeAlias alias="CoinInfo" type="com.oracle.Angbit.model.common.CoinInfo"/> <!-- DTO주소를 줄여쓸 수 있게해줌 , RESULTTYPE에 활용-->
 		<typeAlias alias="Board" type="com.oracle.Angbit.model.common.Board"/>
 		<typeAlias alias="Coin" type="com.oracle.Angbit.model.common.Coin"/>
 		<typeAlias alias="Trade" type="com.oracle.Angbit.model.common.Trade"/>
