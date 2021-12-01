@@ -137,12 +137,13 @@ public class InvestDaoImpl implements InvestDao {
 		}
 		return sel;
 	}
-  
+	
+	@Override
 	public List<CoinInfo> searchCoin(String keyWord) {
 
 		System.out.println("InvestDaoImpl searchCoin Start...");
 		List<CoinInfo> coinInfo = null;
-		
+		System.out.println("InvestDaoImpl searchCoin keyWord->"+keyWord);
 		try {
 			coinInfo = seesion.selectList("searchCoin", keyWord);
 		} catch (Exception e) {
@@ -151,7 +152,7 @@ public class InvestDaoImpl implements InvestDao {
 		}
 		
 		
-		return null;
+		return coinInfo;
 	}
 
 }

@@ -1,0 +1,34 @@
+	<form id="order-form" method="post">
+		<div class="d-flex justify-content-between mb-5">
+			<div>주문구분</div>
+			<div>
+				<input type="radio" class="form-check-input" id="trd_method-limits" name="trd_method" value="limits" checked="checked" onclick="clickLimits()">지정가
+				<input type="radio" class="form-check-input" id="trd_method-market" name="trd_method" value="market" onclick="clickMarket()">시장가
+			</div>
+		</div>
+		<div class="d-flex justify-content-between mb-3">
+			<div id="order-avaliableKRW-th">주문가능</div><div><span class="mb-1" id="order-avaliableKRW"></span><span class="ms-1 mb-0" id="order-avaliableKRW-unit">KRW</span></div>
+		</div>
+		<div class="d-flex justify-content-between mb-3">
+			<div id="order-unit_price-th">매수가격</div><input type="text" class="order-form form-control" id="order-unit_price" name="trd_unit_price" onkeyup="inUnitPrice(this)">
+		</div>
+		<div class="d-flex justify-content-between mb-3">
+			<div id="order-trd_amt-th">주문수량</div>
+			<div><input type="text" class="order-form form-control" id="order-trd_amt" name="trd_amt" value="0" onkeypress="return inTrdAmt(event)"></div>
+		</div>
+		<div class="d-flex justify-content-end mb-3">
+			<div class="d-flex justify-content-between mt-1" id="order-div-amt-butn">
+				<input type="button" class="order-form-amt-butn form-control" value="10%">
+				<input type="button" class="order-form-amt-butn form-control" value="25%">
+				<input type="button" class="order-form-amt-butn form-control" value="50%">
+				<input type="button" class="order-form-amt-butn form-control" value="100%">
+			</div>
+		</div>	
+		<div class="d-flex justify-content-between mb-3">
+			<div>주문총액(KRW)</div><input type="text" class="order-form form-control" id="order-trd_price" name="trd_price" value="0" readonly="readonly" onkeyup="inUnitPrice(this)">
+		</div>
+		<p class="text-end" style="font-size: 14px;">최소주문금액 : 5,000 KRW / 수수료 : 없음</p>
+		<div class="d-flex justify-content-center">
+			<input type="reset" class="order-form-reset form-control me-3" value="초기화"><input type="button" class="order-form-submit form-control bg-danger" id="buySubmit" value="매 수">
+		</div>
+	</form>

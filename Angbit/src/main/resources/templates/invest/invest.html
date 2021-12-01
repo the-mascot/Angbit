@@ -24,6 +24,8 @@
 		var currCoincode = null;
 		var pcp = null;
 		var currCandle = null;
+		var coinList = ["KRW-BTC", "KRW-ETH", "KRW-ADA", "KRW-XRP", "KRW-DOT", "KRW-DOGE", "KRW-MANA", 
+			"KRW-LTC", "KRW-SAND", "KRW-VET", "KRW-AXS", "KRW-SOL", "KRW-BCH", "KRW-XLM", "KRW-ETC"]
 		
 		// 페이지 로딩 되면 실행되는 initial 함수
 		function init() {
@@ -87,7 +89,7 @@
 
 		function onMessage(evt) {
 			
- 			console.log(evt.data);
+ 			//console.log(evt.data);
 			var enc = new TextDecoder("utf-8");
 			var arr = new Uint8Array(evt.data);
 			var decode = enc.decode(arr);
@@ -96,14 +98,13 @@
 			
  			switch(jason['ty']) {
  			case 'ticker':	// 현재가 응답
-				var code = jason['cd'];
- 				flashit(code, jason['tp']);			// 코인 목록에서 체결시 반짝임 표시
- 				changeHilight(code, jason['c']);	// 전일대비에 따라 글시 색 변경
-
- 				upCoinList(jason);					// 코인 리스트 데이터 갱신
- 				
+ 				if(coinList.indexOf(jason['cd']) >= 0) {
+					var code = jason['cd'];
+	 				flashit(code, jason['tp']);			// 코인 목록에서 체결시 반짝임 표시
+	 				changeHilight(code, jason['c']);	// 전일대비에 따라 글시 색 변경
+	 				upCoinList(jason);					// 코인 리스트 데이터 갱신
+ 				}
  				break;
-
  			case 'orderbook':	// 호가 응답
 
  				if(currCoin == jason['cd']) {
@@ -515,25 +516,6 @@
 	            return true;
 	    }
 		
-		// coinList 검색
-		function searchCoin(obj) {
-			console.log('keyWord->'+obj.value.toUpperCase())
-			var keyWord = 'keyWord='+obj.value.toUpperCase();
-			$.ajax({
-				type		:	'GET',
-				url			:	'invest/searchCoin',
-				data		:	keyWord,
-				contentType : 	'application/json; charset=UTF-8',
-			    dataType 	: 	'json',
-				success		:	function(json) {
-					
-				},
-				error		:	function(e) {
-					console.log("error : ",e);
-				}
-			}); 
-		}
-		
 		$(document).ready(function(){ 
 			// coinTitle에서 정보 클릭시
 			$('#coinTitle-coinInfo-a').on('click', function coinInfoAjax(e) {
@@ -593,18 +575,33 @@
 				e.preventDefault();
 				$('#order-buy-a').attr('class', 'nav-link active');
 				$('#order-sell-a').attr('class', 'nav-link');
-				
-				$.ajax({
-					type		:	'GET',
-					url			:	'html/buyForm.html',
-					success		:	function(data) {
-						$('#order-card-body').html(data);
-					},
-					error		:	function(e) {
-						console.log("error : ",e);
-					}
-				});
-				
+				if(sessionStorage.getItem("sessionID") == null) {
+	 				$.ajax({
+						type		:	'GET',
+						url			:	'html/buyGuestForm.html',
+						success		:	function(data) {
+							$('#order-card-body').html(data);
+							selectKRW();
+							upUnitPrice();
+						},
+						error		:	function(e) {
+							console.log("error : ",e);
+						}
+					});
+				} else {
+					$.ajax({
+						type		:	'GET',
+						url			:	'html/buyMemberForm.html',
+						success		:	function(data) {
+							$('#order-card-body').html(data);
+							selectKRW();
+							upUnitPrice();
+						},
+						error		:	function(e) {
+							console.log("error : ",e);
+						}
+					});
+				}
 			});
 			
 			// 매도 클릭시
@@ -615,27 +612,6 @@
 				availableQunatity();
 				
 			});
-			
-			$('#trd_method-market').on('click', function() {
-				$('#order-unit_price-th').hide();
-				$('#order-unit_price').hide();
-				$('#order-trd_amt-th').hide();
-				$('#order-trd_amt').hide();
-				$('#order-trd_price').prop('readonly', false);
-				document.getElementById('order-trd_amt').value = 0;
-				document.getElementById('order-trd_price').value = 0;
-			}); 
-			
-			$('#trd_method-limits').on('click', function() {
-				$('#order-unit_price-th').show();
-				$('#order-unit_price').show();
-				$('#order-trd_amt-th').show();
-				$('#order-trd_amt').show();
-				$('#order-trd_price').prop('readonly', true);
-				document.getElementById('order-trd_amt').value = 0;
-				document.getElementById('order-trd_price').value = 0;
-			}); 
-			
 			
 			// order 가격, 수량 입력시 주문총액(trd_price) 계산
 			$("#order-unit_price, #order-trd_amt").on('keyup', function() {
@@ -683,10 +659,72 @@
 				}
 			});
 			
+			$('#coinlist-search').keyup(function() {
+				console.log('keyWord->'+$('#coinlist-search').val().toUpperCase())
+				var keyWord = 'keyWord='+$('#coinlist-search').val().toUpperCase();
+				$.ajax({
+					type		:	'GET',
+					url			:	'invest/searchCoin',
+					data		:	keyWord,
+					contentType : 	'application/json; charset=UTF-8',
+				    dataType 	: 	'json',
+					success		:	function(json) {
+						console.log(json);
+						var table = "";
+						for(var i = 0; i < json.length; i++) {
+							table += "<tr>"
+							table += "<td class='pt-1'><a href='#' class='coinlist-a text-dark' id='"+json[i].coincode+"' onclick='investApi(event, id)'>"+json[i].coinname+"</a>"
+							table += "<p class='mb-0'>"+json[i].coincode+"</p></td>"
+							table += "<td class='pt-1' style='width: 98px;'>"
+							table += "<div id='KRW-"+json[i].coincode+"-price' class='coinlist-price'></div></td>"
+							table += "<td class='pt-1'><p class='text-end mb-0' id='KRW-"+json[i].coincode+"-cPercent'></p>"
+							table += "<p class='text-end mb-0' id='KRW-"+json[i].coincode+"-cPrice'></p></td>"
+							table += "<td class='pt-1'><p class='text-end' id='KRW-"+json[i].coincode+"-price24h'></p></td>"
+							table += "</tr>"
+						}
+						coinList = [];
+						for(var i = 0; i < json.length; i++) {
+							coinList[i] = 'KRW-'+json[i].coincode;
+						}
+						$('#coinlist-tbody').html(table);
+						
+					},
+					error		:	function(e) {
+						console.log("error : ",e);
+					}
+				}); 
+			});
+			
 		});
 		
- 		// 현재가 업데이트
-		function buyLimitsCoin() {
+		// 시장가 클릭시
+		function clickMarket() {
+			console.log('clickMarket 시작')
+			document.getElementById('order-unit_price-th').style.display ='none';
+			document.getElementById('order-unit_price').style.display ='none';
+			document.getElementById('order-trd_amt-th').style.display ='none';
+			document.getElementById('order-trd_amt').style.display ='none';
+			document.getElementById('order-trd_price').readOnly = false;
+			document.getElementById('order-trd_amt').value = 0;
+			document.getElementById('order-trd_price').value = 0;
+			upUnitPrice();
+		}
+		
+		// 지정가 클릭시
+		function clickLimits() {
+			console.log('clickLimits 시작')
+			document.getElementById('order-unit_price-th').style.display = '';
+			document.getElementById('order-unit_price').style.display = '';
+			document.getElementById('order-trd_amt-th').style.display = '';
+			document.getElementById('order-trd_amt').style.display = '';
+			document.getElementById('order-trd_price').readOnly = true;
+			document.getElementById('order-trd_amt').value = 0;
+			document.getElementById('order-trd_price').value = 0;
+			
+		}
+		
+ 		// 주문 현재가 업데이트
+		function upUnitPrice() {
 			sendData = "currCoin="+currCoin;
 			$.ajax({
 				type		:	'GET',
@@ -696,8 +734,6 @@
 			    dataType 	: 	'json',
 				success		:	function(data) {
 					document.getElementById('order-unit_price').value = data[1].trade_price.toLocaleString();
-					console.log('trade_price->'+data[1].trade_price.toLocaleString())
-					buyCoin();
 				},
 				error		:	function(e) {
 					console.log("error : ",e);
@@ -706,7 +742,7 @@
 		};
 		
 	 	// 시장가 매수 주문
-		function buyCoin() {
+		function buyLimitsCoin() {
 			sendData = "currCoin="+currCoin;
 			$.ajax({
 				type		:	'GET',
@@ -1177,8 +1213,8 @@
 						<div class="d-flex justify-content-between mb-5">
 							<div>주문구분</div>
 							<div>
-								<input type="radio" class="form-check-input" id="trd_method-limits" name="trd_method" value="limits" checked="checked">지정가
-								<input type="radio" class="form-check-input" id="trd_method-market" name="trd_method" value="market">시장가
+								<input type="radio" class="form-check-input" id="trd_method-limits" name="trd_method" value="limits" checked="checked" onclick="clickLimits()">지정가
+								<input type="radio" class="form-check-input" id="trd_method-market" name="trd_method" value="market" onclick="clickMarket()">시장가
 							</div>
 						</div>
 						<div class="d-flex justify-content-between mb-3">
@@ -1231,7 +1267,7 @@
 	<section class="section2">
 	    <div class="card mt-5" id="coinlist-card">
 	    	<div class="card-header">
-	    		<input type="text" class="form-control" placeholder="코인명/심볼검색" style="font-size: 14px;" onkeyup="searchCoin(this)">
+	    		<input type="text" class="form-control" placeholder="코인명/심볼검색" style="font-size: 14px;" id="coinlist-search">
 	    	</div>
 	        <div class="card-body">
             	<div class="table-responsive">
@@ -1244,12 +1280,10 @@
 	                            <th class="text-end">거래대금</th>
 	                        </tr>
 	                    </thead>
-	                    <tbody>
+	                    <tbody id="coinlist-tbody">
 	                    	<tr th:each="list : ${coinInfoList}" th:with="code=${list.coincode}">
 								<td class="pt-1">
-
-									<a th:href="@{#}" class="coinlist-a text-dark" th:id="${code}" th:text="${list.coinname}" onclick="investApi(event, id)" style="font-family: 'Noto Sans KR', sans-serif;"></a>
-
+									<a th:href="@{#}" class="coinlist-a text-dark" th:id="${code}" th:text="${list.coinname}" onclick="investApi(event, id)"></a>
 		            	 			<p th:text="${code}" class="mb-0"></p>             	
 		                         </td>
 		                         <td class="pt-1" style="width: 98px;">
