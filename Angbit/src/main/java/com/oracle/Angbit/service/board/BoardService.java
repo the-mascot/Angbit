@@ -15,7 +15,11 @@ public interface BoardService {
 	List<Board> pagingBd(Board board);//페이징 
 	Board detailBoard(int b_num);
 	int update(Board board);
-	List<Board> listManager();
+	
+	Board writeBoard(int b_num);
+	
+	int insert(Board board);
+	
 	
 	
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.oracle.Angbit.model.common.Board;
 
@@ -66,62 +67,71 @@ public class DYController {
 	  
 	//수정 폼에 자료를 가져와 띄우는거
 		@GetMapping(value="board_updateForm")
-		public String updateForm(String nickname, int b_num, Model model) {
+		public String updateForm(int b_num, Model model) {
 			System.out.println("DYController Start updateForm..." );
 			Board board = bs.detailBoard(b_num); 
-			
-			
 			model.addAttribute("board",board);
-			
 			
 			return "board/updateForm";
 		}
 	//실질적인 데이터베이스 수정 작업	
 		@PostMapping(value="update")
 	    public String update(Board board, Model model) {
-			int k = bs.update(board);
-			System.out.println("bs.update(board) k-->"+k);
-			model.addAttribute("kkk",k);               		// Test Controller간 Data 전달
-			model.addAttribute("kk3","Message Test");   	// Test Controller간 Data 전달
+			System.out.println("board.getBnum->"+board.getB_num());
+			int result = bs.update(board);
+			System.out.println("DYController update result->"+result);
+			model.addAttribute("result", result);               		// Test Controller간 Data 전달
 			
-			return "forward:getList";   
+			return "redirect:board_list";  						//갱신시에 계속 수정해줘야돼서 포워드로 반복 
 	    }
 		
 		
-	//작성폼
+	//작성폼 - 아이디 받아서 해보기
 		@GetMapping(value="board_writeForm")
 		public String writeForm(Model model) {
-			List<Board> list = bs.listManager();
-			System.out.println("DYController writeForm list.size->"+list.size());
-			model.addAttribute("bdMngList",list);   // board Manager List
+			System.out.println("DYController Start writeForm..." );
 			
-			return "writeForm";
+			return "board/writeForm";
 		}
-//		@PostMapping(value="write")
-//		public String write(Board board, Model model) {
-//			System.out.println("DYController Start write..." );
-//			//System.out.println("emp.getHiredate->"+emp.getHiredate());
-//			// Service, Dao , Mapper명 까지 -> insert
-//			String returnStr ="";
-//			int result = bs.insert(board);
-//			if (result > 0) returnStr = "redirect:empList";
-//			else {
-//				model.addAttribute("msg","입력 실패 확인해 보세요");
-//				returnStr = "forward:writeForm";
-//			}
-//		    
-//			return returnStr;
-//		}	
 		
+		@PostMapping(value="write")
+		public String write(Board board, Model model) {
+			System.out.println("DYController Start write..." );
+			String returnStr ="";
+			int result = bs.insert(board);
+			if (result > 0) returnStr = "redirect:empList";
+			else {
+				model.addAttribute("msg","입력 실패 확인해 보세요");
+				returnStr = "redirect:writeForm";
+			}
+		    
+			return returnStr;
+		}
 
-				//삭제
-				@PostMapping("delete")
-				public String delete(int b_num, Model model) {
-					System.out.println("DYController Start delete...");
-					int result = bs.Delete(b_num);
-					
-					model.addAttribute("result", result);
-					
-					return "redirect:getList"; 
-				}
+		// 삭제
+		@PostMapping("delete")
+		public String delete(int b_num, Model model) {
+			System.out.println("DYController Start delete...");
+			int result = bs.Delete(b_num);
+			model.addAttribute("result", result);
+
+			return "redirect:getList";
+		}
+		
+		// 제목, 글내용 작성 후 글쓰기 버튼을 눌렀을 때, DB에 저장되는 컨트롤러
+		@RequestMapping(value = "writeProcess")
+		public String writeProcess(Model model, Board board) {
+			System.out.println("DYController - DYController 시작");
+			System.out.println("board.getTitle() -> " + board.getTitle());
+			System.out.println("board.getContent() -> " + board.getContent());
+			System.out.println("board.getId() -> " + board.getId());
+			
+			return null;
+		}
+				
+				
+				
+				
+				
+				
 }
