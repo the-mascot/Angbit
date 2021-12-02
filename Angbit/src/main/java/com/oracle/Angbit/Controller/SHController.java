@@ -232,7 +232,7 @@ public class SHController {
         if (id == null || id == "") {
             return sel;
         } else {
-            sel = ivs.getMyCoin(id, currCoin);
+            sel = ivs.getUsableCoin(id, currCoin);
             return sel;
         }
     }
@@ -253,7 +253,7 @@ public class SHController {
         orderTrade.setTrd_div(1); // 매도 주문
         String msg = null; // 결과 출력할 메시지
         int result = 0;
-        float amount = ivs.getMyCoin(id, coin); // 내 보유 코인량
+        float amount = ivs.getUsableCoin(id, coin); // 내 보유 코인량
 
         if (amount >= orderTrade.getTrd_amt()) {
 
