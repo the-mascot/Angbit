@@ -870,7 +870,6 @@
 						wickDownColor: '#0000be',
 					});
 
-
 					let chardat = [];
 					for (var i=0; i<Object.keys(data).length; i++) {
 						chardat.push(data[i]);
@@ -1084,7 +1083,7 @@
 					sellCoin();
 				} else {
 					console.log('시장가 매도시작')
-					sellLimitsCoin();
+					sellMarketCoin();
 				}
 			}
 		};
@@ -1100,7 +1099,7 @@
 		}
 
 		// 시장가 매도
-		function sellLimitsCoin() {
+		function sellMarketCoin() {
 			sendData = "currCoin="+currCoin;
 			$.ajax({
 				type		:	'GET',
@@ -1109,8 +1108,9 @@
 				contentType : 	'application/json; charset=UTF-8',
 				dataType 	: 	'json',
 				success		:	function(data) {
-					document.getElementById('order-unit_price').value = data[1].trade_price.toLocaleString();
+					document.getElementById('sell-unit_price').value = data[1].trade_price.toLocaleString();
 					console.log('trade_price->'+data[1].trade_price.toLocaleString())
+					console.log('DOM SET?'+document.getElementById('sell-unit_price').value)
 					sellCoin();
 				},
 				error		:	function(e) {
@@ -1121,20 +1121,20 @@
 
 		// 매도 주문
 		function sellCoin() {
-			console.log("buyCoin시작")
-			var trd_amt = $('#order-trd_amt').val();
-			var trd_price = uncomma($('#order-trd_price').val());
-			var trd_unit_price = uncomma($('#order-unit_price').val());
-			var trd_method = $("input[name='trd_method']:checked").val();
+			console.log("sellCoin시작")
+			var trd_amt = $('#sell-trd_amt').val(); // 매도 수량
+			var trd_price = uncomma($('#sell-trd_price').val()); // 주문 총액
+			var trd_unit_price = uncomma($('#sell-unit_price').val()); // 매도 가격
+			var trd_method = $("input[name='sell_method']:checked").val(); // 시장가or지정가
 			var formData = 'trd_method='+trd_method+'&trd_unit_price='+trd_unit_price+'&trd_amt='+trd_amt+'&trd_price='+trd_price+'&coincode='+currCoincode;
 			$.ajax({
 				type		:	'POST',
-				url			:	'invest/buyCoin',
+				url			:	'invest/sellCoin',
 				data		:	formData,
 				success		:	function(msg) {
 					$('#modal-msg').text(msg);
 					$('#warmModal').modal('toggle');
-					selectKRW();
+					// selectKRW();
 				},
 				error		:	function(e) {
 					console.log("error : ",e);

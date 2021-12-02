@@ -3,6 +3,7 @@ package com.oracle.Angbit.Controller;
 import com.oracle.Angbit.model.common.Coin;
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.common.MemberInfo;
+import com.oracle.Angbit.model.invest.OrderTrade;
 import com.oracle.Angbit.service.invest.InvestService;
 import com.oracle.Angbit.service.myInfo.myInfoService;
 import org.json.simple.JSONArray;
@@ -234,6 +235,53 @@ public class SHController {
             sel = ivs.getMyCoin(id, currCoin);
             return sel;
         }
+    }
+
+    @ResponseBody
+    @PostMapping("invest/sellCoin")
+    public String sellCoin(OrderTrade orderTrade, HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("sellCoin() Called.");
+        orderTrade.setId((String)request.getSession().getAttribute("sessionID"));
+        String id = orderTrade.getId();
+        String coin = orderTrade.getCoincode();
+
+        System.out.println("매도할 수량"+orderTrade.getTrd_amt());
+        System.out.println("매도 총액"+orderTrade.getTrd_price());
+        System.out.println("매도 가격"+orderTrade.getTrd_unit_price());
+        System.out.println("시장가or지정가? ->"+orderTrade.getTrd_method());
+
+        orderTrade.setTrd_div(1); // 매도 주문
+        String msg = null; // 결과 출력할 메시지
+        int result = 0;
+        float amount = ivs.getMyCoin(id, coin); // 내 보유 코인량
+
+        if (amount >= orderTrade.getTrd_amt()) {
+
+            if (orderTrade.getTrd_method().equals("limits")) {
+                try {
+                    orderTrade.setTrd_stu(0); // 체결 상태 미체결 설정
+                    result = ivs.sellLimitsPrice(orderTrade);
+                    msg = "매도 주문 되었습니다.";
+                } catch (Exception e) {
+                    System.out.println("limits! 지정가 매도 에러->"+e.getMessage());
+                    msg = "매도 주문에 실패하였습니다.";
+                }
+
+            } else {
+                try {
+                    orderTrade.setTrd_stu(1); // 체결 상태 체결 설정
+                    ivs.buyMarketPrice(orderTrade);
+                    msg = "매도 체결 되었습니다.";
+                } catch (Exception e) {
+                    System.out.println("market! 시장가 매도 에러->"+e.getMessage());
+                    msg = "매도 체결에 실패하였습니다.";
+                }
+            }
+
+        } else {
+            msg = "으응~ 주문 가능 수량이 부족합니다.";
+        }
+        return msg;
     }
 }
 
