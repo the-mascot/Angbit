@@ -155,4 +155,12 @@ public class InvestDaoImpl implements InvestDao {
 		return coinInfo;
 	}
 
+	@Override
+	@Transactional
+	public int sellLimitsPrice(OrderTrade orderTrade) {
+		System.out.println("InvestDao sellLimitsPrice() Called.");
+		int result = seesion.insert("insertTrade", orderTrade);
+		seesion.update("upSellCoin", orderTrade);
+		return result;
+	}
 }

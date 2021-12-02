@@ -88,5 +88,10 @@ public class InvestServiceImpl implements InvestService {
 		
 		return coinInfo;
 	}
-	
+
+	@Override
+	public int sellLimitsPrice(OrderTrade orderTrade) {
+		return ivdao.sellLimitsPrice(orderTrade);
+	}
+
 }

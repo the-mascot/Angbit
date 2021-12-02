@@ -2,7 +2,6 @@ package com.oracle.Angbit.service.invest;
 
 import java.util.List;
 
-import com.oracle.Angbit.model.common.Coin;
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.invest.OrderTrade;
 
@@ -23,7 +22,12 @@ public interface InvestService {
 	void buyLimitsPrice(OrderTrade orderTrade);
 
 	Float getMyCoin(String id, String currCoin);
-	
+
+  List<CoinInfo> searchCoin(String keyWord);
+
+	int sellLimitsPrice(OrderTrade orderTrade);
+
 	List<CoinInfo> searchCoin(String keyWord);
-	
+
+
 }
