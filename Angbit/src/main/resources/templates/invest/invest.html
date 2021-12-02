@@ -1178,6 +1178,19 @@
 			});
 		}
 
+		function per(num) {
+			console.log('퍼센트 호출!->'+num);
+			var price = parseFloat(($('#sell-availableAmt').text()) * (num * 0.01));
+			var tot = price * uncomma($('#sell-unit_price').val());
+			console.log(price)
+			console.log('tot?'+tot)
+
+			if(price >= 0) {
+				$('#sell-trd_amt').val(price.toFixed(8));
+				$('#sell-trd_price').val(comma(tot));
+			}
+		};
+
 
 
 </script>
