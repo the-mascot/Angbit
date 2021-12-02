@@ -76,9 +76,9 @@ public class InvestServiceImpl implements InvestService {
 	}
 
 	@Override
-	public Float getMyCoin(String id, String currCoin) {
+	public Float getUsableCoin(String id, String currCoin) {
 		System.out.println("getMyCoin Service Called.");
-		return ivdao.getMyCoin(id, currCoin);
+		return ivdao.getUsableCoin(id, currCoin);
 	}
   
 	public List<CoinInfo> searchCoin(String keyWord) {

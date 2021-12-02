@@ -126,15 +126,16 @@ public class InvestDaoImpl implements InvestDao {
 	}
 
 	@Override
-	public Float getMyCoin(String id, String currCoin) {
+	public Float getUsableCoin(String id, String currCoin) {
 		System.out.println("getMyCoin Dao Called.");
 		Map vo = new HashMap();
 		vo.put("id", id);
 		vo.put("currCoin", currCoin);
-		Float sel = seesion.selectOne("getMyCoin", vo);
+		Float sel = seesion.selectOne("getUsableCoin", vo);
 		if (sel==null) {
 			sel = 0f;
 		}
+		System.out.println(currCoin+" 사용 가능수량->"+sel);
 		return sel;
 	}
 	
