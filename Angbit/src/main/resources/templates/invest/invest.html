@@ -837,9 +837,15 @@
 			});
 		}
 		
+		var sortNameStu = 0;
+		
 		function sortName(e) {
 			e.preventDefault();
-			document.getElementById('sort-name-up').style.color = "red";
+			if(sortNameStu == 0 || sortNameStu == 2) {
+				
+				
+			} 
+			
 			
 		}
 		
@@ -1335,14 +1341,12 @@
                 	<table class="table table-hover" id="coinlist-table">
 	                    <thead>
 	                        <tr>
-	                            <th><a href="#" onclick="sortName(event)">코인명</a><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" id="sort-name-up" class="bi bi-arrow-down" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
-</svg><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
-</svg></th>
-	                            <th>현재가</th>
-	                            <th class="text-end">전일대비</th>
-	                            <th class="text-end">거래대금</th>
+	                            <th><a href="#" onclick="sortName(event)">코인명</a>
+								</th>
+	                            <th><a href="#" onclick="sortTP(event)">현재가</a>
+	                            </th>
+	                            <th class="text-center"><a href="#" onclick="sortChange(event)">전일대비</a></th>
+	                            <th class="text-end"><a href="#" onclick="sortPrice24(event)">거래대금</a></th>
 	                        </tr>
 	                    </thead>
 	                    <tbody id="coinlist-tbody">
