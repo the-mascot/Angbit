@@ -1,5 +1,6 @@
 package com.oracle.Angbit.Controller;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.model.status.CoinCoinInfo;
 import com.oracle.Angbit.model.status.StatusPaging;
@@ -48,6 +53,27 @@ public class GMController {
 				return "/status/status";
 			}
 		}
+		
+		@ResponseBody
+		@RequestMapping("/statusListAjax")
+		public String chart(HttpServletRequest request) {
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("statusList chart id->"+id);
+			
+			List<CoinCoinInfo> list = ss.listStatus(id);
+			request.setAttribute("list", list);
+			HashMap map = new HashMap();
+			map.put("list", list);
+			String json = null;
+			try {
+				json = new ObjectMapper().writeValueAsString(map);
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+			return json;
+		}
+		
 		
 		@GetMapping("/status_y_history")
 		public String statusYHistory(TradeCoinInfo trdCoin, HttpServletRequest request, String currentPage, Model model) {
