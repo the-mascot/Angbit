@@ -263,11 +263,7 @@
 		function upCoinList(jason) {
 			var code = jason['cd'];
 			var trade_price = jason['tp'].toLocaleString();
-
-			//var price24h = Math.round(jason['atp24h']).toLocaleString();
-
 			var price24h = (Math.round(jason['atp24h']/1000000)*1000000).toLocaleString();
-
 			var subPrice24h = price24h.substring(0, (price24h.length-8));
 
 			document.getElementById(code+'-price').innerText = trade_price;
@@ -275,8 +271,8 @@
 			document.getElementById(code+'-cPrice').innerText = (jason['scp'].toLocaleString());
 			document.getElementById(code+'-price24h').innerText = subPrice24h+'백만';
 
+			// orderbook-info 업데이트
 			if(currCoin == jason['cd']) {
-				// orderbook-info 업데이트
 				if(jason.atv24h >= 100) {
 					document.getElementById('orderbook-atv24h').innerText = Math.round(jason.atv24h).toLocaleString()
 					document.getElementById('orderbook-atv24h-unit').innerText = currCoincode;
@@ -674,10 +670,10 @@
 				else {
 					if($('input[name=trd_method]:checked').val() == 'limits') {
 						console.log('지정가 매수시작')
-						buyLimitsCoin();
+						buyCoin();
 					} else {
 						console.log('시장가 매수시작')
-						buyCoin();
+						buyMarketCoin();
 					}
 				}
 			});
@@ -710,7 +706,8 @@
 							coinList[i] = 'KRW-'+json[i].coincode;
 						}
 						$('#coinlist-tbody').html(table);
-
+						upCoinListApi();
+						
 					},
 					error		:	function(e) {
 						console.log("error : ",e);
@@ -719,7 +716,39 @@
 			});
 
 		});
-
+		
+		function upCoinListApi() {
+			$.ajax({
+				type		:	'GET',
+				url			:	'invest/upCoinListApi',
+				data		:	{"coinList" : coinList},
+			    dataType 	: 	'json',
+				success		:	function(data) {
+					console.log('data->'+data)
+					upCListApiData(data);
+				},
+				error		:	function(e) {
+					console.log("error : ",e);
+				}
+			});
+		}
+		
+		// 코인 리스트 api 업데이트
+		function upCListApiData(jason) {
+			for(var i = 0; i < jason.length; i++) {
+				var code = jason[i].market;
+				var trade_price = jason[i].trade_price.toLocaleString();
+				var price24h = (Math.round(jason[i].acc_trade_price_24h/1000000)*1000000).toLocaleString();
+				var subPrice24h = price24h.substring(0, (price24h.length-8));
+	
+				document.getElementById(code+'-price').innerText = trade_price;
+				document.getElementById(code+'-cPercent').innerText = (jason[i].signed_change_rate*100).toFixed(2)+'%';
+				document.getElementById(code+'-cPrice').innerText = (jason[i].signed_change_price.toLocaleString());
+				document.getElementById(code+'-price24h').innerText = subPrice24h+'백만';
+				changeHilight(code, jason[i].change);
+			}
+		}
+		
 		// 시장가 클릭시
 		function clickMarket() {
 			console.log('clickMarket 시작')
@@ -768,7 +797,7 @@
 		};
 
 	 	// 시장가 매수 주문
-		function buyLimitsCoin() {
+		function buyMarketCoin() {
 			sendData = "currCoin="+currCoin;
 			$.ajax({
 				type		:	'GET',
@@ -809,7 +838,13 @@
 				}
 			});
 		}
-
+		
+		function sortName(e) {
+			e.preventDefault();
+			document.getElementById('sort-name-up').style.color = "red";
+			
+		}
+		
 		// 차트 API
 		function chartApi() {
 
@@ -1410,7 +1445,11 @@
                 	<table class="table table-hover" id="coinlist-table">
 	                    <thead>
 	                        <tr>
-	                            <th>코인명</th>
+	                            <th><a href="#" onclick="sortName(event)">코인명</a><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" id="sort-name-up" class="bi bi-arrow-down" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
+</svg><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+</svg></th>
 	                            <th>현재가</th>
 	                            <th class="text-end">전일대비</th>
 	                            <th class="text-end">거래대금</th>

@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
@@ -168,8 +169,46 @@ public class ESController {
 		System.out.println("keyWord"+keyWord);
 		List<CoinInfo> coinInfo = ivs.searchCoin(keyWord);
 		
-		
+		System.out.println("ESController searchCoin end...");
 		return coinInfo;
+	}
+	
+	@ResponseBody
+	@GetMapping("invest/upCoinListApi")
+	public void upCoinListApi(@RequestParam(value = "coinList[]") List<String> coinList, HttpServletRequest request, HttpServletResponse response) {
+		
+		System.out.println("ESController upCoinListApi Start...");
+		String coinListStr = "";
+		System.out.println("coinList.size->"+coinList.size());
+		for(int i = 0; i < coinList.size();  i++) {
+			if(i == coinList.size()-1)
+				coinListStr += coinList.get(i);
+			else
+				coinListStr += coinList.get(i)+", ";
+		}
+		System.out.println("ESController upCoinListApi coinListStr->"+coinListStr);
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", "application/json");
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+		
+		String tickerUrl 	= "https://api.upbit.com/v1/ticker?markets="+coinListStr;
+		System.out.println(tickerUrl);
+		ResponseEntity<String> tickerResponse 	= restTemplate.exchange(tickerUrl, HttpMethod.GET, entity, String.class);
+		try {
+			String tickerStr 	= tickerResponse.getBody();
+			
+			JSONParser parser = new JSONParser();
+			JSONArray json = (JSONArray) parser.parse(tickerStr);
+			System.out.println("ESController upCoinListApi json 객체->"+json);
+			
+			PrintWriter out = response.getWriter();
+			out.print(json);
+		} catch (Exception e) {
+			System.out.println("ESController upCoinListApi Exception->"+e.getMessage());
+			e.printStackTrace();
+		}
+	
 	}
 	
 }

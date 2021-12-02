@@ -1,6 +1,10 @@
 package com.oracle.Angbit.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
@@ -10,16 +14,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.service.join.JoinService;
 import com.oracle.Angbit.service.lg.LoginService;
+
+import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +75,9 @@ public class SWController {
 		System.out.println("SWController - IDchk 시작~");
 		String msg1 = "";
 		
+		if(id == "") {
+			msg1 = "이메일을 입력하지 않으셨습니다.";
+		} else {
 		MemberInfo memberInfo = js.IDchk(id);
 		if (memberInfo != null) {
 			msg1 = "중복된 이메일 아이디 입니다.";
@@ -72,6 +85,7 @@ public class SWController {
 			msg1 = "사용 가능한 이메일 아이디입니다.";
 		}
 		System.out.println("msg1의 값은? -> " + msg1);
+		}
 		return msg1;
 	}
 	
@@ -83,6 +97,9 @@ public class SWController {
 		System.out.println("SWController - chkNickname 시작~");
 		String msg2 = "";
 		
+		if(nickname == "") {
+			msg2 = "닉네임을 입력하지 않으셨습니다.";
+		} else {	
 		MemberInfo memberInfo = js.chkNickname(nickname);
 		if (memberInfo != null) {
 			msg2 = "중복된 닉네임 입니다.";
@@ -90,7 +107,7 @@ public class SWController {
 			msg2 = "사용 가능한 닉네임입니다.";
 		}
 		System.out.println("msg2의 값은? -> " + msg2);
-		
+		}
 		return msg2;
 	}
 	
@@ -183,13 +200,19 @@ public class SWController {
     	return returnStr;
     }
     
-	// 메인페이지 상단에 '랭킹' 버튼을 누르면 RankPage 페이지로 이동하는 컨트롤러
+	// 메인페이지 상단에 '랭킹' 버튼을 누르면 실행되는 컨트롤러, 현재 실험중입니다.
+    @ResponseBody
 	@RequestMapping(value = "RankPage")
-	public String RankPage(Model model) {
-		System.out.println("SWController - RankPage");
-		
-		return "rank/RankPage";
-	}
+	public void RankPage(Model model, HttpServletRequest request,  HttpServletResponse response) {
+    	
+    	
+    	
+    }
+    
+
+    
+    
+    
     
 	
 	
