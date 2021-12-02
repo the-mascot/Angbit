@@ -11,6 +11,48 @@
 var wsUri = "wss://api.upbit.com/websocket/v1";	// Upbit websoket 여는 uri
 var output;
 
+function randomColor(labels){
+	var colors= [];
+	for(let i = 0; i < labels.length; i++){
+		colors.push("#" + Math.round(Math.random() * 0xffffff).toString(16));
+	}
+	return colors;
+}
+function makeChart(ctx, type, labels, myData){
+	var myChart = new Chart(ctx, {
+		type: 'pie',
+		data: {
+			labels: labels,
+			datasets: [{
+				label: labels,
+				data: myData,
+				backgroundColor: ['#F2CB61', '#86E57F', '#6799FF', '#A566FF', '#993800', '#997000', '#2F9D27', '#3F0099', '#4C4C4C', '#D1B2FF', '#FF00DD', '#8C8C8C', '#FFA7A7', '#CEF279', '#B2EBF4']
+// 				backgroundColor: randomColor(labels)
+			}]
+		},
+		// 범례 서식
+		 options:{
+			legend: {
+				position: 'right',
+				labels:{
+					fontSize: 15
+				}
+			},
+			// 그래프 오버 시 값 X
+			tooltips: {
+				callbacks: {
+					label: function(tooltipItem, myData){
+						var label = myData.labels[tooltipItem.index];
+						return label;
+					}
+				}
+			}
+		}
+	});
+}
+
+/* 일부값 / 전체값 * 100 */
+
 // 페이지 로딩 되면 실행되는 initial 함수
 function init() {
 	output = document.getElementById("output");
@@ -19,6 +61,38 @@ function init() {
 	/*<![CDATA[*/ 
 	var statusList = /*[[ ${statusList} ]]*/;
 	/*]]*/
+	
+	$.ajax({
+		type: "GET",
+		url: "statusListAjax",
+		dataType: "json",
+		success: function(data){
+			console.log(data);
+			
+			var labels = [];
+			var myData = [];
+			var percent = 0;
+			
+			for (var i=0; i<Object.keys(data.list).length; i++){
+				percent += data.list[i].tot_price;
+			}
+			console.log('percent-> '+percent);
+			
+			for(var i=0; i<Object.keys(data.list).length; i++) {
+				labels.push(data.list[i].coinname+'('+((data.list[i].tot_price/percent)*100).toFixed(2)+' %)');
+				myData.push(data.list[i].tot_price);
+			}
+			
+			console.log('label?'+labels);
+			console.log('myData?'+myData);
+			
+			var newLabels = labels.slice();
+			var newMyData = myData.slice();
+			var ctx = $('#myChart');
+			makeChart(ctx, 'pie', labels, myData);
+		}
+	
+	})
 }
 
 function testWebSocket() {
@@ -69,6 +143,14 @@ function onMessage(evt) {
 	/*]]*/
 	var evPrice = null;
 	
+	// tolocaleString - 소숫점 자리 지정
+	const option = {
+		    maximumFractionDigits: 0
+		   }
+	const option1 = {
+			maximumFractionDigits: 2
+			}
+	
 	console.log('statusList.length->'+statusList.length);
 	statusList.forEach((statusList, i)=> {
 		let amt = statusList.coin_amt;
@@ -85,26 +167,31 @@ function onMessage(evt) {
 		if('KRW-'+coincode == jason.cd){
 			evPrice = amt * jason.tp // 평가금액
 			
-			document.getElementById(coincode).innerText = evPrice.toLocaleString();
-			var coinloss = document.getElementById(coincode+'-loss').innerText = (evPrice-totPrice).toLocaleString()+'\n'+(((evPrice/totPrice)-1)*100).toLocaleString()+' %';
+			document.getElementById(coincode).innerText = evPrice.toLocaleString('ko-KR', option);
+			var coinloss1 = evPrice-totPrice;	// css 입히기 위한 변수
+			var coinloss = document.getElementById(coincode+'-loss').innerText = (evPrice-totPrice).toLocaleString('ko-KR', option)+'\n'+(((evPrice/totPrice)-1)*100).toLocaleString('ko-KR', option1)+' %';
 // 			평가금액 / 매수가격 - 1 * 100 %
-			console.log("coinloss -> "+coinloss); // 평가손익
+// 			console.log("coinloss -> "+coinloss); // 평가손익
 // 			totEvPrice += evPrice;
+// 			console.log("coincod+'-loss'"+coinloss1);
 		}
 			// 평가손익 css
-			if(coinloss < '0') {
+			if(coinloss1 < 0) {
 				document.getElementById(coincode+'-loss').style.color = "blue";
 				document.getElementById(coincode+'-loss').style.fontWeight = "700";
-			} else if(coinloss > '0'){
+			} 
+			if(coinloss1 > 0){
 				document.getElementById(coincode+'-loss').style.color = "red";
 				document.getElementById(coincode+'-loss').style.fontWeight = "700";
-			} else if(coinloss == '0') {
+			} 
+			if(coinloss1 == 0) {
 				document.getElementById(coincode+'-loss').style.color = "black";
 				document.getElementById(coincode+'-loss').style.fontWeight = "700";
 			}
 			
 	})
 	
+	// 각 코인별 평가금액 합산
 		var ADA = uncomma($('#ADA').text()) * 1;
 		var BTC = uncomma($('#BTC').text()) * 1;
 		var LTC = uncomma($('#LTC').text()) * 1;
@@ -123,24 +210,71 @@ function onMessage(evt) {
 		
 		var coin_tot_un = (ADA+BTC+LTC+VET+MANA+ETH+XRP+DOT+DOGE+SAND+AXS+SOL+BCH+XLM+ETC);
 		var coin_tot = comma((ADA+BTC+LTC+VET+MANA+ETH+XRP+DOT+DOGE+SAND+AXS+SOL+BCH+XLM+ETC));
+		
+		// KRW 문자열
 		var krw = ' KRW';
+		
+		// 총 평가금액
+// 		console.log('총평가금액 test -> '+coin_tot_un)
+// 		console.log('총평가금액 totprice -> '+uncomma($('#totPrice').text()))
+		if(coin_tot_un > uncomma($('#totPrice').text())){
+			$('#evPrice').text(coin_tot+krw).css('color', 'red').css('fontWeight', '700');
+		}
+		if(coin_tot_un < uncomma($('#totPrice').text())){
+			$('#evPrice').text(coin_tot+krw).css('color', 'blue').css('fontWeight', '700');
+		} 
+		if(coin_tot_un == uncomma($('#totPrice').text())){
+			$('#evPrice').text(coin_tot+krw).css('color', 'black').css('fontWeight', '700');
+		}
 		$('#evPrice').text(coin_tot+krw);
 		
+		// 총 자산
 		var cash = uncomma($('#cash').text()) * 1;
 		var total = comma(cash+coin_tot_un);
-		$('#total').text(total+krw);
+		var cashtotPrice = cash+parseInt(uncomma($('#totPrice').text())) // 보유현금 + 총매수금액
+// 		console.log('총자산 Test -> '+(cash+coin_tot_un));
+// 		console.log('총자산 Test2 -> '+(cash+parseInt(uncomma($('#totPrice').text()))));
+		if (cash+coin_tot_un > cashtotPrice){
+			$('#total').text(total+krw).css('color', 'red');
+		} 
+		if (cash+coin_tot_un < cashtotPrice){
+			$('#total').text(total+krw).css('color', 'blue');
+		} 
+		if (cash+coin_tot_un == cashtotPrice){
+			$('#total').text(total+krw).css('color', 'black');
+		}
 		
+		// 총 평가손익
 		var totBuy = uncomma($('#totPrice').text()) *1;
 		var totalBuy = comma(coin_tot_un-totBuy);
-		$('#totLoss').text(totalBuy+krw);
+// 		console.log('총평가손익 test->'+(coin_tot_un-totBuy));
+		if (coin_tot_un-totBuy > 0){
+			$('#totLoss').text(totalBuy+krw).css('color', 'red').css('fontWeight', '700');
+		}
+		if (coin_tot_un-totBuy < 0){
+			$('#totLoss').text(totalBuy+krw).css('color', 'blue').css('fontWeight', '700');
+		}
+		if (coin_tot_un-totBuy == 0){
+			$('#totLoss').text(totalBuy+krw).css('color', 'black').css('fontWeight', '700');
+		}
+// 		console.log('총평가손익->'+$('#totLoss').text(totalBuy[0]+krw[0]));
 		
+		// 총 평가손익률
+// 		console.log('총평가손익률 -> '+((coin_tot_un/totBuy)-1)*100)
 		var perLoss = (((coin_tot_un/totBuy)-1)*100).toFixed(2);
+		if ((((coin_tot_un/totBuy)-1)*100) > 0){
+			$('#avgLoss').text(perLoss+' %').css('color', 'red').css('fontWeight', '700');
+		}
+		if ((((coin_tot_un/totBuy)-1)*100) < 0){
+			$('#avgLoss').text(perLoss+' %').css('color', 'blue').css('fontWeight', '700');
+		} 
+		if ((((coin_tot_un/totBuy)-1)*100) == 0) {
+			$('#avgLoss').text(perLoss+' %').css('color', 'black').css('fontWeight', '700');
+		}
 		
-		$('#avgLoss').text(perLoss+' %');
-		
-		console.log('perLoss -> '+(((coin_tot_un/totBuy)-1)*100).toFixed(2));
-		console.log('cash?'+cash);
-		console.log('cash+coin_tot ->'+total);
+// 		console.log('perLoss -> '+(((coin_tot_un/totBuy)-1)*100).toFixed(2));
+// 		console.log('cash?'+cash);
+// 		console.log('cash+coin_tot ->'+total);
 		
 // 		console.log('ADA?'+ADA);
 // 		console.log('ADA?'+BTC);
@@ -218,7 +352,7 @@ window.addEventListener("load", init, false);
 				</div>
 				<div class="row">
 				    <div class="col status_mid_title">총 매수금액</div>
-				    <div th:id="totPrice" class="col" align="right" style="margin-top: 5px" th:text="${#numbers.formatDecimal(totPrice,1,'COMMA',0,'POINT')+' KRW'}"><span style="font-size: 11px"> KRW</span></div>
+				    <div th:id="totPrice" class="col" align="right" style="margin-top: 5px; font-weight: 700" th:text="${#numbers.formatDecimal(totPrice,1,'COMMA',0,'POINT')+' KRW'}"></div>
 				</div>
 				<div class="row status_mid_details" th:with="slist=${statusList}">
 				    <div class="col status_mid_title">총 평가금액</div>
@@ -237,29 +371,13 @@ window.addEventListener("load", init, false);
 		</div>
 		<div class="col-lg-6" align="right">
 				<div class="card-body" align="right">
-					<canvas id="myChart1" style="align-content: center;"></canvas>
+					<canvas id="myChart" style="align-content: center;"></canvas>
 				</div>
 			</div>
 		</div>
 	</div>
 <!-- 차트 -->
-<script th:inline="javascript">
-data = { 
-		datasets: [{
-			backgroundColor: ['pink','#B5B2FF','#5CD1E5'],
-			data: [50, 20, 30]
-		}],
-		// 라벨의 이름이 툴팁처럼 마우스가 근처에 오면 나타남
-		labels: ['KRW','BTC','DOGE']
-	}; 
-	// 가운데 구멍이 없는 파이형 차트 
-	var ctx1 = document.getElementById("myChart1"); 
-	var myPieChart = new Chart(ctx1, {
-		type: 'pie',
-		data: data,
-		options: {} 
-	}); 
-</script>
+
 <!-- 코인현황 표 -->
 <hr class="line" style="height: 3px; width: 90%; margin-left: 5%;"/>
 <div class="row my-3" align="center">
