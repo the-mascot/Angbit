@@ -94,4 +94,8 @@ public class InvestServiceImpl implements InvestService {
 		return ivdao.sellLimitsPrice(orderTrade);
 	}
 
+	@Override
+	public void sellMarketPrice(OrderTrade orderTrade) {
+		ivdao.sellMarketPrice(orderTrade);
+	}
 }

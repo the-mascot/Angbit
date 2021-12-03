@@ -157,11 +157,19 @@ public class InvestDaoImpl implements InvestDao {
 	}
 
 	@Override
-	@Transactional
 	public int sellLimitsPrice(OrderTrade orderTrade) {
+		//지정가 매도(trade)
 		System.out.println("InvestDao sellLimitsPrice() Called.");
 		int result = seesion.insert("insertTrade", orderTrade);
-		seesion.update("upSellCoin", orderTrade);
 		return result;
+	}
+
+	@Override
+	@Transactional
+	public void sellMarketPrice(OrderTrade orderTrade) {
+		//시장가 매도(trade,coin update,increaseKRW)
+		seesion.insert("insertTrade", orderTrade);
+		seesion.update("upSellCoin", orderTrade);
+		seesion.update("increaseKRW", orderTrade);
 	}
 }

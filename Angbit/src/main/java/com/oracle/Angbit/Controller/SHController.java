@@ -261,7 +261,6 @@ public class SHController {
                 try {
                     orderTrade.setTrd_stu(0); // 체결 상태 미체결 설정
                     result = ivs.sellLimitsPrice(orderTrade);
-                    msg = "매도 주문 되었습니다.";
                 } catch (Exception e) {
                     System.out.println("limits! 지정가 매도 에러->"+e.getMessage());
                     msg = "매도 주문에 실패하였습니다.";
@@ -270,7 +269,7 @@ public class SHController {
             } else {
                 try {
                     orderTrade.setTrd_stu(1); // 체결 상태 체결 설정
-                    ivs.buyMarketPrice(orderTrade);
+                    ivs.sellMarketPrice(orderTrade);
                     msg = "매도 체결 되었습니다.";
                 } catch (Exception e) {
                     System.out.println("market! 시장가 매도 에러->"+e.getMessage());

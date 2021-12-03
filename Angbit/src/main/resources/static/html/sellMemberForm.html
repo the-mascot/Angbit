@@ -16,11 +16,11 @@
   <div id="sell-trd_amt-th">매도수량</div>
   <div>
    <input type="text" class="sell-form form-control" id="sell-trd_amt" name="sell-trd_amt" value="0" onkeypress="return inSellAmt(event)" onkeyup="inputEvent(this)">
-   <div class="d-flex justify-content-between mt-1">
-    <input type="button" class="sell-form-amt-butn form-control" value="10%">
-    <input type="button" class="sell-form-amt-butn form-control" value="25%">
-    <input type="button" class="sell-form-amt-butn form-control" value="50%">
-    <input type="button" class="sell-form-amt-butn form-control" value="100%">
+   <div class="d-flex justify-content-between mt-1" id="sell-div-amt-butn">
+    <input type="button" class="sell-form-amt-butn form-control" value="10%" onclick="per(10)">
+    <input type="button" class="sell-form-amt-butn form-control" value="25%" onclick="per(25)">
+    <input type="button" class="sell-form-amt-butn form-control" value="50%" onclick="per(50)">
+    <input type="button" class="sell-form-amt-butn form-control" value="100%" onclick="per(100)">
    </div>
   </div>
  </div>
@@ -29,7 +29,7 @@
  </div>
  <p class="text-end" style="font-size: 14px;">최소주문금액 : 5,000 KRW / 수수료 : 없음</p>
  <div class="d-flex justify-content-center">
-  <input type="reset" class="sell-form-reset form-control me-3" value="초기화"><input type="button" class="sell-form-submit form-control bg-danger" onclick="sellSubmit()" value="매 수">
+  <input type="reset" class="sell-form-reset form-control me-3" value="초기화"><input type="button" class="sell-form-submit form-control bg-primary" onclick="sellSubmit()" value="매 도">
  </div>
 </form>
 <!--
@@ -45,4 +45,11 @@
 총액은 입력 불가. 계산 후 산출된 금액만 출력
 
 최소 주문 금액?
+
+왠지 모르겠는데 이득을 2배로 보고있음(투자 현황).
+보유 현금이 0원으로 나오지 않고 -로 나옴.
+전량 매도시 평균 단가와 tot_price에 영향을 줌.
+
+해야할것
+CSS완성
 -->
