@@ -210,6 +210,33 @@ main::after {
 	color: white;
 }
 
+.sell-form {
+	width: 280px;
+	height: 38px;
+	text-align: right;
+}
+
+#sell-div-amt-butn {
+	width: 280px;
+}
+
+.sell-form-amt-butn {
+	width: 60px;
+}
+
+.sell-form-reset {
+	width: 100px;
+	height: 45px;
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+.sell-form-submit {
+	width: 280px;
+	height: 45px;
+	font-family: 'Noto Sans KR', sans-serif;
+	color: white;
+}
+
 
 /* 차트 */
 .tv-lightweight-charts {

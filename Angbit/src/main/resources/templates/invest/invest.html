@@ -27,6 +27,10 @@
 		var coinList = ["KRW-BTC", "KRW-ETH", "KRW-ADA", "KRW-XRP", "KRW-DOT", "KRW-DOGE", "KRW-MANA",
 			"KRW-LTC", "KRW-SAND", "KRW-VET", "KRW-AXS", "KRW-SOL", "KRW-BCH", "KRW-XLM", "KRW-ETC"]
 
+		/*<![CDATA[*/
+		var sessionID = "[[${session.sessionID}]]"
+		/*]]>*/
+
 		// 페이지 로딩 되면 실행되는 initial 함수
 		function init() {
 			output = document.getElementById("output");
@@ -582,7 +586,7 @@
 				e.preventDefault();
 				$('#order-buy-a').attr('class', 'nav-link active');
 				$('#order-sell-a').attr('class', 'nav-link');
-				if(sessionStorage.getItem("sessionID") == null) {
+				if(sessionID == null || sessionID == "") {
 	 				$.ajax({
 						type		:	'GET',
 						url			:	'html/buyGuestForm.html',
@@ -617,18 +621,34 @@
 				$('#order-buy-a').attr('class', 'nav-link');
 				$('#order-sell-a').attr('class', 'nav-link active');
 
-				$.ajax({
-					type: 'GET',
-					url: 'html/sellForm.html',
-					success: function (data) {
-						$('#order-card-body').html(data);
-						availableQunatity();
-						upUnitPrice()
-					},
-					error: function (e) {
-						console.log("error : ", e);
-					}
-				});
+				if(sessionID == null || sessionID == "") {
+					$.ajax({
+						type: 'GET',
+						url: 'html/sellGuestForm.html',
+						success: function (data) {
+							$('#order-card-body').html(data);
+							availableQunatity();
+							upUnitPrice()
+						},
+						error: function (e) {
+							console.log("error : ", e);
+						}
+					});
+				} else {
+					$.ajax({
+						type: 'GET',
+						url: 'html/sellMemberForm.html',
+						success: function (data) {
+							$('#order-card-body').html(data);
+							availableQunatity();
+							upUnitPrice()
+						},
+						error: function (e) {
+							console.log("error : ", e);
+						}
+					});
+				}
+
 			});
 
 
