@@ -282,6 +282,11 @@ public class SHController {
         }
         return msg;
     }
+
+    @RequestMapping("test")
+    public String testview() {
+        return "myInfo/chartTest-";
+    }
 }
 
 
