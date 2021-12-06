@@ -9,6 +9,7 @@ import com.oracle.Angbit.service.myInfo.myInfoService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +76,7 @@ public class SHController {
         String currCoin = request.getParameter("currCoin"); // 캔들 호출된 코인명
         String currCandle = request.getParameter("currCandle"); // 캔들 호출된 봉
 
-        // 최초 호출시 비트코인, 1분봉 세팅
+        // 최초 호출시 비트코인, 30분봉 세팅
         if (currCoin == null || currCoin == "") {
             currCoin = "KRW-BTC";
         }
@@ -215,7 +216,7 @@ public class SHController {
         String id = (String) request.getSession().getAttribute("sessionID");
         mis.widraw(id);
         request.getSession().invalidate();
-        return "myInfo/loginForm";
+        return "lg/loginForm";
     }
 
     @ResponseBody
@@ -239,16 +240,17 @@ public class SHController {
 
     @ResponseBody
     @PostMapping("invest/sellCoin")
-    public String sellCoin(OrderTrade orderTrade, HttpServletRequest request, HttpServletResponse response) {
+    public String sellCoin(OrderTrade orderTrade, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
         System.out.println("sellCoin() Called.");
-        orderTrade.setId((String)request.getSession().getAttribute("sessionID"));
+        orderTrade.setId((String) request.getSession().getAttribute("sessionID"));
+        System.out.println("JS Request?"+orderTrade.getTrd_unit_price());
         String id = orderTrade.getId();
         String coin = orderTrade.getCoincode();
 
-        System.out.println("매도할 수량"+orderTrade.getTrd_amt());
-        System.out.println("매도 총액"+orderTrade.getTrd_price());
-        System.out.println("매도 가격"+orderTrade.getTrd_unit_price());
-        System.out.println("시장가or지정가? ->"+orderTrade.getTrd_method());
+        System.out.println("매도할 수량" + orderTrade.getTrd_amt());
+        System.out.println("매도 총액" + orderTrade.getTrd_price());
+        System.out.println("매도 가격" + orderTrade.getTrd_unit_price());
+        System.out.println("시장가or지정가? ->" + orderTrade.getTrd_method());
 
         orderTrade.setTrd_div(1); // 매도 주문
         String msg = null; // 결과 출력할 메시지
@@ -262,23 +264,27 @@ public class SHController {
                     orderTrade.setTrd_stu(0); // 체결 상태 미체결 설정
                     result = ivs.sellLimitsPrice(orderTrade);
                 } catch (Exception e) {
-                    System.out.println("limits! 지정가 매도 에러->"+e.getMessage());
+                    System.out.println("limits! 지정가 매도 에러->" + e.getMessage());
                     msg = "매도 주문에 실패하였습니다.";
                 }
 
             } else {
                 try {
+                    /* 시장가 SET */
+                    orderTrade.setTrd_unit_price(tradePrice(coin));
+                    orderTrade.setTrd_price((int) (orderTrade.getTrd_unit_price() * orderTrade.getTrd_amt()));
+                    /*  */
                     orderTrade.setTrd_stu(1); // 체결 상태 체결 설정
                     ivs.sellMarketPrice(orderTrade);
                     msg = "매도 체결 되었습니다.";
                 } catch (Exception e) {
-                    System.out.println("market! 시장가 매도 에러->"+e.getMessage());
+                    System.out.println("market! 시장가 매도 에러->" + e.getMessage());
                     msg = "매도 체결에 실패하였습니다.";
                 }
             }
 
         } else {
-            msg = "으응~ 주문 가능 수량이 부족합니다.";
+            msg = "주문 가능 수량이 부족합니다.";
         }
         return msg;
     }
@@ -287,6 +293,26 @@ public class SHController {
     public String testview() {
         return "myInfo/chartTest-";
     }
+
+    // 시장가 리턴용
+    public int tradePrice(String currCoin) throws IOException, ParseException {
+        String coin = "KRW-"+currCoin;
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", "application/json");
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+        String Candle = "https://api.upbit.com/v1/candles/minutes/1?market=" + coin + "&count=1";
+        ResponseEntity<String> candleResponse = restTemplate.exchange(Candle, HttpMethod.GET, entity, String.class);
+
+        JSONParser parser = new JSONParser();
+        JSONArray json = (JSONArray) parser.parse(candleResponse.getBody().toString());
+        JSONObject conv = (JSONObject) json.get(0);
+        int price = Integer.valueOf(String.valueOf(new BigDecimal((Double) conv.get("trade_price"))));
+
+        return price;
+    }
+
 }
 
 

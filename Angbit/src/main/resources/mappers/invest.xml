@@ -32,4 +32,10 @@
 	<update id="upSellCoin" parameterType="OrderTrade">
 		UPDATE coin SET coin_amt = coin_amt - #{trd_amt}, tot_price = tot_price - #{trd_price} WHERE id=#{id} and coincode=#{coincode}
 	</update>
+	<select id="chkZero" parameterType="OrderTrade" resultType="float">
+		SELECT coin_AMT FROM coin WHERE id=#{id} and coincode=#{coincode}
+	</select>
+	<delete id="delCoinRow" parameterType="OrderTrade">
+		DELETE FROM coin WHERE id=#{id} and coincode=#{coincode}
+	</delete>
 </mapper>
