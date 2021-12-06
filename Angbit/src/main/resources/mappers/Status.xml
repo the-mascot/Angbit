@@ -9,7 +9,6 @@
 	</select>
 	<select id="YList" parameterType="hashmap" resultType="TradeCoinInfo">
 		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and rownum between #{trdCoin.start} and #{trdCoin.end} order by trd_date desc
-<!-- 		select * from trade where id=#{id} and trd_stu=1 order by trd_date desc -->
 	</select>
 	<select id="NList" parameterType="java.lang.String" resultType="TradeCoinInfo">
 		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=0 order by trd_date desc

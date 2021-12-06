@@ -34,23 +34,38 @@
 	
 	<!-- detail, updateForm -->
 	<select id="dyBoardSelOne" parameterType="int" resultType="Board">
-		select * from Board where b_num = #{b_num}
+		SELECT * 
+		FROM Board bd
+		LEFT OUTER JOIN memberinfo mb
+		ON bd.id = mb.id
+		WHERE b_num = #{b_num}
 	</select>
 	
 	
 	<!-- update -->
 	<update id="dyBoardUpdate" parameterType="Board">
-		 update board
-		 set    bd.b_num=#{b_num},
-		        bd.title=#{title}, 
-		        bd.uploaddate=#{uploaddate}, 
-		    	bd.views=#{views} 
-		       
-		 where  bd.title=#{title}
+		 update board 
+		 set title=#{title}, content=#{content}, uploaddate=sysdate
+		 where b_num=#{b_num}
 	</update>
+	
+	<select id="writeBoard" resultType="Board">
+		SELECT * 
+		FROM Board bd
+		LEFT OUTER JOIN memberinfo mb
+		ON bd.id = mb.id
+	</select>
+	
 	
 	<!-- delete -->
 	<delete id="delete" parameterType="int">
 		delete from BOARD where b_num = #{b_num}
 	</delete>
+	
+	<!-- insert -->
+	<insert id="dyBoardInsert" parameterType="board">
+	     insert into board values (#{b_num},#{title},#{uploaddate},#{views},
+									 #{nickname})
+ 	</insert>
+	
 </mapper>

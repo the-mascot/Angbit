@@ -1,0 +1,55 @@
+<form id="sell-form" method="post">
+ <div class="d-flex justify-content-between mb-5">
+  <div>주문구분</div>
+  <div>
+   <input type="radio" class="form-check-input" name="sell_method" value="limits" checked="checked" onclick="sellLimits()">지정가
+   <input type="radio" class="form-check-input" name="sell_method" value="market" onclick="sellMarket()">시장가
+  </div>
+ </div>
+ <div class="d-flex justify-content-between mb-3" id="sell-div-available">
+  <div>주문가능</div><div><span class="mb-1" id="sell-availableAmt"></span><span class="selected ms-1 mb-0">KRW</span></div>
+ </div>
+ <div class="d-flex justify-content-between mb-3 ">
+  <div id="sell-unit_price-th">매도가격</div><input type="text" class="sell-form form-control" id="sell-unit_price" name="sell_unit_price" onkeyup="inUnitPrice(this), inputEvent(this)">
+ </div>
+ <div class="d-flex justify-content-between mb-3">
+  <div id="sell-trd_amt-th">매도수량</div>
+  <div>
+   <input type="text" class="sell-form form-control" id="sell-trd_amt" name="sell-trd_amt" value="0" onkeypress="return inSellAmt(event)" onkeyup="inputEvent(this)">
+   <div class="d-flex justify-content-between mt-1" id="sell-div-amt-butn">
+    <input type="button" class="sell-form-amt-butn form-control" value="10%" onclick="per(10)">
+    <input type="button" class="sell-form-amt-butn form-control" value="25%" onclick="per(25)">
+    <input type="button" class="sell-form-amt-butn form-control" value="50%" onclick="per(50)">
+    <input type="button" class="sell-form-amt-butn form-control" value="100%" onclick="per(100)">
+   </div>
+  </div>
+ </div>
+ <div class="d-flex justify-content-between mb-3">
+  <div id="sell-trd_price-th">주문총액(KRW)</div><input type="text" class="sell-form form-control" id="sell-trd_price" name="trd_price" value="0" readonly="readonly">
+ </div>
+ <p class="text-end" style="font-size: 14px;">최소주문금액 : 5,000 KRW / 수수료 : 없음</p>
+ <div class="d-flex justify-content-center">
+  <input type="reset" class="sell-form-reset form-control me-3" value="초기화"><input type="button" class="sell-form-submit form-control bg-primary" onclick="sellSubmit()" value="매 도">
+ </div>
+</form>
+<!--
+주문가능 = 현재 보유중인 해당 코인 수량//
+수량 = 현재 선택한 코인의 판매 수량
+가격 =  내가 판매할 가격
+총액 =  수량 * 선택가격
+
+판매 퍼센티지 = <-만큼 현재 보유수량에서 판매 ex)보유 100 지정가 1,000에 20%일시 수량 20개 가격 200원 입력
+
+주문가능 수량 = currCoin -> SELECT coin_amt FROM coin WHERE id=sessionID, coincode = currCoin
+가격 = 변동 가능한 금액(시세 안쪽?)
+총액은 입력 불가. 계산 후 산출된 금액만 출력
+
+최소 주문 금액?
+
+왠지 모르겠는데 이득을 2배로 보고있음(투자 현황).
+보유 현금이 0원으로 나오지 않고 -로 나옴.
+전량 매도시 평균 단가와 tot_price에 영향을 줌.
+
+해야할것
+CSS완성
+-->

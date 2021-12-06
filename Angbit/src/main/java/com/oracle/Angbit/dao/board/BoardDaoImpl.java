@@ -97,21 +97,39 @@ public class BoardDaoImpl implements BoardDao {
 		@Override
 		public int update(Board board) {
 			System.out.println("BoardDaoImpl update start..");
-			int kkk = 0;
+			int result = 0;
+			System.out.println(board.getB_num());
+			System.out.println(board.getContent());
+			System.out.println(board.getTitle());
 			try {
-				kkk  = session.update("dyBoardUpdate",board);
+				result  = session.update("dyBoardUpdate", board);
 			} catch (Exception e) {
 				System.out.println("BoardDaoImpl update Exception->"+e.getMessage());
+			}
+			return result;
+		}
+
+		@Override
+		public Board writeBoard(int b_num) {
+			// TODO Auto-generated method stub
+			System.out.println("BoardDaoImpl writeBoard start...");
+			Board board=session.selectOne("writeBoard",b_num);
+			return board;
+		}
+
+		@Override
+		public int insert(Board board) {
+			System.out.println("BoardDaoImpl insert start..");
+			int kkk = 0;
+			try {
+				kkk  = session.update("dyBoardInsert",board);
+			} catch (Exception e) {
+				System.out.println("BoardDaoImpl insert Exception->"+e.getMessage());
 			}
 			return kkk;
 		}
 
-		@Override
-		public List<Board> listManager() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
+		
 		
 	
 }

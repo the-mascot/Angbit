@@ -19,10 +19,17 @@
 		when not matched then
 			insert values(#{coincode}, #{id}, #{trd_amt}, #{trd_unit_price}, #{trd_price})
 	</update>
-	<select id="getMyCoin" parameterType="hashmap" resultType="float">
-		SELECT NVL(coin_amt, 0) FROM coin WHERE id=#{id} and coincode = #{currCoin}
+	<select id="getUsableCoin" parameterType="hashmap" resultType="float">
+		SELECT NVL(coin_amt, 0)-NVL((SELECT SUM(trd_amt) FROM trade WHERE id=#{id} and coincode=#{currCoin} and trd_stu=0), 0)
+		FROM coin WHERE id=#{id} and coincode = #{currCoin}
 	</select>
 	<select id="searchCoin" parameterType="String" resultType="CoinInfo">
 		select * from coininfo where coincode like '%'||#{keyWord}||'%'  or coinname like '%'||#{keyWord}||'%'
 	</select>
+	<update id="increaseKRW" parameterType="OrderTrade">
+		update memberinfo set krw = krw + #{trd_price} where id=#{id}
+	</update>
+	<update id="upSellCoin" parameterType="OrderTrade">
+		UPDATE coin SET coin_amt = coin_amt - #{trd_amt}, tot_price = tot_price - #{trd_price} WHERE id=#{id} and coincode=#{coincode}
+	</update>
 </mapper>

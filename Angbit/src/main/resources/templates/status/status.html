@@ -4,16 +4,95 @@
 <title>Insert title here</title>
 <!-- Common meta tag, Bootstrap, js -->
 <th:block th:replace="common/commonHead"></th:block>
+<!-- Jquery -->
+<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
 </head>
 <script th:inline="javascript">
 var wsUri = "wss://api.upbit.com/websocket/v1";	// Upbit websoket 여는 uri
 var output;
+
+function randomColor(labels){
+	var colors= [];
+	for(let i = 0; i < labels.length; i++){
+		colors.push("#" + Math.round(Math.random() * 0xffffff).toString(16));
+	}
+	return colors;
+}
+function makeChart(ctx, type, labels, myData){
+	var myChart = new Chart(ctx, {
+		type: 'pie',
+		data: {
+			labels: labels,
+			datasets: [{
+				label: labels,
+				data: myData,
+				backgroundColor: ['#F2CB61', '#86E57F', '#6799FF', '#A566FF', '#993800', '#997000', '#2F9D27', '#3F0099', '#4C4C4C', '#D1B2FF', '#FF00DD', '#8C8C8C', '#FFA7A7', '#CEF279', '#B2EBF4']
+// 				backgroundColor: randomColor(labels)
+			}]
+		},
+		// 범례 서식
+		 options:{
+			legend: {
+				position: 'right',
+				labels:{
+					fontSize: 15
+				}
+			},
+			// 그래프 오버 시 값 X
+			tooltips: {
+				callbacks: {
+					label: function(tooltipItem, myData){
+						var label = myData.labels[tooltipItem.index];
+						return label;
+					}
+				}
+			}
+		}
+	});
+}
+
+/* 일부값 / 전체값 * 100 */
 
 // 페이지 로딩 되면 실행되는 initial 함수
 function init() {
 	output = document.getElementById("output");
 	console.log('init() Start...');
 /* 		testWebSocket(); */
+	/*<![CDATA[*/ 
+	var statusList = /*[[ ${statusList} ]]*/;
+	/*]]*/
+	
+	$.ajax({
+		type: "GET",
+		url: "statusListAjax",
+		dataType: "json",
+		success: function(data){
+			console.log(data);
+			
+			var labels = [];
+			var myData = [];
+			var percent = 0;
+			
+			for (var i=0; i<Object.keys(data.list).length; i++){
+				percent += data.list[i].tot_price;
+			}
+			console.log('percent-> '+percent);
+			
+			for(var i=0; i<Object.keys(data.list).length; i++) {
+				labels.push(data.list[i].coinname+'('+((data.list[i].tot_price/percent)*100).toFixed(2)+' %)');
+				myData.push(data.list[i].tot_price);
+			}
+			
+			console.log('label?'+labels);
+			console.log('myData?'+myData);
+			
+			var newLabels = labels.slice();
+			var newMyData = myData.slice();
+			var ctx = $('#myChart');
+			makeChart(ctx, 'pie', labels, myData);
+		}
+	
+	})
 }
 
 function testWebSocket() {
@@ -58,64 +137,166 @@ function onMessage(evt) {
 	var arr = new Uint8Array(evt.data);
 	var decode = enc.decode(arr);
 	var jason=JSON.parse(decode);
-		console.log(enc.decode(arr));
-		
- 	/*<![CDATA[*/ 
+		//console.log(enc.decode(arr));
+	/*<![CDATA[*/ 
 	var statusList = /*[[ ${statusList} ]]*/;
 	/*]]*/
+	var evPrice = null;
+	
+	// tolocaleString - 소숫점 자리 지정
+	const option = {
+		    maximumFractionDigits: 0
+		   }
+	const option1 = {
+			maximumFractionDigits: 2
+			}
+	
 	console.log('statusList.length->'+statusList.length);
-	statusList.forEach((statusList, i)=>
-	{
+	statusList.forEach((statusList, i)=> {
 		let amt = statusList.coin_amt;
 		let coincode = statusList.coincode;
 		let totPrice = statusList.tot_price;
-
-		console.log("amt -> "+amt);
-		console.log("coincode -> "+coincode);
-		console.log("totPrice -> "+totPrice);
-			
+// 		let krw = krwList.krw;
+		/*<![CDATA[*/ 
+		var statusList1 = /*[[ ${statusList} ]]*/;
+		/*]]*/
+		
+		
+		var totEvPrice = null;
+// 		var evPrice = null;
 		if('KRW-'+coincode == jason.cd){
-			var gg = amt * jason.tp // 평가금액
-			console.log("gg -> "+gg);
+			evPrice = amt * jason.tp // 평가금액
 			
-			document.getElementById(coincode).innerText = gg.toLocaleString();
-			var coinloss = document.getElementById(coincode+'-loss').innerText = (gg-totPrice).toLocaleString();
-			var coinavg = document.getElementById(coincode+'-avg').innerText = (((gg/totPrice)-1)*100).toLocaleString()+' %';
+			document.getElementById(coincode).innerText = evPrice.toLocaleString('ko-KR', option);
+			var coinloss1 = evPrice-totPrice;	// css 입히기 위한 변수
+			var coinloss = document.getElementById(coincode+'-loss').innerText = (evPrice-totPrice).toLocaleString('ko-KR', option)+'\n'+(((evPrice/totPrice)-1)*100).toLocaleString('ko-KR', option1)+' %';
 // 			평가금액 / 매수가격 - 1 * 100 %
-			console.log("coinloss -> "+coinloss); // 평가손익
+// 			console.log("coinloss -> "+coinloss); // 평가손익
+// 			totEvPrice += evPrice;
+// 			console.log("coincod+'-loss'"+coinloss1);
 		}
 			// 평가손익 css
-			if(coinloss < '0') {
+			if(coinloss1 < 0) {
 				document.getElementById(coincode+'-loss').style.color = "blue";
 				document.getElementById(coincode+'-loss').style.fontWeight = "700";
-			} else if(coinloss > '0'){
+			} 
+			if(coinloss1 > 0){
 				document.getElementById(coincode+'-loss').style.color = "red";
 				document.getElementById(coincode+'-loss').style.fontWeight = "700";
-			} else if(coinloss == '0') {
+			} 
+			if(coinloss1 == 0) {
 				document.getElementById(coincode+'-loss').style.color = "black";
 				document.getElementById(coincode+'-loss').style.fontWeight = "700";
 			}
-			// 평가손익율 css
-			if(coinavg < '0') {
-				document.getElementById(coincode+'-avg').style.color = "blue";
-				document.getElementById(coincode+'-avg').style.fontWeight = "700";
-			} else if(coinavg > '0'){
-				document.getElementById(coincode+'-avg').style.color = "red";
-				document.getElementById(coincode+'-avg').style.fontWeight = "700";
-			} else if(coinavg == '0') {
-				document.getElementById(coincode+'-avg').style.color = "black";
-				document.getElementById(coincode+'-avg').style.fontWeight = "700";
-			}
 			
-		var sumtot = 0;
-		
-		for(var i = 0; i<statusList.length; i++){
-			sumtot += i;
-			document.getElementById(coincode+'-tot').innerText = sumtot;
-		}
-			console.log("sumtot -> "+sumtot);
 	})
+	
+	// 각 코인별 평가금액 합산
+		var ADA = uncomma($('#ADA').text()) * 1;
+		var BTC = uncomma($('#BTC').text()) * 1;
+		var LTC = uncomma($('#LTC').text()) * 1;
+		var VET = uncomma($('#VET').text()) * 1;
+		var MANA = uncomma($('#MANA').text()) * 1;
+		var ETH = uncomma($('#ETH').text()) * 1;
+		var XRP = uncomma($('#XRP').text()) * 1;
+		var DOT = uncomma($('#DOT').text()) * 1;
+		var DOGE = uncomma($('#DOGE').text()) * 1;
+		var SAND = uncomma($('#SAND').text()) * 1;
+		var AXS = uncomma($('#AXS').text()) * 1;
+		var SOL = uncomma($('#SOL').text()) * 1;
+		var BCH = uncomma($('#BCH').text()) * 1;
+		var XLM = uncomma($('#XLM').text()) * 1;
+		var ETC = uncomma($('#ETC').text()) * 1;
+		
+		var coin_tot_un = (ADA+BTC+LTC+VET+MANA+ETH+XRP+DOT+DOGE+SAND+AXS+SOL+BCH+XLM+ETC);
+		var coin_tot = comma((ADA+BTC+LTC+VET+MANA+ETH+XRP+DOT+DOGE+SAND+AXS+SOL+BCH+XLM+ETC));
+		
+		// KRW 문자열
+		var krw = ' KRW';
+		
+		// 총 평가금액
+// 		console.log('총평가금액 test -> '+coin_tot_un)
+// 		console.log('총평가금액 totprice -> '+uncomma($('#totPrice').text()))
+		if(coin_tot_un > uncomma($('#totPrice').text())){
+			$('#evPrice').text(coin_tot+krw).css('color', 'red').css('fontWeight', '700');
+		}
+		if(coin_tot_un < uncomma($('#totPrice').text())){
+			$('#evPrice').text(coin_tot+krw).css('color', 'blue').css('fontWeight', '700');
+		} 
+		if(coin_tot_un == uncomma($('#totPrice').text())){
+			$('#evPrice').text(coin_tot+krw).css('color', 'black').css('fontWeight', '700');
+		}
+		$('#evPrice').text(coin_tot+krw);
+		
+		// 총 자산
+		var cash = uncomma($('#cash').text()) * 1;
+		var total = comma(cash+coin_tot_un);
+		var cashtotPrice = cash+parseInt(uncomma($('#totPrice').text())) // 보유현금 + 총매수금액
+// 		console.log('총자산 Test -> '+(cash+coin_tot_un));
+// 		console.log('총자산 Test2 -> '+(cash+parseInt(uncomma($('#totPrice').text()))));
+		if (cash+coin_tot_un > cashtotPrice){
+			$('#total').text(total+krw).css('color', 'red');
+		} 
+		if (cash+coin_tot_un < cashtotPrice){
+			$('#total').text(total+krw).css('color', 'blue');
+		} 
+		if (cash+coin_tot_un == cashtotPrice){
+			$('#total').text(total+krw).css('color', 'black');
+		}
+		
+		// 총 평가손익
+		var totBuy = uncomma($('#totPrice').text()) *1;
+		var totalBuy = comma(coin_tot_un-totBuy);
+// 		console.log('총평가손익 test->'+(coin_tot_un-totBuy));
+		if (coin_tot_un-totBuy > 0){
+			$('#totLoss').text(totalBuy+krw).css('color', 'red').css('fontWeight', '700');
+		}
+		if (coin_tot_un-totBuy < 0){
+			$('#totLoss').text(totalBuy+krw).css('color', 'blue').css('fontWeight', '700');
+		}
+		if (coin_tot_un-totBuy == 0){
+			$('#totLoss').text(totalBuy+krw).css('color', 'black').css('fontWeight', '700');
+		}
+// 		console.log('총평가손익->'+$('#totLoss').text(totalBuy[0]+krw[0]));
+		
+		// 총 평가손익률
+// 		console.log('총평가손익률 -> '+((coin_tot_un/totBuy)-1)*100)
+		var perLoss = (((coin_tot_un/totBuy)-1)*100).toFixed(2);
+		if ((((coin_tot_un/totBuy)-1)*100) > 0){
+			$('#avgLoss').text(perLoss+' %').css('color', 'red').css('fontWeight', '700');
+		}
+		if ((((coin_tot_un/totBuy)-1)*100) < 0){
+			$('#avgLoss').text(perLoss+' %').css('color', 'blue').css('fontWeight', '700');
+		} 
+		if ((((coin_tot_un/totBuy)-1)*100) == 0) {
+			$('#avgLoss').text(perLoss+' %').css('color', 'black').css('fontWeight', '700');
+		}
+		
+// 		console.log('perLoss -> '+(((coin_tot_un/totBuy)-1)*100).toFixed(2));
+// 		console.log('cash?'+cash);
+// 		console.log('cash+coin_tot ->'+total);
+		
+// 		console.log('ADA?'+ADA);
+// 		console.log('ADA?'+BTC);
+// 		console.log('ADA?'+LTC);
+// 		console.log('ADA?'+VET);
+// 		console.log('MANA?'+MANA);
+// 		console.log('TOTAL?'+coin_tot);
+// 		console.log('krwList ->'+krw);
 }
+
+// 콤마빼기
+function uncomma(str) {
+    str = String(str);
+    return str.replace(/[^\d]+/g, '');
+}
+
+//콤마추가
+function comma(str) {
+	str = str.toString().split(".");
+    return str[0].replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,')
+}
+
 
 function onError(evt) {
 	writeToScreen('<span style="color: red;">에러:</span> ' + evt.data);
@@ -157,12 +338,12 @@ window.addEventListener("load", init, false);
 	  			<div class="row status_status" th:each="klist:${krwList}">
 	  				<img class="status_img" alt="" src="images/status/total.png">
 	    			<div class="col">총 자산</div>
-	  				<div class="col" align="right" th:text="${#numbers.formatDecimal(klist.krw,1,'COMMA',0,'POINT')+'+총 평가손익 KRW'}"></div>
+	  				<div th:id="total" class="col" align="right">0 KRW</div>
 	  			</div>
 	   			<div class="row status_status" th:each="klist:${krwList}">
 	   				<img class="status_img" alt="" src="images/status/krw1.png">
 	    			<div class="col">보유 현금</div>
-				    <div class="col" align="right" th:text="${#numbers.formatDecimal(klist.krw-totPrice,1,'COMMA',0,'POINT')+' KRW'}"></div>
+				    <div th:id="cash" class="col" align="right" th:text="${#numbers.formatDecimal(klist.krw-totPrice,1,'COMMA',0,'POINT')+' KRW'}"></div>
 				</div>
 				<hr class="line" style="height: 3px"/>
 				<div class="row status_status">
@@ -171,48 +352,32 @@ window.addEventListener("load", init, false);
 				</div>
 				<div class="row">
 				    <div class="col status_mid_title">총 매수금액</div>
-				    <div class="col" align="right" style="margin-top: 5px" th:text="${#numbers.formatDecimal(totPrice,1,'COMMA',0,'POINT')+' KRW'}"><span style="font-size: 11px"> KRW</span></div>
+				    <div th:id="totPrice" class="col" align="right" style="margin-top: 5px; font-weight: 700" th:text="${#numbers.formatDecimal(totPrice,1,'COMMA',0,'POINT')+' KRW'}"></div>
 				</div>
 				<div class="row status_mid_details" th:with="slist=${statusList}">
 				    <div class="col status_mid_title">총 평가금액</div>
-				    <div th:id="slist.totPrice+'-tot'" class="col" align="right" style="margin-top: 5px">5,039,265<span style="font-size: 11px"> KRW</span></div>
+				    <div th:id="evPrice" class="col" align="right" style="margin-top: 5px">0 KRW</div>
 				</div>
 				<!-- IF문 사용 - 매수금액>평가금액 = FONT-COLOR BLUE / 매수금액<평가금액 = FONT-COLOR RED-->
 				<div class="row status_mid_details">
 				    <div class="col status_mid_title">총 평가손익</div>
-				    <div class="col" align="right" style="margin-top: 5px">3,836<span style="font-size: 11px"> KRW</span></div>
+				    <div th:id="totLoss" class="col" align="right" style="margin-top: 5px">0 KRW</div>
 				</div>
 				<div class="row status_mid_details">
 				    <div class="col status_mid_title">총 평가손익률</div>
-				    <div class="col" align="right" style="margin-top: 5px">0.08<span style="font-size: 11px"> %</span></div>
+				    <div th:id="avgLoss" class="col" align="right" style="margin-top: 5px">0 %</div>
 				</div>
 			</div>
 		</div>
 		<div class="col-lg-6" align="right">
 				<div class="card-body" align="right">
-					<canvas id="myChart1" style="align-content: center;"></canvas>
+					<canvas id="myChart" style="align-content: center;"></canvas>
 				</div>
 			</div>
 		</div>
 	</div>
 <!-- 차트 -->
-<script th:inline="javascript">
-data = { 
-		datasets: [{
-			backgroundColor: ['pink','#B5B2FF','#5CD1E5'],
-			data: [50, 20, 30]
-		}],
-		// 라벨의 이름이 툴팁처럼 마우스가 근처에 오면 나타남
-		labels: ['KRW','BTC','DOGE']
-	}; 
-	// 가운데 구멍이 없는 파이형 차트 
-	var ctx1 = document.getElementById("myChart1"); 
-	var myPieChart = new Chart(ctx1, {
-		type: 'pie',
-		data: data,
-		options: {} 
-	}); 
-</script>
+
 <!-- 코인현황 표 -->
 <hr class="line" style="height: 3px; width: 90%; margin-left: 5%;"/>
 <div class="row my-3" align="center">
@@ -256,7 +421,7 @@ data = {
 	      <td th:text="${#numbers.formatDecimal(slist.tot_price,1,'COMMA',0,'POINT')}"></td>
 	      <td th:id="${slist.coincode}"></td>
       	  <td th:id="${slist.coincode}+'-loss'"></td>
-      	  <td th:id="${slist.coincode}+'-avg'"></td>
+<!--       	  <td th:id="${slist.coincode}+'-avg'"></td> -->
 	    </tr>
     </th:block>
     <th:block data-th-if="${totPrice == 0}">

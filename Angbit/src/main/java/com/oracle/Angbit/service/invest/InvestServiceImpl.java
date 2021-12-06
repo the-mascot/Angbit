@@ -76,11 +76,12 @@ public class InvestServiceImpl implements InvestService {
 	}
 
 	@Override
-	public Float getMyCoin(String id, String currCoin) {
+	public Float getUsableCoin(String id, String currCoin) {
 		System.out.println("getMyCoin Service Called.");
-		return ivdao.getMyCoin(id, currCoin);
+		return ivdao.getUsableCoin(id, currCoin);
 	}
   
+  @Override
 	public List<CoinInfo> searchCoin(String keyWord) {
 
 		System.out.println("InvestServiceImpl buyLimitsPrice Start...");
@@ -96,5 +97,15 @@ public class InvestServiceImpl implements InvestService {
 		ivdao.checkBuyLimits();
 		
 	}
-	
+  
+	@Override
+	public int sellLimitsPrice(OrderTrade orderTrade) {
+		return ivdao.sellLimitsPrice(orderTrade);
+	}
+
+	@Override
+	public void sellMarketPrice(OrderTrade orderTrade) {
+		ivdao.sellMarketPrice(orderTrade);
+	}
+
 }

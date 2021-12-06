@@ -135,15 +135,16 @@ public class InvestDaoImpl implements InvestDao {
 	}
 
 	@Override
-	public Float getMyCoin(String id, String currCoin) {
+	public Float getUsableCoin(String id, String currCoin) {
 		System.out.println("getMyCoin Dao Called.");
 		Map vo = new HashMap();
 		vo.put("id", id);
 		vo.put("currCoin", currCoin);
-		Float sel = seesion.selectOne("getMyCoin", vo);
+		Float sel = seesion.selectOne("getUsableCoin", vo);
 		if (sel==null) {
 			sel = 0f;
 		}
+		System.out.println(currCoin+" 사용 가능수량->"+sel);
 		return sel;
 	}
 	
@@ -165,6 +166,7 @@ public class InvestDaoImpl implements InvestDao {
 	}
 
 	@Override
+
 	public void checkBuyLimits() {
 
 		System.out.println("InvestDaoImpl checkBuyLimits Start...");
@@ -198,4 +200,20 @@ public class InvestDaoImpl implements InvestDao {
 		
 	}
 
+
+	public int sellLimitsPrice(OrderTrade orderTrade) {
+		//지정가 매도(trade)
+		System.out.println("InvestDao sellLimitsPrice() Called.");
+		int result = seesion.insert("insertTrade", orderTrade);
+		return result;
+	}
+
+	@Override
+	@Transactional
+	public void sellMarketPrice(OrderTrade orderTrade) {
+		//시장가 매도(trade,coin update,increaseKRW)
+		seesion.insert("insertTrade", orderTrade);
+		seesion.update("upSellCoin", orderTrade);
+		seesion.update("increaseKRW", orderTrade);
+	}
 }
