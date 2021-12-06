@@ -51,8 +51,6 @@ function makeChart(ctx, type, labels, myData){
 	});
 }
 
-/* 일부값 / 전체값 * 100 */
-
 // 페이지 로딩 되면 실행되는 initial 함수
 function init() {
 	output = document.getElementById("output");
@@ -73,25 +71,31 @@ function init() {
 			var myData = [];
 			var percent = 0;
 			
-			for (var i=0; i<Object.keys(data.list).length; i++){
-				percent += data.list[i].tot_price;
-			}
-			console.log('percent-> '+percent);
-			
-			for(var i=0; i<Object.keys(data.list).length; i++) {
-				labels.push(data.list[i].coinname+'('+((data.list[i].tot_price/percent)*100).toFixed(2)+' %)');
-				myData.push(data.list[i].tot_price);
-			}
-			
-			console.log('label?'+labels);
-			console.log('myData?'+myData);
-			
-			var newLabels = labels.slice();
-			var newMyData = myData.slice();
-			var ctx = $('#myChart');
-			makeChart(ctx, 'pie', labels, myData);
+			if (data.list[0] == null) {
+	            myData.push('100')
+	            labels.push('보유 코인 없음')
+	            var ctx = $('#myChart');
+	            makeChart(ctx, 'pie', labels, myData);
+	         } else {
+	            for (var i=0; i<Object.keys(data.list).length; i++){
+	               percent += data.list[i].tot_price;
+	            }
+	            console.log('percent-> '+percent);
+
+	            for(var i=0; i<Object.keys(data.list).length; i++) {
+	               labels.push(data.list[i].coinname+'('+((data.list[i].tot_price/percent)*100).toFixed(2)+' %)');
+	               myData.push(data.list[i].tot_price);
+	            }
+
+	            console.log('label?'+labels);
+	            console.log('myData?'+myData);
+
+	            var newLabels = labels.slice();
+	            var newMyData = myData.slice();
+	            var ctx = $('#myChart');
+	            makeChart(ctx, 'pie', labels, myData);
+	         }
 		}
-	
 	})
 }
 

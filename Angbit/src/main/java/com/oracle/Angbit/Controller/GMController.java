@@ -19,8 +19,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.model.status.CoinCoinInfo;
-import com.oracle.Angbit.model.status.StatusPaging;
 import com.oracle.Angbit.model.status.TradeCoinInfo;
+import com.oracle.Angbit.service.status.StatusPaging;
 import com.oracle.Angbit.service.status.StatusService;
 
 @Controller
@@ -68,6 +68,9 @@ public class GMController {
 			String json = null;
 			try {
 				json = new ObjectMapper().writeValueAsString(map);
+				System.out.println("ajax ->" + json);
+				if(json == null)
+					System.out.println("비어있습니다.");
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
 			}
@@ -91,10 +94,15 @@ public class GMController {
 			trdCoin.setEnd(pg.getEnd());
 			System.out.println("trd.getStart() ->"+trdCoin.getStart());
 			System.out.println("trd.getEnd() ->"+trdCoin.getEnd());
+			System.out.println("trd.currentPage -> "+ currentPage);
 			
 			List<TradeCoinInfo> tradeList = ss.yStatus(trdCoin, id);
 			model.addAttribute("yList", tradeList);
 			model.addAttribute("pg", pg);
+			System.out.println("startPage -> " +pg.getStartPage());
+			System.out.println("endPage -> " +pg.getEndPage());
+			System.out.println("pageBlock -> " +pg.getPageBlock());
+			System.out.println("totalPage -> "+pg.getTotalPage());
 			return "/status/y_history";
 		}
 		

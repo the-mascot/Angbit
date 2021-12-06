@@ -1,4 +1,4 @@
-package com.oracle.Angbit.model.status;
+package com.oracle.Angbit.service.status;
 
 import lombok.Getter;
 import lombok.Setter;

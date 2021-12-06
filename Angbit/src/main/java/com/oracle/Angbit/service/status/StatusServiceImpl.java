@@ -44,6 +44,7 @@ public class StatusServiceImpl implements StatusService {
 	public List<TradeCoinInfo> yStatus(TradeCoinInfo trdCoin, String id) {
 		System.out.println("StatusServiceImpl yStatus start...");
 		List<TradeCoinInfo> listY = sd.listY(trdCoin, id); 
+		System.out.println("StatusServiceImpl yStatus listY.size() -> "+listY.size());
 		return listY;
 	}
 	
