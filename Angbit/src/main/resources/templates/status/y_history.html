@@ -7,6 +7,12 @@
 <!-- Common meta tag, Bootstrap, js -->
 <th:block th:replace="common/commonHead"></th:block>
 </head>
+<script type="text/javascript">
+	$(document).ready(function()
+	{
+		$("#pageNav${currentPage}").css("color", "red");		
+	});
+</script>
 <body>
 <!-- Common header -->
 <header th:replace="common/header :: header"></header>
@@ -86,33 +92,30 @@
 	</th:block>
   </tbody>
 </table>
-	<th:block th:if="${pg.startPage>pg.pageBlock}">
-		<a th:href="@{y_history?currentPage=${pg.startPage-pg.pageBlock}">[이전]</a>
-	</th:block>
-<!-- 	<th:block th:each="i:${#number.sequence(pg.startPage, pg.endPage)}"> -->
-<!-- 		<a th:href="@{y_history?currentPage=${i}">[${i}]</a> -->
-<!-- 	</th:block> -->
-	<th:block th:if="${pg.endPage<pg.totalPage}">
-		<a th:href="@{y_history?currentPage=${pg.startPage+pg.pageBlock}">[다음]</a>
-	</th:block>
-	
-<!-- <nav aria-label="Page navigation example"> -->
-<!--   <ul class="pagination"> -->
-<!--     <li class="page-item"> -->
-<!--       <a class="page-link" href="#" aria-label="Previous"> -->
-<!--         <span aria-hidden="true">&laquo;</span> -->
-<!--       </a> -->
-<!--     </li> -->
-<!--     <li class="page-item"><a class="page-link" href="#">1</a></li> -->
-<!--     <li class="page-item"><a class="page-link" href="#">2</a></li> -->
-<!--     <li class="page-item"><a class="page-link" href="#">3</a></li> -->
-<!--     <li class="page-item"> -->
-<!--       <a class="page-link" href="#" aria-label="Next"> -->
-<!--         <span aria-hidden="true">&raquo;</span> -->
-<!--       </a> -->
-<!--     </li> -->
-<!--   </ul> -->
-<!-- </nav> -->
+
+<!-- 페이지네이션 -->
+<nav aria-label="Page navigation example">
+	<div th:with="start=${pg.startPage}, end=${pg.endPage}">
+	  <ul class="pagination justify-content-center mt-4">
+	  	<!-- 이전 -->
+	    <li class="page-item" th:if="${pg.startPage>pg.pageBlock}">
+	      <a class="pagenav_a page-link" th:href="@{status_y_history(currentPage=${pg.startPage-pg.pageBlock})}" aria-label="previous">
+	        <span aria-hidden="true">&laquo;</span>
+	      </a>
+	    </li>
+	    <!-- 페이지 갯수 -->
+	    <li class="page-item" th:each="i:${#numbers.sequence(start, end)}">
+	    	<a class="pagenav_a page-link" id="pageNav${i}" th:href="@{status_y_history(currentPage=${i})}" th:text=${i}></a>
+	    </li>
+	    <!-- 다음 -->
+	    <li class="page-item" th:if="${pg.endPage < pg.totalPage}">
+	      <a class="pagenav_a page-link" th:href="@{status_y_history(currentPage=${pg.startPage+pg.pageBlock})}" aria-label="Next">
+	        <span aria-hidden="true">&raquo;</span>
+	      </a>
+	    </li>
+	  </ul>
+  </div>
+</nav>
 	
 </main>
  <footer th:replace="common/footer :: footer"></footer>
