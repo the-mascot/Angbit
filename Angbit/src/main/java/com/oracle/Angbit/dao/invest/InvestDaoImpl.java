@@ -215,5 +215,11 @@ public class InvestDaoImpl implements InvestDao {
 		seesion.insert("insertTrade", orderTrade);
 		seesion.update("upSellCoin", orderTrade);
 		seesion.update("increaseKRW", orderTrade);
+
+		// 매도 후 보유 코인량 0개일 시 해당 ROW 초기화
+		float result = seesion.selectOne("chkZero", orderTrade);
+		if (result == 0) {
+			seesion.delete("delCoinRow", orderTrade);
+		}
 	}
 }

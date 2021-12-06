@@ -58,7 +58,7 @@
 						<div class="u-p-t-th">신규 비밀번호</div>
 						<div class="u-p-t-td u-p-password-container">
 							<div class="u-p-password-input-container">
-								<input type="password" class="u-p-password-input form-control" maxlength="12"
+								<input type="password" class="u-p-password-input form-control" maxlength="20"
 									   onkeyup="validatePassword()" id="password"
 									   name="password">
 								<div class="u-p-password-btn-container">
@@ -75,13 +75,13 @@
 
 							<div class="u-p-password-notice">
 								<i class="bi bi-exclamation-triangle"></i>
-								8~15자의 영문 대소문자, 숫자, 특수문자를 사용해야 합니다.
+								8~20자의 영문 대소문자, 숫자, 특수문자를 사용해야 합니다.
 							</div>
 						</div>
 					</div>
 					<div class="u-p-t-row">
 						<div class="u-p-t-th">비밀번호 확인</div>
-						<div class="u-p-t-td"><input type="password" class="u-p-pwchk-input form-control" maxlength="12"
+						<div class="u-p-t-td"><input type="password" class="u-p-pwchk-input form-control" maxlength="20"
 													 onkeyup="validatePwchk()" id="pwchk"
 													 name="pwchk"></div>
 					</div>
@@ -260,7 +260,7 @@
 
 			if (!exprpw.test(passwordInput.value)) {
 				// pwsubmitBtn.disabled = true;
-				plblError.innerHTML = "✋ 글자수 제한(8~15자)을 충족하지 않거나, 사용할 수 없는 문자가 포함되었습니다.";
+				plblError.innerHTML = "✋ 글자수 제한(8~20자)을 충족하지 않거나, 사용할 수 없는 문자가 포함되었습니다.";
 			}
 		}
 
