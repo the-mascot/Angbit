@@ -16,9 +16,10 @@ public interface BoardService {
 	Board detailBoard(int b_num);
 	int update(Board board);
 	
-	Board writeBoard(int b_num);
+	//Board writeBoard(int b_num);
 	
 	int insert(Board board);
+	int viewCnt(int b_num);
 	
 	
 	

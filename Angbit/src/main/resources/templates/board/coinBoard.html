@@ -6,6 +6,8 @@
 <!-- Common meta tag, Bootstrap, js -->
 <th:block th:replace="common/commonHead"></th:block>
 
+<link th:href="@{/css/board.css}" rel="stylesheet">
+
 <!-- Jquery -->
 <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
 </head>
@@ -17,22 +19,27 @@
 <!-- 몸통 -->
 <main>
 
-     
-<a href="board_writeForm">글작성</a> <!-- 로그인 시 그 정보 보내주기 -->
 
 
-<div th:text="${result}">fff</div>
+<div id="inhere"></div>
 
-<!-- <a th:href="@{board_updateForm}">수정</a> -->
+<div th:text="${result}"></div>  <!-- 결과값 띄어주기 -->
+
+
+
+
+
+
+
+
 
 <div class="container">
 	
-	<div class="freeboard"><p>자유게시판</p></div>
-	
+	<div class="freeboard">
+		<div class="textbox"><p>자유게시판</p></div>
+	</div>
 	
 	<div class="between"></div>
-
-
 
 	<div class="wrapper_table pt-5">
 		<table class="table table-bordered">
@@ -50,7 +57,7 @@
 		          		            
 		            <tr th:each="blist : ${boardList}">
 		               <td th:text="${blist.b_num}"></td>
-		               <td><a th:href="@{board_detailBoard( b_num=${blist.b_num})}" th:text="${blist.title}"></a></td>
+		               <td><a th:href="@{board_viewCnt( b_num=${blist.b_num})}" th:text="${blist.title}"></a></td>
 		               <td th:text="${#dates.format(blist.uploaddate, 'yyyy-MM-dd')}"></td>  
 		               <td th:text="${blist.views}"></td>
 		               <td th:text="${blist.nickname}"></td>
@@ -61,14 +68,16 @@
 		</table>
 
 <!-- 페이지 단락 넘김 -->
-<!-- 		<div class="wrapper_paging">
-			<th:if = "#{pg.startPage}">
+
+
+		<!-- <div class="wrapper_paging">
+			<th:if="${pg.startPage > pg.pageBlock}">
 				<a th:href="@{ board_bdPaging(currentPage=${pg.startPage-pg.pageBlock}) }">[이전]</a>
 			</th:if>
-			<th:each test ="i : begin='${pg.startPage}' end='${pg.endPage}'">
-				<a th:href="@{ board_bdPaging(currentPage=${i}) }">[${i}]</a>
+			<th:each="i : begin='${pg.startPage}' end='${pg.endPage}'">
+				<a th:href="@{ board_bdPaging(currentPage=${i}) }" th:text="["+"${i}"+"]"></a>
 			</th:each>
-			<th:if test="${pg.endPage < pg.totalPage }">
+			<th:if="${pg.endPage < pg.totalPage }">
 				<a th:href="@{ board_bdPaging(currentPage=${pg.startPage+pg.pageBlock}) }">[다음]</a>
 			</th:if>
 		</div>	 -->

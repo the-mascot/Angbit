@@ -2,6 +2,8 @@ package com.oracle.Angbit.service.board;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +14,7 @@ import com.oracle.Angbit.model.common.Board;
 
 
 
-
+@Transactional
 @Service
 public class BoardServiceImpl implements BoardService {
 
@@ -24,14 +26,6 @@ public class BoardServiceImpl implements BoardService {
 		System.out.println("BoardServiceImpl BoardList Start...");
 		List<Board> boardList = bdao.BoardList();
 		return boardList;
-	}
-
-	@Override
-	public int Delete(int b_num) {
-		int result = 0;
-		System.out.println("BoardServiceImpl delete Start...");
-		result = bdao.Delete(b_num);
-		return result;
 	}
 
 	@Override
@@ -73,21 +67,35 @@ public class BoardServiceImpl implements BoardService {
 		return result;
 	}
 
-	@Override
-	public Board writeBoard(int b_num) {
-		
-		System.out.println("BoardServiceImpl writeBoard start...");
-		Board board = bdao.writeBoard(b_num);
-		return board;
-	}
+	/*
+	 * @Override public Board writeBoard(int b_num) {
+	 * 
+	 * System.out.println("BoardServiceImpl writeBoard start..."); Board board =
+	 * bdao.writeBoard(b_num); return board; }
+	 */
 
 	@Override
 	public int insert(Board board) {
 		System.out.println("BoardServiceImpl insert start...");
-		int kkk=0;
-		kkk = bdao.insert(board);
+		int result=0;
+		result = bdao.insert(board);
 		
-		return kkk;
+		return result;
+	}
+
+	@Override
+	public int Delete(int b_num) {
+		int result = 0;
+		System.out.println("BoardServiceImpl delete Start...");
+		result = bdao.Delete(b_num);
+		return result;
+	}
+	
+	@Override
+	public int viewCnt(int b_num) {
+		System.out.println("BoardServiceImpl viewCnt start...");
+		int result = bdao.viewCnt(b_num);
+		return result;
 	}
 	
 	

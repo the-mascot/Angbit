@@ -73,6 +73,7 @@ public class BoardDaoImpl implements BoardDao {
 		try {
 			//                       mapper ID   ,    Parameter
 			board = session.selectOne("dyBoardSelOne",    b_num);
+			
 			System.out.println("BoardDaoImpl detail getTitle->"+board.getB_num());
 		} catch (Exception e) {
 			System.out.println("BoardDaoImpl detail Exception->"+e.getMessage());
@@ -109,24 +110,34 @@ public class BoardDaoImpl implements BoardDao {
 			return result;
 		}
 
-		@Override
-		public Board writeBoard(int b_num) {
-			// TODO Auto-generated method stub
-			System.out.println("BoardDaoImpl writeBoard start...");
-			Board board=session.selectOne("writeBoard",b_num);
-			return board;
-		}
+		/*
+		 * @Override public Board writeBoard(int b_num) { // TODO Auto-generated method
+		 * stub System.out.println("BoardDaoImpl writeBoard start..."); Board
+		 * board=session.selectOne("writeBoard",b_num); return board; }
+		 */
 
 		@Override
 		public int insert(Board board) {
 			System.out.println("BoardDaoImpl insert start..");
-			int kkk = 0;
+			int result = 0;
 			try {
-				kkk  = session.update("dyBoardInsert",board);
+				result  = session.insert("dyBoardInsert",board);  //삽입된 행의 갯수를 반환
 			} catch (Exception e) {
 				System.out.println("BoardDaoImpl insert Exception->"+e.getMessage());
 			}
-			return kkk;
+			return result;
+		}
+
+		@Override
+		public int viewCnt(int b_num) {
+			System.out.println("BoardDaoImpl viewCnt start..");
+			int result = 0;
+			try {
+				result  = session.insert("dyViewCnt",b_num);  //삽입된 행의 갯수를 반환
+			} catch (Exception e) {
+				System.out.println("BoardDaoImpl viewCnt Exception->"+e.getMessage());
+			}
+			return result;
 		}
 
 		

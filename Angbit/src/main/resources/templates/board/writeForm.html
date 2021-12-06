@@ -19,26 +19,24 @@
 
 	<main>
 		<h2>게시글 등록</h2>
-
-		<form action="writeProcess">
+		<div th:if="${msg!=null}" th:text="${msg}"></div>
+		<form action="writeProcess" method="post">
 			<table class="table">
-
 				<tr>
-					<th>제목</th>
-					<th><input type="text" id="title" name="title">
+				 <th>작성자</th>
+					<th>
+						<div th:if="${session.sessionID!=null}">
+							<span class="welcomemsg" th:text="${session.sessionNickName}"></span>
+						</div>
+					</th>
+					<th hidden="${session.sessionID}" id="id" name="id">
+						<span class="welcomemsg" th:text="${session.sessionNickName}"></span>
+					</th>
 				</tr>
 				
 				<tr>
-					<th>작성자</th>
-					<th>
-					<div th:if="${session.sessionID!=null}">
-					<span class="welcomemsg" style="color:black;" th:text="${session.sessionNickName}">
-					</span>
-					</div>
-					</th>
-					
-					<th hidden="${session.sessionID}" id="id" name="id"><span class="welcomemsg" style="color:black;" th:text="${session.sessionNickName}">
-					</span></th>
+					<th>제목</th>
+					<th><input type="text" id="title" name="title">
 				</tr>
 				
 				<tr>
@@ -48,9 +46,10 @@
 
 				<tr>
 					<td colspan="2"><button type="submit"> 글쓰기 </button></td>
+				</tr>	
 			</table>
 		</form>
-
+	</main>
 		<!-- footer -->
 		<footer th:replace="common/footer :: footer"></footer>
 </body>
