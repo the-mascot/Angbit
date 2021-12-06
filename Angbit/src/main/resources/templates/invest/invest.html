@@ -477,11 +477,9 @@
 
 		// 매수 가능 KRW 조회
 		function selectKRW() {
-			sendDataOI = 'coincode='+currCoincode;
-			$.ajax({
+			return $.ajax({
 				type		:	'POST',
 				url			:	'invest/selectKRW',
-				data		:	sendDataOI,
 				success		:	function(krw) {
 					document.getElementById('order-avaliableKRW').innerText = krw.toLocaleString();
 				},
@@ -586,7 +584,7 @@
 				investApi(event);
 			});
 
-			// 매수 클릭시
+			// 매수탭 클릭시
 			$('#order-buy-a').on('click', function(e) {
 				e.preventDefault();
 				$('#order-buy-a').attr('class', 'nav-link active');
@@ -620,7 +618,7 @@
 				}
 			});
 
-			// 매도 클릭시
+			// 매도탭 클릭시
 			$('#order-sell-a').on('click', function(e) {
 				e.preventDefault();
 				$('#order-buy-a').attr('class', 'nav-link');
@@ -663,46 +661,6 @@
 				$('#order-trd_price').val(comma(trd_price));
 			});
 
-			// 주문 금액 10, 25, 50, 100% 버튼 선택
-			$(".order-form-amt-butn").on('click', function() {
-				var percent = $(this).val().substring(0, $(this).val().length-1);
-				var price =  Math.floor(uncomma($('#order-avaliableKRW').text()) * (percent * 0.01));
-				var unit_price =uncomma($('#order-unit_price').val());
-				var trd_amt = price / unit_price;
-
-				if(trd_amt >= 0) {
-					$('#order-trd_amt').val(trd_amt.toFixed(8));
-					$('#order-trd_price').val(price.toLocaleString());
-				}
-			});
-
-			// 매수 요청
-			$('#buySubmit').on('click', function() {
-				var trd_price = uncomma($('#order-trd_price').val()) * 1;
-				var krw = uncomma($('#order-avaliableKRW').text()) * 1;
-				console.log(krw < trd_price)
-				if(krw * 1 < trd_price * 1) {
-					$('#modal-msg').text('주문가능 금액이 부족합니다')
-					$('#warmModal').modal('toggle');
-				} else if(uncomma($('#order-unit_price').val()) * 1 <= 0) {
-					$('#modal-msg').text('주문가격을 확인하세요');
-					$('#warmModal').modal('toggle');
-				} else if($('#order-trd_amt').val() <= 0) {
-					$('#modal-msg').text('주문수량을 입력하세요');
-					$('#warmModal').modal('toggle');
-				}
-
-				else {
-					if($('input[name=trd_method]:checked').val() == 'limits') {
-						console.log('지정가 매수시작')
-						buyCoin();
-					} else {
-						console.log('시장가 매수시작')
-						buyMarketCoin();
-					}
-				}
-			});
-			
 			// 필터
 			$('#coinlist-search').keyup(function() {
 				console.log('keyWord->'+$('#coinlist-search').val().toUpperCase())
@@ -837,27 +795,40 @@
 				}
 			});
 		};
-
-	 	// 시장가 매수 주문
-		function buyMarketCoin() {
-			sendData = "currCoin="+currCoin;
-			$.ajax({
-				type		:	'GET',
-				url			:	'invest/investApi',
-				data		:	sendData,
-	 			contentType : 	'application/json; charset=UTF-8',
-			    dataType 	: 	'json',
-				success		:	function(data) {
-					document.getElementById('order-unit_price').value = data[1].trade_price.toLocaleString();
-					console.log('trade_price->'+data[1].trade_price.toLocaleString())
-					buyCoin();
-				},
-				error		:	function(e) {
-					console.log("error : ",e);
+		
+		function amtPercent(percent) {
+			// 주문 금액 10, 25, 50, 100% 버튼 선택
+				var price =  Math.floor(uncomma($('#order-avaliableKRW').text()) * (percent * 0.01));
+				var unit_price =uncomma($('#order-unit_price').val());
+				var trd_amt = price / unit_price;
+	
+				if(trd_amt >= 0) {
+					$('#order-trd_amt').val(trd_amt.toFixed(8));
+					$('#order-trd_price').val(price.toLocaleString());
 				}
-			});
-		};
+			};
+		
+		// 매수 onsubmit
+		async function chkBuy() {
+			var trd_price = uncomma($('#order-trd_price').val()) * 1;
+			var krw = await selectKRW() * 1;
+			console.log('selectKRW()->'+krw);
+			if(krw * 1 < trd_price * 1) {
+				$('#modal-msg').text('주문가능 금액이 부족합니다')
+				$('#warmModal').modal('toggle');
+			} else if(uncomma($('#order-unit_price').val()) * 1 <= 0) {
+				$('#modal-msg').text('주문가격을 확인하세요');
+				$('#warmModal').modal('toggle');
+			} else if($('#order-trd_amt').val() <= 0) {
+				$('#modal-msg').text('주문수량을 입력하세요');
+				$('#warmModal').modal('toggle');
+			}
 
+			else {
+					buyCoin();
+			}
+		};
+		
 		// 매수 주문
 		function buyCoin() {
 			console.log("buyCoin시작")
@@ -1469,10 +1440,10 @@
 						</div>
 						<div class="d-flex justify-content-end mb-3">
 							<div class="d-flex justify-content-between mt-1" id="order-div-amt-butn">
-								<input type="button" class="order-form-amt-butn form-control" value="10%">
-								<input type="button" class="order-form-amt-butn form-control" value="25%">
-								<input type="button" class="order-form-amt-butn form-control" value="50%">
-								<input type="button" class="order-form-amt-butn form-control" value="100%">
+								<input type="button" class="order-form-amt-butn form-control" value="10%" onclick="amtPercent(10)">
+								<input type="button" class="order-form-amt-butn form-control" value="25%" onclick="amtPercent(25)">
+								<input type="button" class="order-form-amt-butn form-control" value="50%" onclick="amtPercent(50)">
+								<input type="button" class="order-form-amt-butn form-control" value="100%" onclick="amtPercent(100)">
 							</div>
 						</div>
 						<div class="d-flex justify-content-between mb-3">
@@ -1484,7 +1455,7 @@
 							<button type="button" class="order-form-submit form-control bg-danger" onclick="location.href='/loginForm'">로그인</button>
 						</div>
 						<div th:if="${session.sessionID != null}" class="d-flex justify-content-center">
-							<input type="reset" class="order-form-reset form-control me-3" value="초기화"><input type="button" class="order-form-submit form-control bg-danger" id="buySubmit" value="매 수">
+							<input type="reset" class="order-form-reset form-control me-3" value="초기화"><input type="button" class="order-form-submit form-control bg-danger" id="buySubmit" value="매 수" onclick="chkBuy()">
 						</div>
 					</form>
 				</div>
