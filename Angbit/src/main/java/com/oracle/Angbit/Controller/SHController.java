@@ -295,7 +295,7 @@ public class SHController {
     }
 
     // 시장가 리턴용
-    public int tradePrice(String currCoin) throws IOException, ParseException {
+    public int tradePrice(String currCoin) throws ParseException {
         String coin = "KRW-"+currCoin;
 
         RestTemplate restTemplate = new RestTemplate();
