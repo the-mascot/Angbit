@@ -2,6 +2,8 @@ package com.oracle.Angbit.dao.invest;
 
 import java.util.HashMap;
 import static org.hamcrest.CoreMatchers.nullValue;
+
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,9 +11,16 @@ import java.util.Map;
 import com.oracle.Angbit.model.common.Coin;
 import org.apache.ibatis.reflection.ReflectionException;
 import org.apache.ibatis.session.SqlSession;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.invest.OrderTrade;
@@ -153,6 +162,40 @@ public class InvestDaoImpl implements InvestDao {
 		
 		
 		return coinInfo;
+	}
+
+	@Override
+	public void checkBuyLimits() {
+
+		System.out.println("InvestDaoImpl checkBuyLimits Start...");
+		List<CoinInfo> coinList = coinInfoList();
+		String coinListStr = "";
+		for(int i = 0; i < coinList.size();  i++) {
+			if(i == coinList.size()-1)
+				coinListStr += "KRW-"+coinList.get(i).getCoincode();
+			else
+				coinListStr += "KRW-"+coinList.get(i).getCoincode()+", ";
+		}
+		System.out.println("ESController upCoinListApi coinListStr->"+coinListStr);
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", "application/json");
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+		
+		String tickerUrl 	= "https://api.upbit.com/v1/candles/minutes/1?market="+coinListStr;
+		System.out.println(tickerUrl);
+		ResponseEntity<String> tickerResponse 	= restTemplate.exchange(tickerUrl, HttpMethod.GET, entity, String.class);
+		try {
+			String tickerStr 	= tickerResponse.getBody();
+			
+			JSONParser parser = new JSONParser();
+			JSONArray json = (JSONArray) parser.parse(tickerStr);
+			System.out.println("ESController upCoinListApi json 객체->"+json);
+		} catch (Exception e) {
+			System.out.println("ESController upCoinListApi Exception->"+e.getMessage());
+			e.printStackTrace();
+		}
+		
 	}
 
 }

@@ -26,4 +26,6 @@ public interface InvestService {
 	
 	List<CoinInfo> searchCoin(String keyWord);
 	
+	void checkBuyLimits();
+	
 }

@@ -12,6 +12,11 @@
 <!-- Jquery -->
 <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
 
+<!-- choose a theme file -->
+<link rel="stylesheet" th:href="@{tablesorter/css/theme.default.min.css}">
+
+<script type="text/javascript" th:src="@{tablesorter/js/jquery.tablesorter.js}"></script>
+
 <!-- lightweight-chart -->
 <script th:src="@{https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js}"></script>
 
@@ -678,7 +683,8 @@
 					}
 				}
 			});
-
+			
+			// 필터
 			$('#coinlist-search').keyup(function() {
 				console.log('keyWord->'+$('#coinlist-search').val().toUpperCase())
 				var keyWord = 'keyWord='+$('#coinlist-search').val().toUpperCase();
@@ -715,6 +721,22 @@
 					}
 				});
 			});
+			
+			$(function() {
+				$.tablesorter.addParser({
+					id:		'comma',
+					is:		function(s){return false;},
+					format:	function(s){return s.replace(/[\,\.]/g, '');},
+					type:	'numeric'
+				});
+				
+				  $("#coinlist-table").tablesorter({
+					  headers:	{
+						  1:	{sorter: 'comma'},
+						  3:	{sorter: 'comma'},
+					  }
+				  });
+				});
 
 		});
 		
@@ -842,7 +864,14 @@
 		function sortName(e) {
 			e.preventDefault();
 			if(sortNameStu == 0 || sortNameStu == 2) {
-				
+				var obj = [{}]
+				var rows = document.getElementById("coinlist-table").getElementsByTagName("tr");
+				console.log(rows);
+				for(var i=0; i<rows.length; i++) {
+					cells = row[r].getElementsByTagName("td");
+					ojb += {coinname: cells[0].fistChild.data, coin}
+									
+				}
 				
 			} 
 			
@@ -1338,7 +1367,7 @@
 	    	</div>
 	        <div class="card-body">
             	<div class="table-responsive">
-                	<table class="table table-hover" id="coinlist-table">
+                	<table class="tablesorter table table-hover" id="coinlist-table">
 	                    <thead>
 	                        <tr>
 	                            <th><a href="#" onclick="sortName(event)">코인명</a>

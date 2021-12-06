@@ -27,5 +27,7 @@ public interface InvestDao {
 	Float getMyCoin(String id, String currCoin);
 	
 	List<CoinInfo> searchCoin(String keyWord);
+
+	void checkBuyLimits();
 	
 }

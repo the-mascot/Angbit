@@ -88,5 +88,13 @@ public class InvestServiceImpl implements InvestService {
 		
 		return coinInfo;
 	}
+
+	@Override
+	public void checkBuyLimits() {
+
+		System.out.println("InvestServiceImpl checkBuyLimits Start...");
+		ivdao.checkBuyLimits();
+		
+	}
 	
 }
