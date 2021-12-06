@@ -21,7 +21,7 @@
 		select count(*) FROM board
 	</select>
 	
-	<select id="pagingbd" parameterType="MemberInfo" resultType="Board">
+	<select id="pagingbd" parameterType="Board" resultType="Board">
 		SELECT *
 		FROM
 		  (
@@ -40,6 +40,12 @@
 		ON bd.id = mb.id
 		WHERE b_num = #{b_num}
 	</select>
+	
+	<update id="dyViewCnt" parameterType="int">
+		UPDATE board
+		SET views = views+1
+		WHERE b_num = #{b_num}
+	</update>
 	
 	
 	<!-- update -->
@@ -64,8 +70,9 @@
 	
 	<!-- insert -->
 	<insert id="dyBoardInsert" parameterType="board">
-	     insert into board values (#{b_num},#{title},#{uploaddate},#{views},
-									 #{nickname})
+	     insert ALL 
+	     into board values(#{title},#{content})
+		 into memberinfo values(#{nickname})					 
  	</insert>
 	
 </mapper>
