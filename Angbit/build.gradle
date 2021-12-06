@@ -36,12 +36,13 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
   	// Spring Start Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    
+    // Simple Json
 	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
-		    
-//    implementation group: 'org.json', name: 'json', version: '20210307'
-    		
+    // Starter Mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	// Quartz
+	implementation group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.2'
+	
 		
 }
 

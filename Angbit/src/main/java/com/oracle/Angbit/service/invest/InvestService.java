@@ -21,11 +21,14 @@ public interface InvestService {
 
 	void buyLimitsPrice(OrderTrade orderTrade);
 
-  	Float getUsableCoin(String id, String currCoin);
+  Float getUsableCoin(String id, String currCoin);	
+
+	void checkBuyLimits();
 	
-  	List<CoinInfo> searchCoin(String keyWord);
+  List<CoinInfo> searchCoin(String keyWord);
 
 	int sellLimitsPrice(OrderTrade orderTrade);
 
 	void sellMarketPrice(OrderTrade orderTrade);
+
 }

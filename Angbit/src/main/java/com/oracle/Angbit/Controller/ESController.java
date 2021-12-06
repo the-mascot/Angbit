@@ -57,6 +57,16 @@ public class ESController {
 		return "/invest/invest";
 	}
 	
+	@GetMapping("estest")
+	public String estest(Model model, HttpServletRequest request, HttpServletResponse response) {
+		
+		System.out.println("ESController invest Start...");
+		List<CoinInfo> coinInfoList =  ivs.coinInfoList();
+		model.addAttribute("coinInfoList", coinInfoList);
+		
+		return "/invest/NewFile";
+	}
+	
 	@ResponseBody
 	@GetMapping("invest/investApi")
 	public void investApi(HttpServletRequest request, HttpServletResponse response) throws IOException {
