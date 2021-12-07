@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -107,57 +109,88 @@ public class GMController {
 		}
 		
 		@GetMapping("/status_y_history_sort7d")
-		public String allDateSort7(HttpServletRequest request, Model model) {
+		public String allDateSort7(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_dateSort Start...");
 			
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_y_history_dateSort id -> "+id);
 			
-			List<TradeCoinInfo> All7List = ss.allDateSort7(id);
+			int total = ss.total7(id);
+			System.out.println("total7.size() -> "+total);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			
+			List<TradeCoinInfo> All7List = ss.allDateSort7(trdCoin, id);
 			model.addAttribute("All7List", All7List);
+			model.addAttribute("pg", pg);
 			
 			return "/status/y_history_sort7d"; 
 		}
 		
 		@GetMapping("/status_y_history_sort30d")
-		public String allDateSort30(HttpServletRequest request, Model model) {
+		public String allDateSort30(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_dateSort Start...");
 			
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_y_history_dateSort id -> "+id);
 			
-			List<TradeCoinInfo> All30List = ss.allDateSort30(id);
+			int total = ss.total30(id);
+			System.out.println("total30.size() ->"+ total);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			
+			List<TradeCoinInfo> All30List = ss.allDateSort30(trdCoin, id);
 			model.addAttribute("All30List", All30List);
+			model.addAttribute("pg", pg);
 			
 			return "/status/y_history_sort30d"; 
 		}
 		
 		@GetMapping("/status_y_history_sort90d")
-		public String allDateSort90(HttpServletRequest request, Model model) {
+		public String allDateSort90(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_dateSort Start...");
 			
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_y_history_dateSort id -> "+id);
 			
-			List<TradeCoinInfo> All90List = ss.allDateSort90(id);
+			int total = ss.total90(id);
+			System.out.println("total90.size() -> "+total);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+						
+			List<TradeCoinInfo> All90List = ss.allDateSort90(trdCoin, id);
 			model.addAttribute("All90List", All90List);
+			model.addAttribute("pg", pg);
 			
 			return "/status/y_history_sort90d"; 
 		}
 		
 		@GetMapping("/status_y_history_sort180d")
-		public String allDateSort180(HttpServletRequest request, Model model) {
+		public String allDateSort180(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_dateSort Start...");
 			
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_y_history_dateSort id -> "+id);
 			
-			List<TradeCoinInfo> All180List = ss.allDateSort180(id);
+			int total = ss.total180(id);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			
+			List<TradeCoinInfo> All180List = ss.allDateSort180(trdCoin, id);
 			model.addAttribute("All180List", All180List);
+			model.addAttribute("pg", pg);
 			
 			return "/status/y_history_sort180d"; 
 		}
@@ -178,133 +211,250 @@ public class GMController {
 		
 		// 매수
 		@GetMapping("/status_y_history_buy")
-		public String statusBuycom(HttpServletRequest request, Model model) {
+		public String statusBuycom(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_buy Start...");
 			
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_y_history_buy id -> "+id);
 			
-			List<TradeCoinInfo> comBuyList = ss.comBuyList(id);
+			int total = ss.buytotal(id);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			
+			List<TradeCoinInfo> comBuyList = ss.comBuyList(trdCoin, id);
 			model.addAttribute("cbList", comBuyList);
+			model.addAttribute("pg", pg);
 			return "/status/y_history_buy";
 		}
 		
 		@GetMapping("/status_y_history_buy_sort7d")
-		public String statusBuycomSort7d(HttpServletRequest request, Model model) {
+		public String statusBuycomSort7d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_buy_sort7 Start...");
 			
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_y_history_buy id -> "+id);
 			
-			List<TradeCoinInfo> Buy7List = ss.buyDateSort7(id);
+			int total = ss.buytotal7(id);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			
+			List<TradeCoinInfo> Buy7List = ss.buyDateSort7(trdCoin, id);
 			model.addAttribute("Buy7List", Buy7List);
+			model.addAttribute("pg", pg);
 			return "/status/y_history_buy_sort7d";
 		}
 		
 		@GetMapping("/status_y_history_buy_sort30d")
-		public String statusBuycomSort30d(HttpServletRequest request, Model model) {
+		public String statusBuycomSort30d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_buy_sort30 Start...");
 			
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_y_history_buy id -> "+id);
 			
-			List<TradeCoinInfo> Buy30List = ss.buyDateSort30(id);
+			int total = ss.buytotal30(id);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			
+			List<TradeCoinInfo> Buy30List = ss.buyDateSort30(trdCoin, id);
 			model.addAttribute("Buy30List", Buy30List);
+			model.addAttribute("pg", pg);
 			return "/status/y_history_buy_sort30d";
 		}
 		
 		@GetMapping("/status_y_history_buy_sort90d")
-		public String statusBuycomSort90d(HttpServletRequest request, Model model) {
+		public String statusBuycomSort90d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_buy_sort90 Start...");
 			
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_y_history_buy id -> "+id);
 			
-			List<TradeCoinInfo> Buy90List = ss.buyDateSort90(id);
+			int total = ss.buytotal90(id);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			
+			List<TradeCoinInfo> Buy90List = ss.buyDateSort90(trdCoin, id);
 			model.addAttribute("Buy90List", Buy90List);
+			model.addAttribute("pg", pg);
 			return "/status/y_history_buy_sort90d";
 		}
 		
 		@GetMapping("/status_y_history_buy_sort180d")
-		public String statusBuycomSort180d(HttpServletRequest request, Model model) {
+		public String statusBuycomSort180d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_buy_sort180 Start...");
 			
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_y_history_buy id -> "+id);
 			
-			List<TradeCoinInfo> Buy180List = ss.buyDateSort180(id);
+			int total = ss.buytotal180(id);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			
+			List<TradeCoinInfo> Buy180List = ss.buyDateSort180(trdCoin, id);
 			model.addAttribute("Buy180List", Buy180List);
+			model.addAttribute("pg", pg);
 			return "/status/y_history_buy_sort180d";
 		}
 		
 		// 매도
 		@GetMapping("/status_y_history_sell")
-		public String statusSellcom(HttpServletRequest request, Model model) {
+		public String statusSellcom(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_sell Start...");
 			
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_n_history_buy id -> "+id);
 			
-			List<TradeCoinInfo> comSellList = ss.comSellList(id);
+			int total = ss.sellTotal(id);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			
+			List<TradeCoinInfo> comSellList = ss.comSellList(trdCoin, id);
 			model.addAttribute("csList", comSellList);
+			model.addAttribute("pg", pg);
 			return "/status/y_history_sell";
 		}
 		
 		@GetMapping("/status_y_history_sell_sort7d")
-		public String statusSellcomsort7d(HttpServletRequest request, Model model) {
+		public String statusSellcomsort7d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_sell_sort7 Start...");
 			
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_n_history_buy id -> "+id);
 			
-			List<TradeCoinInfo> Sell7List = ss.sellDateSort7(id);
+			int total = ss.sellTotal7(id);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			
+			List<TradeCoinInfo> Sell7List = ss.sellDateSort7(trdCoin, id);
 			model.addAttribute("Sell7List", Sell7List);
+			model.addAttribute("pg", pg);
 			return "/status/y_history_sell_sort7d";
 		}
 		
 		@GetMapping("/status_y_history_sell_sort30d")
-		public String statusSellcomsort30d(HttpServletRequest request, Model model) {
+		public String statusSellcomsort30d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_sell_sort7 Start...");
 			
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_n_history_buy id -> "+id);
 			
-			List<TradeCoinInfo> Sell30List = ss.sellDateSort30(id);
+			int total = ss.sellTotal30(id);	
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			
+			List<TradeCoinInfo> Sell30List = ss.sellDateSort30(trdCoin, id);
 			model.addAttribute("Sell30List", Sell30List);
+			model.addAttribute("pg", pg);
 			return "/status/y_history_sell_sort30d";
 		}
 		
 		@GetMapping("/status_y_history_sell_sort90d")
-		public String statusSellcomsort90d(HttpServletRequest request, Model model) {
+		public String statusSellcomsort90d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_sell_sort7 Start...");
 			
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_n_history_buy id -> "+id);
 			
-			List<TradeCoinInfo> Sell90List = ss.sellDateSort90(id);
+			int total = ss.sellTotal90(id);	
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			
+			List<TradeCoinInfo> Sell90List = ss.sellDateSort90(trdCoin, id);
 			model.addAttribute("Sell90List", Sell90List);
+			model.addAttribute("pg", pg);
 			return "/status/y_history_sell_sort90d";
 		}
 		
 		@GetMapping("/status_y_history_sell_sort180d")
-		public String statusSellcomsort180d(HttpServletRequest request, Model model) {
+		public String statusSellcomsort180d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_sell_sort7 Start...");
 			
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			System.out.println("status_n_history_buy id -> "+id);
 			
-			List<TradeCoinInfo> Sell180List= ss.sellDateSort180(id);
+			int total = ss.sellTotal180(id);	
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			
+			List<TradeCoinInfo> Sell180List= ss.sellDateSort180(trdCoin, id);
 			model.addAttribute("Sell180List", Sell180List);
+			model.addAttribute("pg", pg);
 			return "/status/y_history_sell_sort180d";
 		}
+		
+//		@GetMapping("testmethod")
+//		@ResponseBody
+//		public List<TradeCoinInfo> testmethod(HttpServletRequest request, HttpServletResponse response, Model model) {
+//			System.out.println("AJAX status_y_history_dateSort Start...");
+//			String days = request.getParameter("days");
+//			System.out.println("받아온 days"+days);
+//			
+//			HttpSession session = request.getSession();
+//			String id = (String) session.getAttribute("sessionID");
+//			System.out.println("status_y_history_dateSort id -> "+id);
+//			switch (days) {
+//				case 7 : 
+//			}
+//			List<TradeCoinInfo> All7List = ss.allDateSort7(id); \
+//			
+//			model.addAttribute("pg", paging(id));
+//			return "/status/y_history_sort7d"; 
+//			return All7List;
+//		}
+		
+//		@GetMapping("goTest")
+//		public String goTest() {
+//			return "/status/y_history_ajax";
+//		}
+		
+//		public StatusPaging paging(String id) {
+//			System.out.println("GMController StatusYHistory Start...");
+//			System.out.println("status_y_history id -> "+id);
+//			
+//			int total = ss.total(id);
+//			System.out.println("total.size -> "+total);
+//			
+//			StatusPaging pg = new StatusPaging(total, currentPage);
+//			trdCoin.setStart(pg.getStart());
+//			trdCoin.setEnd(pg.getEnd());
+//			System.out.println("trd.getStart() ->"+trdCoin.getStart());
+//			System.out.println("trd.getEnd() ->"+trdCoin.getEnd());
+//			System.out.println("trd.currentPage -> "+ currentPage);
+//			
+//			List<TradeCoinInfo> tradeList = ss.yStatus(trdCoin, id);
+//			System.out.println("startPage -> " +pg.getStartPage());
+//			System.out.println("endPage -> " +pg.getEndPage());
+//			System.out.println("pageBlock -> " +pg.getPageBlock());
+//			System.out.println("totalPage -> "+pg.getTotalPage());
+//			return pg;
+//		}
 	}

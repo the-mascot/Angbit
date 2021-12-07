@@ -18,54 +18,104 @@
 		select nvl(sum(tot_price), 0) from coin where id=#{id} and coin_amt != 0
 	</select>
 	<select id="CBuyList" resultType="TradeCoinInfo">
-		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=0 order by trd_date desc 
+		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=0 order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end} 
 	</select>
 	<select id="CSellList" resultType="TradeCoinInfo">
-		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=1 order by trd_date desc 
+		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=1 order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end} 
 	</select>
 	
 	<!-- 기간별 전체정렬 -->
-	<select id="AllDateSort7" parameterType="java.lang.String" resultType="TradeCoinInfo">
-		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_date >= to_char(sysdate-7, 'yyyymmdd') and trd_stu=1 order by trd_date desc
+	<select id="AllDateSort7" parameterType="hashmap" resultType="TradeCoinInfo">
+		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_date >= to_char(sysdate-7, 'yyyymmdd')  order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end}
 	</select>
-	<select id="AllDateSort30" parameterType="java.lang.String" resultType="TradeCoinInfo">
-		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_date >= to_char(sysdate-30, 'yyyymmdd') and trd_stu=1 order by trd_date desc
+	<select id="AllDateSort30" parameterType="hashmap" resultType="TradeCoinInfo">
+		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_date >= to_char(sysdate-30, 'yyyymmdd')  order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end}
 	</select>
-	<select id="AllDateSort90" parameterType="java.lang.String" resultType="TradeCoinInfo">
-		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_date >= to_char(sysdate-90, 'yyyymmdd') and trd_stu=1 order by trd_date desc
+	<select id="AllDateSort90" parameterType="hashmap" resultType="TradeCoinInfo">
+		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_date >= to_char(sysdate-90, 'yyyymmdd')  order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end}
 	</select>
-	<select id="AllDateSort180" parameterType="java.lang.String" resultType="TradeCoinInfo">
-		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_date >= to_char(sysdate-180, 'yyyymmdd') and trd_stu=1 order by trd_date desc
+	<select id="AllDateSort180" parameterType="hashmap" resultType="TradeCoinInfo">
+		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_date >= to_char(sysdate-180, 'yyyymmdd')  order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end}
 	</select>
 	
 	<!-- 기간별 매수정렬 -->
-	<select id="buyDateSort7" parameterType="java.lang.String" resultType="TradeCoinInfo">
-		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_date >= to_char(sysdate-7, 'yyyymmdd') and trd_stu=1 and trd_div=0 order by trd_date desc
+	<select id="buyDateSort7" parameterType="hashmap" resultType="TradeCoinInfo">
+		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=0 and trd_date >= to_char(sysdate-7, 'yyyymmdd')  order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end}
 	</select>
-	<select id="buyDateSort30" parameterType="java.lang.String" resultType="TradeCoinInfo">
-		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_date >= to_char(sysdate-30, 'yyyymmdd') and trd_stu=1 and trd_div=0 order by trd_date desc
+	<select id="buyDateSort30" parameterType="hashmap" resultType="TradeCoinInfo">
+		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=0 and trd_date >= to_char(sysdate-30, 'yyyymmdd')  order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end}
 	</select>
-	<select id="buyDateSort90" parameterType="java.lang.String" resultType="TradeCoinInfo">
-		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_date >= to_char(sysdate-90, 'yyyymmdd') and trd_stu=1 and trd_div=0 order by trd_date desc
+	<select id="buyDateSort90" parameterType="hashmap" resultType="TradeCoinInfo">
+		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=0 and trd_date >= to_char(sysdate-90, 'yyyymmdd')  order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end}
 	</select>
-	<select id="buyDateSort180" parameterType="java.lang.String" resultType="TradeCoinInfo">
-		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_date >= to_char(sysdate-180, 'yyyymmdd') and trd_stu=1 and trd_div=0 order by trd_date desc
+	<select id="buyDateSort180" parameterType="hashmap" resultType="TradeCoinInfo">
+		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=0 and trd_date >= to_char(sysdate-180, 'yyyymmdd')  order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end}
 	</select>
 	
 	<!-- 기간별 매도정렬 -->
-	<select id="sellDateSort7" parameterType="java.lang.String" resultType="TradeCoinInfo">
-		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_date >= to_char(sysdate-7, 'yyyymmdd') and trd_stu=1 and trd_div=1 order by trd_date desc
+	<select id="sellDateSort7" parameterType="hashmap" resultType="TradeCoinInfo">
+		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=1 and trd_date >= to_char(sysdate-7, 'yyyymmdd')  order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end}
 	</select>
-	<select id="sellDateSort30" parameterType="java.lang.String" resultType="TradeCoinInfo">
-		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_date >= to_char(sysdate-30, 'yyyymmdd') and trd_stu=1 and trd_div=1 order by trd_date desc
+	<select id="sellDateSort30" parameterType="hashmap" resultType="TradeCoinInfo">
+		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=1 and trd_date >= to_char(sysdate-30, 'yyyymmdd')  order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end}
 	</select>
-	<select id="sellDateSort90" parameterType="java.lang.String" resultType="TradeCoinInfo">
-		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_date >= to_char(sysdate-90, 'yyyymmdd') and trd_stu=1 and trd_div=1 order by trd_date desc
+	<select id="sellDateSort90" parameterType="hashmap" resultType="TradeCoinInfo">
+		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=1 and trd_date >= to_char(sysdate-90, 'yyyymmdd')  order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end}
 	</select>
-	<select id="sellDateSort180" parameterType="java.lang.String" resultType="TradeCoinInfo">
-		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_date >= to_char(sysdate-180, 'yyyymmdd') and trd_stu=1 and trd_div=1 order by trd_date desc
+	<select id="sellDateSort180" parameterType="hashmap" resultType="TradeCoinInfo">
+		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=1 and trd_date >= to_char(sysdate-180, 'yyyymmdd')  order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end}
 	</select>
+	
+	<!-- 페이지네이션 - 전체 -->
 	<select id="StatusTotal" parameterType="java.lang.String" resultType="int">
 		select count(*) from trade where id=#{id} and trd_stu=1
 	</select>
+	<select id="StatusTotal7" parameterType="java.lang.String" resultType="int">
+		select count(*) from trade where id=#{id} and trd_stu=1 and trd_date >= to_char(sysdate-7, 'yyyymmdd')
+	</select>
+	<select id="StatusTotal30" parameterType="java.lang.String" resultType="int">
+		select count(*) from trade where id=#{id} and trd_stu=1 and trd_date >= to_char(sysdate-30, 'yyyymmdd')
+	</select>
+	<select id="StatusTotal90" parameterType="java.lang.String" resultType="int">
+		select count(*) from trade where id=#{id} and trd_stu=1 and trd_date >= to_char(sysdate-90, 'yyyymmdd')
+	</select>
+	<select id="StatusTotal180" parameterType="java.lang.String" resultType="int">
+		select count(*) from trade where id=#{id} and trd_stu=1 and trd_date >= to_char(sysdate-180, 'yyyymmdd')
+	</select>
+	
+	<!-- 페이지네이션 - 매수 -->
+	<select id="StatusBuyTotal" parameterType="java.lang.String" resultType="int">
+		select count(*) from trade where id=#{id} and trd_stu=1 and trd_div=0
+	</select>
+	<select id="StatusBuy7" parameterType="java.lang.String" resultType="int">
+		select count(*) from trade where id=#{id} and trd_stu=1 and trd_div=0 and trd_date >= to_char(sysdate-7, 'yyyymmdd')
+	</select>
+	<select id="StatusBuy30" parameterType="java.lang.String" resultType="int">
+		select count(*) from trade where id=#{id} and trd_stu=1 and trd_div=0 and trd_date >= to_char(sysdate-30, 'yyyymmdd')
+	</select>
+	<select id="StatusBuy90" parameterType="java.lang.String" resultType="int">
+		select count(*) from trade where id=#{id} and trd_stu=1 and trd_div=0 and trd_date >= to_char(sysdate-90, 'yyyymmdd')
+	</select>
+	<select id="StatusBuy180" parameterType="java.lang.String" resultType="int">
+		select count(*) from trade where id=#{id} and trd_stu=1 and trd_div=0 and trd_date >= to_char(sysdate-180, 'yyyymmdd')
+	</select>
+	
+	<!-- 페이지네이션 - 매도 -->
+	<select id="StatusSellTotal" parameterType="java.lang.String" resultType="int">
+		select count(*) from trade where id=#{id} and trd_stu=1 and trd_div=1
+	</select>
+	<select id="StatusSell7" parameterType="java.lang.String" resultType="int">
+		select count(*) from trade where id=#{id} and trd_stu=1 and trd_div=1 and trd_date >= to_char(sysdate-7, 'yyyymmdd')
+	</select>
+	<select id="StatusSell30" parameterType="java.lang.String" resultType="int">
+		select count(*) from trade where id=#{id} and trd_stu=1 and trd_div=1 and trd_date >= to_char(sysdate-30, 'yyyymmdd')
+	</select>
+	<select id="StatusSell90" parameterType="java.lang.String" resultType="int">
+		select count(*) from trade where id=#{id} and trd_stu=1 and trd_div=1 and trd_date >= to_char(sysdate-90, 'yyyymmdd')
+	</select>
+	<select id="StatusSell180" parameterType="java.lang.String" resultType="int">
+		select count(*) from trade where id=#{id} and trd_stu=1 and trd_div=1 and trd_date >= to_char(sysdate-180, 'yyyymmdd')
+	</select>
+	
+	
 </mapper>
