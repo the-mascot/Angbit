@@ -24,8 +24,7 @@
 <div class="container">
 	<div class="col-4" style="float: left;" >기간 설정<p>
 		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history'">전체</button>
-<!-- 		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="testmethod(7)">7일</button> -->
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort7d'">7일</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="testmethod(7)">7일</button>
 		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort30d'">30일</button>
 		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort90d'">90일</button>
 		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort180d'">180일</button>
@@ -57,57 +56,37 @@
       <th class="cell2" scope="col" width="20.9%"><h5><b>체결시간</b></h5></th>
     </tr>
   </thead>
-  <tbody align="center" style="vertical-align:middle;">
-  	<th:block data-th-if="${yList.size != 0}">
-	    <tr class="code" th:each="ylist:${yList}">
-	      <th class="coincode" scope="row" th:switch="${ylist.coincode}"> 
-	      	<span th:case="ADA"><img class="table_images" alt="" th:src="@{images/status/ada.png}"></span>
-	      	<span th:case="AXS"><img class="table_images" alt="" th:src="@{images/status/axs.png}"></span>
-	      	<span th:case="BCH"><img class="table_images" alt="" th:src="@{images/status/bch.png}"></span>
-	      	<span th:case="BTC"><img class="table_images" alt="" th:src="@{images/status/btc.png}"></span>
-	      	<span th:case="DOGE"><img class="table_images" alt="" th:src="@{images/status/doge.png}"></span>
-	      	<span th:case="DOT"><img class="table_images" alt="" th:src="@{images/status/dot.png}"></span>
-	      	<span th:case="ETC"><img class="table_images" alt="" th:src="@{images/status/etc.png}"></span>
-	      	<span th:case="ETH"><img class="table_images" alt="" th:src="@{images/status/eth.png}"></span>
-	      	<span th:case="LTC"><img class="table_images" alt="" th:src="@{images/status/ltc.png}"></span>
-	      	<span th:case="MANA"><img class="table_images" alt="" th:src="@{images/status/mana.png}"></span>
-	      	<span th:case="SAND"><img class="table_images" alt="" th:src="@{images/status/sand.png}"></span>
-	      	<span th:case="SOL"><img class="table_images" alt="" th:src="@{images/status/sol.png}"></span>
-	      	<span th:case="VET"><img class="table_images" alt="" th:src="@{images/status/vet.png}"></span>
-	      	<span th:case="XLM"><img class="table_images" alt="" th:src="@{images/status/xlm.png}"></span>
-	      	<span th:case="XRP"><img class="table_images" alt="" th:src="@{images/status/xrp.png}"></span>
+  <tbody class="tableb" align="center" style="vertical-align:middle;">
+	    <tr class="code">
+	      <th class="coincode" scope="row">
+	      	<span class="coinname"></span>
 	      </th>
-	      <td class="coinname" th:text="${ylist.coinname}+'&#13;&#10;'+'('+${ylist.coincode}+')'"></td>
-	      <td class="trd_div" th:if="${ylist.trd_div}==1" style="color: blue;">매도</td>
-	      <td class="trd_div" th:if="${ylist.trd_div}==0" style="color: red;">매수</td>
-	      <td class="trd_amt" th:text="${#numbers.formatDecimal(ylist.trd_amt,1,'COMMA',8,'POINT')}"></td>
-	      <td class="trd_unit-price" th:text="${#numbers.formatDecimal(ylist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
-	      <td class="trd_price" th:text="${#numbers.formatDecimal(ylist.trd_price,1,'COMMA',0,'POINT')}"></td>
-	      <td class="trd_date" th:text="${#dates.format(ylist.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
+	      <td class="coinname"></td>
+	      <td class="trd_div" style="color: blue;"></td>
+	      <td class="trd_amt"></td>
+	      <td class="trd_unit-price"></td>
+	      <td class="trd_price"></td>
+	      <td class="trd_date"></td>
 	    </tr>
-	</th:block>
-    <th:block data-th-if="${yList.size == 0}">
-	  	<td colspan="7"><strong>매수 및 매도 내역이 없습니다.</strong></td>
-	</th:block>
+	  	<!-- <td colspan="7">데이터가 없습니다.</td> -->
   </tbody>
 </table>
 
 <!-- 페이지네이션 -->
-<nav aria-label="Page navigation example">
+<!-- <nav aria-label="Page navigation example">
 	<div th:with="start=${pg.startPage}, end=${pg.endPage}">
 	  <ul class="pagination justify-content-center mt-4">
-	  	<!-- 이전 -->
+	  	이전
 	    <li class="page-item" th:if="${pg.startPage>pg.pageBlock}">
 	      <a class="pagenav_a page-link" th:href="@{status_y_history(currentPage=${pg.startPage-pg.pageBlock})}" aria-label="previous">
 	        <span aria-hidden="true">&laquo;</span>
 	      </a>
 	    </li>
-	    <!-- 페이지 갯수 -->
+	    페이지 갯수
 	    <li class="page-item" th:each="i:${#numbers.sequence(start, end)}">
-	    	<th:block th:if="${i} != 0">
 	    	<a class="pagenav_a page-link" id="pageNav${i}" th:href="@{status_y_history(currentPage=${i})}" th:text=${i}></a>
 	    </li>
-	    <!-- 다음 -->
+	    다음
 	    <li class="page-item" th:if="${pg.endPage < pg.totalPage}">
 	      <a class="pagenav_a page-link" th:href="@{status_y_history(currentPage=${pg.startPage+pg.pageBlock})}" aria-label="Next">
 	        <span aria-hidden="true">&raquo;</span>
@@ -115,7 +94,7 @@
 	    </li>
 	  </ul>
   	</div>
-</nav>
+</nav> -->
 	
 </main>
  <footer th:replace="common/footer :: footer"></footer>
@@ -133,29 +112,28 @@
 			/* contentType : 	'application/json; charset=UTF-8', // 보내는 데이터 타입(java로) */
 			dataType 	: 	'json', // 받는 데이터압 (JS로)
 			success		:	function(data) { // 성공시 실행되는 함수
-				$('.coincode').remove();
-				$('.coinname').remove();
-				$('.trd_div').remove();
-				$('.trd_amt').remove();
-				$('.trd_unit-price').remove();
-				$('.trd_price').remove();
-				$('.trd_date').remove();
-				
-				spann = document.createElement('span');
+				$('.tableb').empty();
 				
 				console.log("받아온 데이터"+data);
 				var res = [];
 				for (var i=0; i<Object.keys(data).length; i++) {
 					res.push(data[i]);
 				}
-				/* 데이터 불러오기 */
-				/* 1. 지운 영역만큼의 셀 다시 만들기
-				2. 새로 생성된 셀에 데이터 채워넣기 */
 				
 				for (var i=0; i<Object.keys(res).length; i++) {
+					$('.tableb').append('<tr class="code'+i+'"></tr>')
 					console.log("코인코드 : "+res[i].coincode)
-					$('.coin').append(spann);
-					
+					$('.code'+i).append('<span><img class="table_images" alt="" src="images/status/'+res[i].coincode+'.png"></span>');
+					$('.code'+i).append('<td class="coinname">'+res[i].coinname+'</td>');
+					if (res[i].trd_div == 0) {
+						$('.code'+i).append('<td class="trd_div">매수</td')
+					} else {
+						$('.code'+i).append('<td class="trd_div">매도</td')
+					}
+					$('.code'+i).append('<td class="trd_amt">'+res[i].trd_amt+'</td')
+					$('.code'+i).append('<td class="trd_unit-price">'+res[i].trd_unit_price+'</td>')
+					$('.code'+i).append('<td class="trd_price">'+res[i].trd_price+'</td>')
+					$('.code'+i).append('<td class="trd_date">'+res[i].trd_date+'</td>')
 				}
 			},
 			error		:	function(e) {

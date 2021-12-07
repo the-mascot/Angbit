@@ -94,10 +94,34 @@
 	    </tr>
 	 </th:block>
 	 <th:block data-th-if="${cbList.size == 0}">
-	  	<td colspan="7">데이터가 없습니다.</td>
+	  	<td colspan="7"><Strong>매수내역이 없습니다.</Strong></td>
 	 </th:block>
   </tbody>
 </table>
+<!-- 페이지네이션 -->
+<nav aria-label="Page navigation example">
+	<div th:with="start=${pg.startPage}, end=${pg.endPage}">
+	  <ul class="pagination justify-content-center mt-4">
+	  	<!-- 이전 -->
+	    <li class="page-item" th:if="${pg.startPage>pg.pageBlock}">
+	      <a class="pagenav_a page-link" th:href="@{status_y_history_buy(currentPage=${pg.startPage-pg.pageBlock})}" aria-label="previous">
+	        <span aria-hidden="true">&laquo;</span>
+	      </a>
+	    </li>
+	    <!-- 페이지 갯수 -->
+	    <li class="page-item" th:each="i:${#numbers.sequence(start, end)}">
+	    	<th:block th:if="${i} != 0">
+	    	<a class="pagenav_a page-link" id="pageNav${i}" th:href="@{status_y_history_buy(currentPage=${i})}" th:text=${i}></a>
+	    </li>
+	    <!-- 다음 -->
+	    <li class="page-item" th:if="${pg.endPage < pg.totalPage}">
+	      <a class="pagenav_a page-link" th:href="@{status_y_history_buy(currentPage=${pg.startPage+pg.pageBlock})}" aria-label="Next">
+	        <span aria-hidden="true">&raquo;</span>
+	      </a>
+	    </li>
+	  </ul>
+  	</div>
+</nav>
 </main>
  <footer th:replace="common/footer :: footer"></footer>
 </body>
