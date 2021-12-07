@@ -4,6 +4,7 @@ import java.util.HashMap;
 import static org.hamcrest.CoreMatchers.nullValue;
 
 import java.io.PrintWriter;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -166,10 +167,11 @@ public class InvestDaoImpl implements InvestDao {
 	}
 
 	@Override
-
 	public void checkBuyLimits() {
-
-		System.out.println("InvestDaoImpl checkBuyLimits Start...");
+		
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:ss");
+		
+		System.out.println("InvestDaoImpl checkBuyLimits Start..."+timeFormatter);
 		List<CoinInfo> coinList = coinInfoList();
 		String coinListStr = "";
 		for(int i = 0; i < coinList.size();  i++) {
@@ -186,9 +188,9 @@ public class InvestDaoImpl implements InvestDao {
 		
 		String tickerUrl 	= "https://api.upbit.com/v1/candles/minutes/1?market="+coinListStr;
 		System.out.println(tickerUrl);
-		ResponseEntity<String> tickerResponse 	= restTemplate.exchange(tickerUrl, HttpMethod.GET, entity, String.class);
+		ResponseEntity<String> tickerResponse = restTemplate.exchange(tickerUrl, HttpMethod.GET, entity, String.class);
 		try {
-			String tickerStr 	= tickerResponse.getBody();
+			String tickerStr = tickerResponse.getBody();
 			
 			JSONParser parser = new JSONParser();
 			JSONArray json = (JSONArray) parser.parse(tickerStr);
