@@ -7,12 +7,13 @@
 <!-- Common meta tag, Bootstrap, js -->
 <th:block th:replace="common/commonHead"></th:block>
 </head>
-<!-- <script type="text/javascript"> -->
-<!--  	$(document).ready(function() -->
-<!--  	{ -->
-<!--  		$("#pageNav${currentPage}").css("color", "red");		 -->
-<!--  	}); -->
-<!-- </script> -->
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#txt").bind("keyup", function() {
+	$(this).val($(this).val().toUpperCase());
+	});
+});
+</script>
 <body>
 <!-- Common header -->
 <header th:replace="common/header :: header"></header>
@@ -34,23 +35,14 @@
 		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_buy'">매수</button>
 		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sell'">매도</button>
 	</div>
-	<form action="y_history_search" style="float: left; margin-top: 25px; margin-left: -25px">
-		<input class="btn btn-warning" type="text" name="search" placeholder="코인명 또는 코인코드를 입력하세요." style="border: 1px solid #ffc107; height: 38px; background-color: white;" size="40">
-<!-- 		<input class="button" type="submit" value="검색" style="background-color: orange;"> -->
-		<button type="submit" class="btn btn-warning" style="margin-top: 0px">
+	<form action="y_history_search" style="float: right; margin-top: 25px; margin-left: -25px">
+		<input class="btn-warning" type="text" id="txt" name="search" placeholder="코인명 또는 코인코드를 입력하세요." style="border: 1px solid #ffc107; height: 38px; background-color: white; text-transform: uppercase;" size="40">
+		<button type="submit" class="btn btn-warning" style="margin-top: -7px">
 			<svg id="search" name="search" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 	  			<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
 			</svg>
 		</button>
 	</form>
-<!-- 	<div class="col-4" style="float: left; margin-top: 25px;"> -->
-<!-- 		<input class="search" name="search" type="text" placeholder="코인의 이름을 입력하세요." style="border: 1px solid #ffc107; height: 35px" size="40">   -->
-<!-- 		<a href="y_history_search"> -->
-<!-- 			<svg id="search" name="search" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"> -->
-<!-- 	  		<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/> -->
-<!-- 			</svg> -->
-<!-- 		</a> -->
-<!-- 	</div> -->
 </div>
 <table class="table table-hover" style="width: 90%; margin: auto;">
   <thead class="yhistory_thead" align="center" style="background-color: orange;">

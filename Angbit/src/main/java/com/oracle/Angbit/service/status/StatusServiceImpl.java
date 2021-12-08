@@ -251,6 +251,18 @@ public class StatusServiceImpl implements StatusService {
 		return sellTot180Cnt;
 	}
 
+	@Override
+	public List<TradeCoinInfo> searchList(TradeCoinInfo trdCoin, String search, String id) {
+		List<TradeCoinInfo> searchList = sd.searchList(trdCoin, search, id);
+		return searchList;
+	}
+
+	@Override
+	public int searchTotal(String id,String search) {
+		int searchTotal = sd.searchTotal(id, search);
+		return searchTotal;
+	}
+
 
 
 }

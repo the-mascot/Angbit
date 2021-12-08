@@ -20,24 +20,14 @@ $(document).ready(function(){
 <main>
 
 <div class="row my-3" align="center" style="padding-top: 25px">
-	<h4><b>체결 현황</b></h4>
+	<h4><b>전체 조회 결과</b></h4>
+	<P>
+	<h5 th:text="'총 '+${pg.total}+'건의 결과가 검색되었습니다.'" style="margin-bottom: -40px"></h5>
 </div>
 <div class="container">
-	<div class="col-4" style="float: left;" >기간 설정<p>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_buy'">전체</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_buy_sort7d'">7일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_buy_sort30d'">30일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_buy_sort90d'">90일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history_buy_sort180d'">180일</button>
-	</div>
-	<div class="col-4" style="float: left; margin-left: 50px">거래종류 설정<p>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history'">전체</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history_buy'">매수</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sell'">매도</button>
-	</div>
-	<form action="y_history_search" style="float: right; margin-top: 25px; margin-left: -25px">
-		<input class="btn-warning" type="text" id="txt" name="search" placeholder="코인명 또는 코인코드를 입력하세요." style="border: 1px solid #ffc107; height: 38px; background-color: white; text-transform: uppercase" size="40">
-		<button type="submit" class="btn btn-warning" style="margin-top: -7px">
+	<form action="y_history_search" style="float: right; margin-top: 25px; margin-left: -25px; margin-bottom: 15px">
+		<input class="btn-warning" type="text" id="txt" name="search" placeholder="코인명 또는 코인코드를 입력하세요." style="border: 1px solid #ffc107; height: 38px; background-color: white; text-transform: uppercase;" size="40">
+		<button type="submit" class="btn btn-warning" style="margin-top: -7px"> 
 			<svg id="search" name="search" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 	  			<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
 			</svg>
@@ -57,9 +47,9 @@ $(document).ready(function(){
     </tr>
   </thead>
   <tbody align="center" style="vertical-align:middle;">
-  	<th:block data-th-if="${Buy180List.size != 0}">
-	    <tr th:each="buy180List:${Buy180List}">
-	      <th scope="row" th:switch="${buy180List.coincode}">
+  	<th:block data-th-if="${searchList.size != 0}">
+	    <tr class="code" th:each="search:${searchList}">
+	      <th class="coincode" scope="row" th:switch="${search.coincode}"> 
 	      	<span th:case="ADA"><img class="table_images" alt="" th:src="@{images/status/ada.png}"></span>
 	      	<span th:case="AXS"><img class="table_images" alt="" th:src="@{images/status/axs.png}"></span>
 	      	<span th:case="BCH"><img class="table_images" alt="" th:src="@{images/status/bch.png}"></span>
@@ -76,47 +66,91 @@ $(document).ready(function(){
 	      	<span th:case="XLM"><img class="table_images" alt="" th:src="@{images/status/xlm.png}"></span>
 	      	<span th:case="XRP"><img class="table_images" alt="" th:src="@{images/status/xrp.png}"></span>
 	      </th>
-	      <td th:text="${buy180List.coinname}+'&#13;&#10;'+'('+${buy180List.coincode}+')'"></td>
-	      <td th:if="${buy180List.trd_div}==1" style="color: blue;">매도</td>
-	      <td th:if="${buy180List.trd_div}==0" style="color: red;">매수</td>
-	<!--       <td th:unless="${ylsit.trd_div}==0">매수</td> -->
-	      <td th:text="${#numbers.formatDecimal(buy180List.trd_amt,1,'COMMA',8,'POINT')}"></td>
-	      <td th:text="${#numbers.formatDecimal(buy180List.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
-	      <td th:text="${#numbers.formatDecimal(buy180List.trd_price,1,'COMMA',0,'POINT')}"></td>
-	      <td th:text="${#dates.format(buy180List.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
+	      <td class="coinname" th:text="${search.coinname}+'&#13;&#10;'+'('+${search.coincode}+')'"></td>
+	      <td class="trd_div" th:if="${search.trd_div}==1" style="color: blue;">매도</td>
+	      <td class="trd_div" th:if="${search.trd_div}==0" style="color: red;">매수</td>
+	      <td class="trd_amt" th:text="${#numbers.formatDecimal(search.trd_amt,1,'COMMA',8,'POINT')}"></td>
+	      <td class="trd_unit-price" th:text="${#numbers.formatDecimal(search.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
+	      <td class="trd_price" th:text="${#numbers.formatDecimal(search.trd_price,1,'COMMA',0,'POINT')}"></td>
+	      <td class="trd_date" th:text="${#dates.format(search.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
 	    </tr>
-	 </th:block>
-	 <th:block data-th-if="${Buy180List.size == 0}">
-	  	<td colspan="7"><strong>180일 이내 매수내역이 없습니다.</strong></td>
-	 </th:block>
+	</th:block>
+    <th:block data-th-if="${searchList.size == 0}">
+	  	<td colspan="7"><strong>매수 및 매도 내역이 없습니다.</strong></td>
+	</th:block>
   </tbody>
 </table>
+
 <!-- 페이지네이션 -->
 <nav aria-label="Page navigation example">
 	<div th:with="start=${pg.startPage}, end=${pg.endPage}">
 	  <ul class="pagination justify-content-center mt-4">
-	  	<!-- 이전 -->
+<!-- 	  	이전 -->
 	    <li class="page-item" th:if="${pg.startPage>pg.pageBlock}">
-	      <a class="pagenav_a page-link" th:href="@{status_y_history_buy_sort180d(currentPage=${pg.startPage-pg.pageBlock})}" aria-label="previous">
+	      <a class="pagenav_a page-link" th:href="@{status_y_history_search(currentPage=${pg.startPage-pg.pageBlock})}" aria-label="previous">
 	        <span aria-hidden="true">&laquo;</span>
 	      </a>
 	    </li>
-	    <!-- 페이지 갯수 -->
+<!-- 	    페이지 갯수 -->
 	    <li class="page-item" th:each="i:${#numbers.sequence(start, end)}">
 	    	<th:block th:if="${i} != 0">
-	    	<a class="pagenav_a page-link" id="pageNav${i}" th:href="@{status_y_history_buy_sort180d(currentPage=${i})}" th:text=${i}></a>
+	    	<a class="pagenav_a page-link" id="pageNav${i}" th:href="@{status_y_history_search(currentPage=${i})}" th:text=${i}></a>
 	    </li>
-	    <!-- 다음 -->
+<!-- 	    다음 -->
 	    <li class="page-item" th:if="${pg.endPage < pg.totalPage}">
-	      <a class="pagenav_a page-link" th:href="@{status_y_history_buy_sort180d(currentPage=${pg.startPage+pg.pageBlock})}" aria-label="Next">
+	      <a class="pagenav_a page-link" th:href="@{status_y_history_search(currentPage=${pg.startPage+pg.pageBlock})}" aria-label="Next">
 	        <span aria-hidden="true">&raquo;</span>
 	      </a>
 	    </li>
 	  </ul>
   	</div>
 </nav>
+	
 </main>
  <footer th:replace="common/footer :: footer"></footer>
 </body>
 <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js}" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+<script type="text/javascript">
+	function testmethod(days) {
+		sendData = "days="+days
+		
+		$.ajax({
+			
+			type		:	'GET', // mapping 타입
+			url			:	'testmethod', // mapping 호출명
+			data		:	sendData, // mapping 호출할때 가지고 갈 매개 변수
+			/* contentType : 	'application/json; charset=UTF-8', // 보내는 데이터 타입(java로) */
+			dataType 	: 	'json', // 받는 데이터압 (JS로)
+			success		:	function(data) { // 성공시 실행되는 함수
+				$('.coincode').remove();
+				$('.coinname').remove();
+				$('.trd_div').remove();
+				$('.trd_amt').remove();
+				$('.trd_unit-price').remove();
+				$('.trd_price').remove();
+				$('.trd_date').remove();
+				
+				spann = document.createElement('span');
+				
+				console.log("받아온 데이터"+data);
+				var res = [];
+				for (var i=0; i<Object.keys(data).length; i++) {
+					res.push(data[i]);
+				}
+				/* 데이터 불러오기 */
+				/* 1. 지운 영역만큼의 셀 다시 만들기
+				2. 새로 생성된 셀에 데이터 채워넣기 */
+				
+				for (var i=0; i<Object.keys(res).length; i++) {
+					console.log("코인코드 : "+res[i].coincode)
+					$('.coin').append(spann);
+					
+				}
+			},
+			error		:	function(e) {
+				console.log("error : ",e);
+			}
+		});
+	}
+</script>
 </html>

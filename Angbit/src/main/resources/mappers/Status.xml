@@ -117,5 +117,14 @@
 		select count(*) from trade where id=#{id} and trd_stu=1 and trd_div=1 and trd_date >= to_char(sysdate-180, 'yyyymmdd')
 	</select>
 	
-	
+	<!-- 검색 - 전체-->
+	<select id="Statussearch" parameterType="hashmap" resultType="TradeCoinInfo">
+		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and (t.coincode like '%'||#{search}||'%' or c.coinname like '%'||#{search}||'%') order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end}
+	</select>
+	<!-- 검색 페이지네이션 - 전체-->
+	<select id="searchTotal"  parameterType="TradeCoinInfo" resultType="int">
+	<![CDATA[
+		select count(*) from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and (t.coincode like  '%'||#{search}||'%' or c.coinname like  '%'||#{search}||'%')
+     ]]>
+	</select>
 </mapper>
