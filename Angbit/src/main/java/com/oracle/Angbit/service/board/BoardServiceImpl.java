@@ -21,12 +21,21 @@ public class BoardServiceImpl implements BoardService {
 	@Autowired
 	BoardDao bdao;
 
-	@Override
-	public List<Board> BoardList() {
-		System.out.println("BoardServiceImpl BoardList Start...");
-		List<Board> boardList = bdao.BoardList();
-		return boardList;
-	}
+	
+		@Override
+		public List<Board> pagingBd(Board board) {
+			List<Board> pagingbd = null;
+			System.out.println("BoardServiceImpl pagingBd Start..." );
+			pagingbd = bdao.pagingBd(board);
+			System.out.println("BoardServiceImpl pagingBd pagingbd.size()->" +pagingbd.size());
+			
+			return pagingbd;
+		}
+	
+	  @Override public List<Board> BoardList() {
+	  System.out.println("BoardServiceImpl BoardList Start..."); List<Board>
+	  boardList = bdao.BoardList(); return boardList; }
+	 
 
 	@Override
 	public int total() {
@@ -37,15 +46,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 
-	@Override
-	public List<Board> pagingBd(Board board) {
-		List<Board> pagingbd = null;
-		System.out.println("BoardServiceImpl pagingBd Start..." );
-		pagingbd = bdao.pagingBd(board);
-		System.out.println("BoardServiceImpl pagingBd pagingbd.size()->" +pagingbd.size());
-		
-		return pagingbd;
-	}
+	
 
 	
 	//detail,updateForm

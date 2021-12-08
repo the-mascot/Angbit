@@ -1,11 +1,13 @@
 package com.oracle.Angbit.Controller;
 
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,40 +27,59 @@ public class DYController {
 	private BoardService bs;
 	@Autowired
 	HttpSession session;
-
+	
+	//ArrayList<Integer> blockChk= new ArrayList<Integer>();	
+	//int[] blockChk = new int[10];
+	
 	//보드값가져오기
 	@GetMapping("board_list")
-	public String getList(Board board, Model model, HttpServletRequest request) {
+	public String getList(Board board, String currentPage, Model model, HttpServletRequest request) {
 		System.out.println("DYController getList Start...");
-		List<Board> boardList = bs.BoardList();
-		String ssid = (String)session.getAttribute("sessionID");					//swcontroller loginprocess에서 가져옴 email
+		 int total = bs.total(); 											    				//total service
+		 System.out.println("DYController total=>" + total);									//select count(*) FROM board ,  테이블 전체 행  40	
 		
-					   model.addAttribute("boardList", boardList);
-		if(ssid!=null) model.addAttribute("ssid", ssid);
-		
+		  Paging pg = new Paging(total, currentPage);											//paging(40,1)
+		  
+		  board.setStart(pg.getStart()); 														// 1, board에  start 필드값 생김
+		  board.setEnd(pg.getEnd()); 															//10, board에  end 필드값 생김
+		  
+		  System.out.println("DYController getList start......");  
+		  List<Board> boardList = bs.pagingBd(board);											//paging service, board를 파라미터로 받음 start,end값 있음
+		  
+		  			   model.addAttribute("total", total); 										//total==40
+					   model.addAttribute("boardList", boardList);								//pagingBd==1~10까지의 행수로 보드데이터를 보내줌
+					   model.addAttribute("pg", pg);											//pg==	paging 객체로 DB 40개와 현재1페이지라는 정보 있음
+					   
+					   String ssid = (String)session.getAttribute("sessionID");					//swcontroller loginprocess에서 가져옴 email			   
+					   //if(ssid!=null) model.addAttribute("ssid", ssid);
+					
+					  
+					   
 		return "board/coinBoard";
 	}
 	
 	  //페이징
-	  @GetMapping("board_bdPaging") 
-	  public String bdPaging(Board board ,String currentPage, Model model) {
-		  
-	  System.out.println("DYController Start bdPaging..." );   
-	  int total = bs.total(); 												//서비스로 넘겨서 작업  total service
-	  System.out.println("DYController total=>" + total);					//select count(*) FROM board ,  테이블 전체 행  40				
-	  Paging pg = new Paging(total, currentPage);							//paging(40,1)
-	
-	  board.setStart(pg.getStart()); 										// 1, board에  start 필드값 생김
-	  board.setEnd(pg.getEnd()); 											//10, board에  end 필드값 생김
-	  System.out.println("DYController bdPaging start......"); 
-	  List<Board> pagingBd = bs.pagingBd(board);							//paging service, board를 파라미터로 받음 start,end값 있음
-	  
-	  model.addAttribute("total", total); 									//total==40
-	  model.addAttribute("pagingBd", pagingBd);								//pagingBd==1~10까지의 행수로 보드데이터를 보내줌
-	  model.addAttribute("pg", pg);											//pg==	paging 객체로 전체자료 40개와 현재1페이지라는 정보 있음
-	  
-	  return "board/coinBoard"; 
-	  }
+		/*
+		 * @GetMapping("board_bdPaging") public String bdPaging(Board board ,String
+		 * currentPage, Model model) {
+		 * 
+		 * System.out.println("DYController Start bdPaging..." ); int total =
+		 * bs.total(); //total service System.out.println("DYController total=>" +
+		 * total); //select count(*) FROM board , 테이블 전체 행 40
+		 * 
+		 * Paging pg = new Paging(total, currentPage); //paging(40,1)
+		 * 
+		 * board.setStart(pg.getStart()); // 1, board에 start 필드값 생김
+		 * board.setEnd(pg.getEnd()); //10, board에 end 필드값 생김
+		 * System.out.println("DYController bdPaging start......"); List<Board> pagingBd
+		 * = bs.pagingBd(board); //paging service, board를 파라미터로 받음 start,end값 있음
+		 * 
+		 * model.addAttribute("total", total); //total==40
+		 * model.addAttribute("pagingBd", pagingBd); //pagingBd==1~10까지의 행수로 보드데이터를 보내줌
+		 * model.addAttribute("pg", pg); //pg== paging 객체로 전체자료 40개와 현재1페이지라는 정보 있음
+		 * 
+		 * return "board/coinBoard"; }
+		 */
 	
 	  //게시판 상세보기
 	  @GetMapping(value="board_detailBoard")

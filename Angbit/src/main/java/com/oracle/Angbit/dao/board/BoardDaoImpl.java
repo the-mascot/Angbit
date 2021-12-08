@@ -19,6 +19,21 @@ public class BoardDaoImpl implements BoardDao {
 	private SqlSession session;
 	
 //게시판 양식 가져오기	
+	
+	@Override
+	public List<Board> pagingBd(Board board) {
+		List<Board> pagingbd = null;
+		System.out.println("BoardDaoImpl pagingBd Start ..." );
+		try {
+			//                             Naming Rule 
+			pagingbd = session.selectList("pagingbd", board);
+		} catch (Exception e) {
+			System.out.println("BoardDaoImpl pagingBd Exception->"+e.getMessage());
+		}
+		return pagingbd;
+	}
+	
+	
 	@Override
 	public List<Board> BoardList() {
 		System.out.println("BoardDaoImpl BoardList Start...");
@@ -51,18 +66,7 @@ public class BoardDaoImpl implements BoardDao {
 		return tot;
 	}
 
-	@Override
-	public List<Board> pagingBd(Board board) {
-		List<Board> pagingbd = null;
-		System.out.println("BoardDaoImpl pagingBd Start ..." );
-		try {
-			//                             Naming Rule 
-			pagingbd = session.selectList("pagingbd", board);
-		} catch (Exception e) {
-			System.out.println("BoardDaoImpl pagingBd Exception->"+e.getMessage());
-		}
-		return pagingbd;
-	}
+	
 
 	
 	//detail,updateForm
