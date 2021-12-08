@@ -11,7 +11,9 @@ public class Paging {
 	private int startPage;			private int endPage;
 	private int total;				private int totalPage;
 
-	
+	public boolean backChk;		//startPage  > pageBlock
+	public boolean frontChk;		//pg.endPage < pg.totalPage
+	private int blockChk;		//pg.startPage ~ pg.endPage
 	
 	public Paging(int total, String currentPage1) {
 		this.total = total;
@@ -29,6 +31,38 @@ public class Paging {
 		if (endPage > totalPage) {
 			endPage = totalPage;
 		}
+	
+		
+		this.blockChk = (endPage-startPage)+1;
+		
+		if(startPage-pageBlock>0) {
+			backChk=true;
+		}else {
+			backChk=false;
+		}
+		
+		if(totalPage-endPage>0) {
+			frontChk=true;
+		}else {
+			frontChk=false;
+		}
+
+		
 	}
+	
+	
+	/*
+	 * public boolean backChk() { boolean returnChk;
+	 * 
+	 * if(backChk>0) { returnChk=true; }else { returnChk=false; }
+	 * 
+	 * return returnChk; } public boolean frontChk() { boolean returnChk;
+	 * 
+	 * if(frontChk>0) { returnChk=true; }else { returnChk=false; }
+	 * 
+	 * return returnChk; }
+	 */
+		
+	
 	
 }

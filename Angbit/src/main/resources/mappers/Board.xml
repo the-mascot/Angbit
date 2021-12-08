@@ -4,6 +4,24 @@
 <mapper namespace="BoardDao">
 	
 	<!-- getList -->
+	<select id="pagingbd" parameterType="Board" resultType="Board">
+		SELECT *
+		FROM
+		  (
+		    Select rownum rn , a.*
+		    From   (SELECT  *
+			FROM
+			 board bd
+			LEFT OUTER JOIN
+			 memberinfo mb
+			ON 
+			 bd.id = mb.id
+			ORDER BY bd.b_num DESC) a
+		  )
+			WHERE rn between #{start} and #{end} 
+	</select>
+	
+	
 	<select id="boardList" parameterType="Board" resultType="Board">
 		SELECT  *
 		FROM
@@ -21,15 +39,7 @@
 		select count(*) FROM board
 	</select>
 	
-	<select id="pagingbd" parameterType="Board" resultType="Board">
-		SELECT *
-		FROM
-		  (
-		    Select rownum rn , a.*
-		    From   (select * from board order by b_num DESC) a
-		  )
-			WHERE rn between #{start} and #{end} 
-	</select>
+	
 	
 	
 	<!-- detail, updateForm -->

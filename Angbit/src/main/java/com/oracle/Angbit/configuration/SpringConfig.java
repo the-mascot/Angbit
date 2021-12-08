@@ -1,5 +1,7 @@
 package com.oracle.Angbit.configuration;
 
+import java.util.ArrayList;
+
 import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 
@@ -34,6 +36,11 @@ public class SpringConfig implements WebMvcConfigurer {
 		registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/invest/sellCoin");
 		// 회원 상태 확인 인터셉터(로그인 시)
 //		registry.addInterceptor(new WidrawInterceptor()).addPathPatterns("/LoginProcess");
+	}
+	
+	//동엽 paging
+	public ArrayList<Integer> blockChk(){
+		return new ArrayList<Integer>();
 	}
 	
 }

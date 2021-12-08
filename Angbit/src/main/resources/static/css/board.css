@@ -1,2 +1,17 @@
 @charset "UTF-8";
 
+.btnbox{
+	height:100px;
+	weight:auto;
+}
+
+.row_free{
+	
+	font-color:black;
+	height:50px;
+	weight:auto;
+}
+
+.textbox{
+	
+}
