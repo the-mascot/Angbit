@@ -14,8 +14,8 @@ public class OrderTrade {
 	private String coincode;
 	private Date trd_date;
 	private Float trd_amt;
-	private int trd_unit_price;
-	private int trd_price;
+	private long trd_unit_price;
+	private long trd_price;
 	private int trd_div;
 	private int trd_stu;
 	private String trd_method;

@@ -12,6 +12,6 @@ public class CoinInfo {
 	private String coinsumr;
 	private String issuedate;
 	private String issuelimit;
-	private int coingap;
+	private String coingap;
 	
 }

@@ -29,7 +29,7 @@
 	<update id="widraw" parameterType="String">
 		UPDATE memberinfo SET member_stu=1 WHERE id=#{id}
 	</update>
-	<select id="chkWidraw" resultType="boolean">
+	<select id="chkWidraw" resultType="int">
 		SELECT member_stu FROM memberinfo WHERE id=#{id}
 	</select>
 </mapper>
