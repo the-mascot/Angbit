@@ -61,4 +61,8 @@ public class myInfoServiceImpl implements myInfoService {
 	public void widraw(String id) {
 		midao.widraw(id);
 	}
+
+	public boolean chkWidraw(String id) {
+		return midao.chkWidraw(id);
+	}
 }

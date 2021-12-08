@@ -74,9 +74,9 @@ public class myInfoDaoImpl implements myInfoDao {
 
 	@Override
 	public boolean chkWidraw(String id) {
-		boolean chk = session.selectOne("chkWidraw", id);
+		int chk = session.selectOne("chkWidraw", id);
 		System.out.println("회원 탈퇴? "+chk);
 		// True시 탈퇴 O
-		return chk;
+		return false;
 	}
 }
