@@ -1,6 +1,5 @@
 package com.oracle.Angbit.Controller;
 
-import com.oracle.Angbit.model.common.Coin;
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.model.invest.OrderTrade;
@@ -25,7 +24,6 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
@@ -284,7 +282,10 @@ public class SHController {
 
     @RequestMapping("test")
     public String testview() {
-        return "myInfo/chartTest-";
+        System.out.println("testPage Called.");
+
+
+        return "myInfo/ranking";
     }
 
     // 시장가 리턴용

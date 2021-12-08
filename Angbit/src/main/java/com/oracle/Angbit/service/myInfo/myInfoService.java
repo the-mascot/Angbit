@@ -14,4 +14,5 @@ public interface myInfoService {
     int pwChange(MemberInfo mi);
     boolean chkPw(MemberInfo mi);
     void widraw(String id);
+    boolean chkWidraw(String id);
 }
