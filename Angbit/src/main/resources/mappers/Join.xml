@@ -46,7 +46,26 @@
 		where id = #{id}
 	</update>
 	
+	<!-- memberkrw = session.selectList("memberkrw", id); -->
+	<select id="memberkrw" parameterType="java.lang.String" resultType="MemberInfo">
+		select krw from memberinfo where id=#{id} 
+	</select>
+	
+	<!-- coinstatus = session.selectList("coinstatus", id); -->
+	<select id="coinstatus" parameterType="java.lang.String" resultType="CoinCoinInfo">
+		select c.*, ci.coinname from coin c inner join coininfo ci on c.coincode=ci.coincode where id=#{id} order by c.coincode asc
+	</select>
+	
+	<!-- int result = session.selectOne("totpriceStatus", id); -->
+	<select id="totpriceStatus" parameterType="java.lang.String" resultType="int">
+		select nvl(sum(tot_price), 0) from coin where id=#{id}
+	</select>
+	
+	<!-- List<MemberInfo> memberid = session.selectList("memberid"); -->
+	<select id="memberid" resultType='MemberInfo'>
+		select * from memberinfo
+	</select>
+
+
 	
 </mapper>
-
-

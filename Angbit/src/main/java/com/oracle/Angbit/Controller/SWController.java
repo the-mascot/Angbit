@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +18,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import com.oracle.Angbit.model.common.MemberInfo;
+import com.oracle.Angbit.model.status.CoinCoinInfo;
 import com.oracle.Angbit.service.join.JoinService;
 import com.oracle.Angbit.service.lg.LoginService;
+import com.oracle.Angbit.service.rank.RankService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +46,8 @@ public class SWController {
 	private JoinService js;
 	@Autowired
 	private LoginService ls;
+	@Autowired
+	private RankService rs;
 	@Autowired
 	private JavaMailSender mailSender;
 	
@@ -201,19 +207,63 @@ public class SWController {
     }
     
 	// 메인페이지 상단에 '랭킹' 버튼을 누르면 실행되는 컨트롤러, 현재 실험중입니다.
-    @ResponseBody
 	@RequestMapping(value = "RankPage")
-	public void RankPage(Model model, HttpServletRequest request,  HttpServletResponse response) {
+	public String RankPage(Model model, HttpServletRequest request) {
+		System.out.println("SWController - RankPage");
+		
+		HttpSession session = request.getSession();
+		String id = (String) session.getAttribute("sessionID");
+		System.out.println("statusList id -> " + id);
+
+		List<MemberInfo> memberkrw = rs.MemberKrw(id);
+		List<CoinCoinInfo> coinstatus = rs.CoinStatus(id);
+		
+		System.out.println("memberkrw의 값은 있을까? -> " + memberkrw);
+		System.out.println("coinstatus의 값은 있을까? -> " + coinstatus);
+		
+		int result = rs.totpriceStatus(id);
+
+		model.addAttribute("coinstatus", coinstatus);
+		model.addAttribute("memberkrw", memberkrw);
+		
+		if (result == 0) {
+			System.out.println("result의 값이 0입니다.");
+			model.addAttribute("totPrice", 0);
+			return "/rank/RankPage";
+		} else {
+			System.out.println("result의 값이 0이 아닙니다.");
+			model.addAttribute("totPrice", result);
+			return "/rank/RankPage";
+		}
+	}
+    
+    @RequestMapping(value = "RankPage2")
+    public String RankPage2(Model model, HttpServletRequest request) {
+    	System.out.println("SWController - RankPage2 시작~");
     	
+    	List<MemberInfo> memberid = rs.memberid();
+    	System.out.println("memberid 객체는 잘 왔을까? -> " + memberid);
+    	model.addAttribute("memberid", memberid);
     	
+    	return "/rank/RankPage2";
+    }
+    
+    @RequestMapping(value = "RankPage3")
+    public String RankPage3(Model model, HttpServletRequest request) {
+    	System.out.println("SWController - RankPage3 시작~");
     	
+    	return "/rank/RankPage3";
+    }
+    
+    @RequestMapping(value = "/memberAssetChk")
+    public String memberAssetChk(Model model, MemberInfo memberinfo) {
+    	System.out.println("SWController - memberAssetChk 시작~");
+    	String A = memberinfo.getId();
+    	System.out.println("id의 값은? -> " + A);
+    	
+    	return null;
     }
     
 
-    
-    
-    
-    
-	
 	
 }
