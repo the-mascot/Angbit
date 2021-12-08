@@ -411,6 +411,16 @@ public class GMController {
 			return "/status/y_history_sell_sort180d";
 		}
 		
+		@GetMapping("/y_history_search")
+		public String historySearch(HttpServletRequest request, Model model) {
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			String search = request.getParameter("search");
+			System.out.println("id -> "+id);
+			System.out.println("search -> "+search);
+			return "/status/y_history_search";
+		}
+		
 //		@GetMapping("testmethod")
 //		@ResponseBody
 //		public List<TradeCoinInfo> testmethod(HttpServletRequest request, HttpServletResponse response, Model model) {
