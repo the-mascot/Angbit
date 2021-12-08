@@ -699,7 +699,7 @@
 				});
 			});
 			
-			$(function() {
+/* 			$(function() {
 				$.tablesorter.addParser({
 					id:		'comma',
 					is:		function(s){return false;},
@@ -713,7 +713,7 @@
 						  3:	{sorter: 'comma'},
 					  }
 				  });
-				});
+				}); */
 
 		});
 		
@@ -777,17 +777,15 @@
  		// 주문 현재가 업데이트
 		function upUnitPrice() {
 			sendData = "currCoin="+currCoin;
-			$.ajax({
+			return $.ajax({
 				type		:	'GET',
-				url			:	'invest/investApi',
+				url			:	'invest/tradePriceApi',
 				data		:	sendData,
-	 			contentType : 	'application/json; charset=UTF-8',
-			    dataType 	: 	'json',
-				success		:	function(data) {
+				success		:	function(trade_price) {
 					if ($('#order-buy-a').hasClass("active") == true) {
-						document.getElementById('order-unit_price').value = data[1].trade_price.toLocaleString();
+						document.getElementById('order-unit_price').value = comma(trade_price);
 					} else {
-						document.getElementById('sell-unit_price').value = data[1].trade_price.toLocaleString();
+						document.getElementById('sell-unit_price').value = comma(trade_price);
 					}
 				},
 				error		:	function(e) {
@@ -812,7 +810,6 @@
 		async function chkBuy() {
 			var trd_price = uncomma($('#order-trd_price').val()) * 1;
 			var krw = await selectKRW() * 1;
-			console.log('selectKRW()->'+krw);
 			if(krw * 1 < trd_price * 1) {
 				$('#modal-msg').text('주문가능 금액이 부족합니다')
 				$('#warmModal').modal('toggle');
@@ -830,11 +827,20 @@
 		};
 		
 		// 매수 주문
-		function buyCoin() {
+		async function buyCoin() {
 			console.log("buyCoin시작")
-			var trd_amt = $('#order-trd_amt').val();
 			var trd_price = uncomma($('#order-trd_price').val());
-			var trd_unit_price = uncomma($('#order-unit_price').val());
+			var trd_unit_price = 0;
+			var trd_amt = 0;
+			
+			if( $("input[name='trd_method']:checked").val() == 'market') {
+				trd_unit_price = await upUnitPrice();
+				trd_amt = (trd_price / trd_unit_price).toFixed(8);
+			} else {
+				trd_amt = $('#order-trd_amt').val();
+				trd_unit_price = uncomma($('#order-unit_price').val());
+			}
+			
 			var trd_method = $("input[name='trd_method']:checked").val();
 			var formData = 'trd_method='+trd_method+'&trd_unit_price='+trd_unit_price+'&trd_amt='+trd_amt+'&trd_price='+trd_price+'&coincode='+currCoincode;
 			$.ajax({

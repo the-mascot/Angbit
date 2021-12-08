@@ -2,6 +2,7 @@ package com.oracle.Angbit.Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.NumberFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,6 +106,41 @@ public class ESController {
 		}
 
 	}
+	
+	@ResponseBody
+	@GetMapping("invest/tradePriceApi")
+	public String tradePriceApi(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		
+		System.out.println("ESController tradePriceApi Start...");
+		String currCoin = request.getParameter("currCoin");
+		System.out.println("ESController tradePriceApi currCoin->"+currCoin);
+		
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", "application/json");
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+		
+		String tickerUrl 	= "https://api.upbit.com/v1/ticker?markets="+currCoin;
+		ResponseEntity<String> tickerResponse = restTemplate.exchange(tickerUrl, HttpMethod.GET, entity, String.class);
+		String tradePrice = null;
+		try {
+			String tickerStr = tickerResponse.getBody();
+			JSONParser parser = new JSONParser();
+			JSONArray jsonArray = (JSONArray) parser.parse(tickerStr);
+			JSONObject json = (JSONObject) jsonArray.get(0);
+			NumberFormat nf = NumberFormat.getInstance();
+			nf.setGroupingUsed(false);
+			tradePrice = nf.format(json.get("trade_price"));
+			System.out.println("ESController tradePriceApi trade_price->"+tradePrice);
+		} catch (Exception e) {
+			System.out.println("ESController tradePriceApi Exception->"+e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return tradePrice;
+	}
+	
+	
 	
 	@ResponseBody
 	@GetMapping("invest/coinInfoAjax")
