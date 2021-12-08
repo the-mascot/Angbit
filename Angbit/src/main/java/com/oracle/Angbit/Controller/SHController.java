@@ -136,13 +136,6 @@ public class SHController {
 
     } // 11-24 11:26 PUSH
 
-    @RequestMapping("gologin")
-    public String goLogin(Model model) {
-        System.out.println("msg?" + model.getAttribute("msg"));
-//        model.addAttribute("msg", model.getAttribute("msg"));
-        return "myInfo/loginForm";
-    }
-
     @PostMapping("logintest")
     public String loginTest(Model model, HttpServletRequest request, HttpServletResponse response) {
         logger.info("SHController LoginTest() Called.");
