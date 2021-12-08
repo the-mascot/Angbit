@@ -8,4 +8,7 @@
 	<select id="coinInfo" parameterType="String" resultType="CoinInfo">
 		select * from coininfo where coincode=#{coincode}
 	</select>
+	<select id="getAllCoincode" parameterType="String" resultType="java.util.Map">
+		SELECT coincode, coin_amt FROM coin WHERE id=#{id}
+	</select>
 </mapper>
