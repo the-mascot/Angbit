@@ -1,5 +1,6 @@
 package com.oracle.Angbit.Controller;
 
+import com.oracle.Angbit.service.rank.RankService;
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.model.invest.OrderTrade;
@@ -28,11 +29,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class SHController {
@@ -43,6 +40,8 @@ public class SHController {
     private InvestService ivs;
     @Autowired
     private myInfoService mis;
+    @Autowired
+    private RankService rs;
 
     @RequestMapping("/myInfo")
     public String myPageForm(Model model, HttpServletRequest request) {
@@ -372,6 +371,19 @@ public class SHController {
 
             mis.updateAsset(id.toString(), sum.intValue());
         }
+    }
+
+    @GetMapping("rank")
+    public String rankPage(HttpServletRequest request, HttpServletResponse response, Model model) {
+        System.out.println("rankPage Called.");
+
+        HttpSession session = request.getSession();
+        String id = (String) session.getAttribute("sessionID");
+        System.out.println("myInfo ID? " + id);
+
+        ArrayList<MemberInfo> list = rs.getRank();
+        model.addAttribute("ranklist", list);
+        return "rank/ranking";
     }
 
 }

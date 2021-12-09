@@ -2,6 +2,7 @@ package com.oracle.Angbit.service.myInfo;
 
 import com.oracle.Angbit.model.common.MemberInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface myInfoService {

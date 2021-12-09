@@ -18,20 +18,9 @@
 <main>
 	<div class="container" id="container">
 
-		<!-- banner -->
 		<div class="banner">
-			<h2>모의투자 랭크</h2>
+			<h2>모의투자 랭킹</h2>
 		</div>
-		<!--//banner -->
-
-		<div class="not412" style="text-align:center; padding-top:10px;">
-			<iframe width="728" height="90" allowtransparency="true" src="https://tab2.clickmon.co.kr/pop/wp_ad_728.php?PopAd=CM_M_1003067%7C%5E%7CCM_A_1085793%7C%5E%7CAdver_M_1046207&amp;mon_rf=REFERRER_URL" frameborder="0" scrolling="no"></iframe>
-			<br>
-		</div>
-		<div class="show412" style="text-align:center; padding-top:10px;">
-			<iframe width="320" height="50" allowtransparency="true" src="https://mtab.clickmon.co.kr/pop/wp_m_320.php?PopAd=CM_M_1003067%7C%5E%7CCM_A_1085793%7C%5E%7CAdver_M_1046207&amp;mon_rf=REFERRER_URL" frameborder="0" scrolling="no"></iframe>
-		</div>
-
 
 		<div class="search_wrap">
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -44,7 +33,7 @@
 			<div>
 				<div id="search_result" class="clearfix">
 					<div class="table-responsive ranking-board">
-						<div class="left-title">
+						<!--<div class="left-title">
 							시상 내용
 						</div>
 						<div class="row">
@@ -101,10 +90,10 @@
 									</div>
 								</div>
 							</div>
-						</div>
+						</div>-->
 						<div class="row rank-noti">
-							<span>※ 홀수월 1일에는 랭킹 데이터가 초기화 됩니다.</span><br>
-							<span>※ 데이터 초기화 시 순위에 따른 상품이 지급됩니다.</span>
+							<span>※ 각 유저의 총 자산 데이터는 매일 00시에 업데이트 됩니다.</span><br>
+							<span>※ 유저의 수익률은 회원 가입시 초기 지급된 KRW 3천만원을 기준으로 합니다.</span>
 						</div>
 						<div class="left-title">
 							랭킹 리스트
@@ -115,8 +104,7 @@
 							<table class="table table-hover">
 								<thead class="rankthead" align="center">
 								<tr>
-									<th class="cell1" scope="col"></th>
-									<th class="cell2" scope="col"><h5><b>번호</b></h5></th>
+									<th class="cell2" scope="col"><h5><b>순위</b></h5></th>
 									<th class="cell2" scope="col"><h5><b>닉네임</b></h5></th>
 									<th class="cell2" scope="col"><h5><b>총 자산</b></h5></th>
 									<th class="cell2" scope="col"><h5><b>수익률</b></h5></th>
@@ -124,17 +112,17 @@
 								</tr>
 								</thead>
 								<tbody align="center" style="vertical-align:middle;">
-								<th:block data-th-if="${totPrice != null}">
-									<tr th:each="slist:${statusList}">
-										<td th:text="${slist.coinname}+'('+${slist.coincode}+')'"></td>
-										<td th:text="${#numbers.formatDecimal(slist.coin_amt,1,'COMMA',8,'POINT')}"></td>
-										<td th:text="${#numbers.formatDecimal(slist.avg_price,1,'COMMA',0,'POINT')}"></td>
-										<td th:text="${#numbers.formatDecimal(slist.tot_price,1,'COMMA',0,'POINT')}"></td>
-										<td th:id="${slist.coincode}"></td>
+								<th:block data-th-if="${ranklist != null}">
+									<tr th:each="rlist, i:${ranklist}">
+										<td th:text="${i.count}"></td>
+										<td th:text="${rlist.nickname}"></td>
+										<td th:text="${rlist.asset}"></td>
+										<td th:text="${rlist.yield}+' %'"></td>
+										<td th:text="보유코인스"></td>
 									</tr>
 								</th:block>
-								<th:block data-th-if="${totPrice == 0}">
-									<td colspan="7">데이터가 없습니다.</td>
+								<th:block data-th-if="${ranklist == null}">
+									<td colspan="5">데이터가 없습니다.</td>
 								</th:block>
 								</tbody>
 							</table>
