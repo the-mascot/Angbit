@@ -1,5 +1,9 @@
 package com.oracle.Angbit.Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oracle.Angbit.model.status.CoinCoinInfo;
+import com.oracle.Angbit.service.rank.RankService;
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.model.invest.OrderTrade;
@@ -28,8 +32,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class SHController {
@@ -40,6 +43,8 @@ public class SHController {
     private InvestService ivs;
     @Autowired
     private myInfoService mis;
+    @Autowired
+    private RankService rs;
 
     @RequestMapping("/myInfo")
     public String myPageForm(Model model, HttpServletRequest request) {
@@ -63,6 +68,7 @@ public class SHController {
     public String chartTest(Model model) {
         System.out.println("chartTest Called.");
         List<CoinInfo> coinInfoList = ivs.coinInfoList();
+        updateAsset();
         model.addAttribute("coinInfoList", coinInfoList);
         return "myInfo/chartTest";
     }
@@ -305,6 +311,137 @@ public class SHController {
         int price = Integer.valueOf(String.valueOf(new BigDecimal((Double) conv.get("trade_price"))));
 
         return price;
+    }
+
+    // 15개 코인 trade_price 리턴 method
+    public HashMap tradePriceList() {
+        String [] coinlist = {"KRW-BTC", "KRW-ETH", "KRW-ADA", "KRW-XRP", "KRW-DOT",
+                "KRW-DOGE", "KRW-MANA", "KRW-LTC", "KRW-SAND", "KRW-VET", "KRW-AXS",
+                "KRW-SOL", "KRW-BCH", "KRW-XLM", "KRW-ETC"};
+        String [] coincode = {"BTC", "ETH", "ADA", "XRP", "DOT",
+                "DOGE", "MANA", "LTC", "SAND", "VET", "AXS",
+                "SOL", "BCH", "XLM", "ETC"};
+        String arrToString = String.join(",",coinlist); // 배열을 문자열로
+        int price = 0;
+        int i = 0;
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", "application/json");
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+        HashMap obj = new HashMap();
+        try {
+            String ticker = "https://api.upbit.com/v1/ticker?markets="+arrToString;
+            ResponseEntity<String> candleResponse = restTemplate.exchange(ticker, HttpMethod.GET, entity, String.class);
+            JSONParser parser = new JSONParser();
+            JSONArray json = (JSONArray) parser.parse(candleResponse.getBody().toString());
+            for (String coin : coincode) {
+                JSONObject conv = (JSONObject) json.get(i);
+                price = Integer.valueOf(String.valueOf(new BigDecimal((Double) conv.get("trade_price")))); // 지수표현 제거
+                obj.put(coin, price);
+                i++;
+                System.out.println("테스트용 KEY 호출 "+coin+" :"+obj.get(coin));
+            }
+            // 여기까지 KEY(코인명):VALUE(가격) 객체 생성
+
+        } catch (Exception e) {
+            System.out.println("tradePriceList Error!"+e.getMessage());
+        }
+        return obj;
+    }
+
+    // TABLE용 최신가 업데이트 method
+    public void updateAsset() {
+        HashMap trp = tradePriceList(); // KEY(코인명) : VALUE(현재가)
+        List idList = mis.getAllId(); // idList -> 각 인덱스마다 id 배열
+        for (Object id : idList) {
+            BigDecimal sum = new BigDecimal(0); // 총 자산으로 리턴할 자산 합계
+            List<Map> coinlist = mis.getAllCoincode(id.toString()); // id가 보유한 {COINCODE : 코인명, COIN_AMT : 코인량} 형태의 MAP
+
+            for (Map coin : coinlist) { // 보유코인 합산
+                int coin_price = (int) trp.get(coin.get("COINCODE"));
+                double coin_amt = (double) coin.get("COIN_AMT");
+                BigDecimal coin_totprice = new BigDecimal(coin_price * coin_amt);
+                System.out.println("totprice! : "+coin_totprice);
+                System.out.println(id+"가 보유중인 "+coin.get("COINCODE")+"의 총 가격 : "+coin_totprice);
+                sum = sum.add(coin_totprice);
+            }
+
+            BigDecimal KRW = new BigDecimal(ivs.selectKRW(id.toString()));
+            System.out.println(id+"가 보유중인 KRW : " + KRW);
+            sum = sum.add(KRW);
+            System.out.println(id+"가 보유중인 총 자산 : "+sum);
+
+            mis.updateAsset(id.toString(), sum.intValue());
+        }
+    }
+
+    @GetMapping("rank")
+    public String rankPage(HttpServletRequest request, HttpServletResponse response, Model model) {
+        System.out.println("rankPage Called.");
+
+        int totCnt = rs.getTotalCnt();
+        System.out.println("멤버 총 합"+totCnt);
+        String pageNum = request.getParameter("pageNum");
+        if(pageNum==null||pageNum.equals("")) {
+            pageNum="1";
+        }
+        String pageSize=request.getParameter("pageSize");	// 10개씩 보기 받아오기
+        if(pageSize==null||pageSize.equals(""))
+            pageSize="10";
+        //초기 totCnt 5, currentPage 1
+        int currentPage=Integer.parseInt(pageNum);
+        int blockSize=10;
+        int startRow=(currentPage-1)*Integer.parseInt(pageSize)+1;
+        int endRow=startRow+Integer.parseInt(pageSize)-1;
+        int startNum=totCnt-startRow+1;
+        ArrayList<MemberInfo> list = rs.getRank(startRow, endRow);
+        int pageCnt=(int) Math.ceil((double)totCnt/Integer.parseInt(pageSize));
+        int StartPage=(int)(currentPage-1)/blockSize*blockSize+1;
+        int endPage=StartPage+blockSize-1;
+
+        if (endPage > pageCnt) endPage = pageCnt; //
+
+        System.out.println("startRow"+startRow);
+        System.out.println("endRow"+endRow);
+
+        System.out.println("list의 사이즈"+list.size());
+
+        request.setAttribute("totCnt", totCnt);
+        request.setAttribute("pageNum", pageNum);
+        request.setAttribute("pageSize", pageSize);
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("startNum", startNum);
+        request.setAttribute("list", list);
+        request.setAttribute("blockSize", blockSize);
+        request.setAttribute("pageCnt", pageCnt);
+        request.setAttribute("startPage", StartPage);
+        request.setAttribute("endPage", endPage);
+        model.addAttribute("ranklist", list);
+
+        return "rank/ranking";
+    }
+
+    @ResponseBody
+    @GetMapping("rank/getChart")
+    public String chart(HttpServletRequest request) {
+        String nickname = request.getParameter("nickname");
+        System.out.println("nickname? +"+nickname);
+        String id = mis.getId(nickname);
+        List<CoinCoinInfo> list = rs.getChart(id);
+        request.setAttribute("list", list);
+        HashMap map = new HashMap();
+        map.put("list", list);
+        String json = null;
+        try {
+            json = new ObjectMapper().writeValueAsString(map);
+            System.out.println("ajax ->" + json);
+            if(json == null)
+                System.out.println("비어있습니다.");
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return json;
     }
 
 }

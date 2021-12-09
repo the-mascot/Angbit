@@ -5,6 +5,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Repository
 public class myInfoDaoImpl implements myInfoDao {
 	
@@ -78,5 +82,39 @@ public class myInfoDaoImpl implements myInfoDao {
 		System.out.println("회원 탈퇴? "+chk);
 		// True시 탈퇴 O
 		return false;
+	}
+
+	@Override
+	public List getAllId() {
+		List<Object> idList = session.selectList("getAllId");
+		return idList;
+	}
+
+	@Override
+	public List getAllCoincode(String id) {
+		List<Map> coinList = session.selectList("getAllCoincode", id);
+
+		System.out.println("내부 배열 확인 : "+coinList);
+		System.out.println("내부 배열 정보 확인 : "+coinList.size());
+
+		for (int i=0; i<coinList.size(); i++) {
+			System.out.println("get(i)번쨰 정보 : "+coinList.get(i).get("COINCODE"));
+		}
+
+		return coinList;
+	}
+
+	@Override
+	public void updateAsset(String id, int asset) {
+		Map vo = new HashMap();
+		vo.put("id", id);
+		vo.put("asset", asset);
+		session.update("updateAsset", vo);
+	}
+
+	@Override
+	public String getId(String nickname) {
+		String id = session.selectOne("getId", nickname);
+		return id;
 	}
 }

@@ -32,4 +32,13 @@
 	<select id="chkWidraw" resultType="int">
 		SELECT member_stu FROM memberinfo WHERE id=#{id}
 	</select>
+	<select id="getAllId" resultType="String">
+		SELECT id FROM memberinfo
+	</select>
+	<update id="updateAsset" parameterType="hashmap">
+		UPDATE memberinfo SET asset=#{asset} WHERE id=#{id}
+	</update>
+	<select id="getId" resultType="String">
+		SELECT id FROM memberinfo WHERE nickname=#{nickname}
+	</select>
 </mapper>

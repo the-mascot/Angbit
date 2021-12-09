@@ -6,7 +6,7 @@
 	
 	<!-- result = session.insert("JoinProcess", memberinfo); -->
 	<insert id="JoinProcess" parameterType="memberinfo">
-		insert into memberinfo values (#{id}, #{password}, #{nickname}, 30000000, sysdate, sysdate, 0)
+		insert into memberinfo values (#{id}, #{password}, #{nickname}, 30000000, sysdate, sysdate, 0, 30000000)
 	</insert>
 	
 	<!-- MemberInfo memberInfo = session.selectOne("IDchk", id); -->
