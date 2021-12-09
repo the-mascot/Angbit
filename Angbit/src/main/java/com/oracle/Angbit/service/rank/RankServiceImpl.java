@@ -13,7 +13,11 @@ public class RankServiceImpl implements RankService{
     @Autowired
     private RankDao rd;
     @Override
-    public ArrayList<MemberInfo> getRank() {
-        return rd.getRank();
+    public ArrayList<MemberInfo> getRank(int startRow, int endRow) {
+        return rd.getRank(startRow, endRow);
+    }
+
+    public int getTotalCnt() {
+        return rd.getTotalCnt();
     }
 }

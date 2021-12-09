@@ -18,7 +18,8 @@ public class MemberInfo {
 	private int member_stu;
 	private int asset;
 	
-	//조회용
+	//랭킹 페이지
+	private int rn;
 	private String coincode;
 	private Float coin_amt;
 	private String yield; // 수익률

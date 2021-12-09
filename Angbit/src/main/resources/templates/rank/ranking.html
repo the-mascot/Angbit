@@ -2,14 +2,18 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<title>index</title>
+
+	<!-- Jquery -->
+	<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
 	<!-- Common meta tag, Bootstrap, js -->
 	<th:block th:replace="common/commonHead"></th:block>
 
 	<!-- Custom styles for this page -->
-	<link th:href="@{css/invest.css}" rel="stylesheet">
+	<link th:href="@{css/rank.css}" rel="stylesheet">
 
-	<!-- Jquery -->
-	<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
+	<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+	<!-- 차트 링크 -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 </head>
 <body>
 <!-- Common header -->
@@ -18,7 +22,7 @@
 <main>
 	<div class="container" id="container">
 
-		<div class="banner">
+		<div class="banner pt-2 mb-5 text-center">
 			<h2>모의투자 랭킹</h2>
 		</div>
 
@@ -29,78 +33,21 @@
 					<input type="hidden" name="SortBy" id="SortBy" value="">
 				</form>        </div>
 		</div>
-		<div>
+		<div class="container">
 			<div>
 				<div id="search_result" class="clearfix">
+					<div class="row rank-noti mb-5">
+						<span>※ 각 유저의 총 자산 데이터는 매일 00시에 업데이트 됩니다.</span><br>
+						<span>※ 유저의 수익률은 회원 가입시 초기 지급된 3천만원을 기준으로 합니다.</span>
+					</div>
+					<div class="left-title">
+						랭킹 리스트
+					</div>
 					<div class="table-responsive ranking-board">
-						<!--<div class="left-title">
-							시상 내용
-						</div>
-						<div class="row">
-							<div class="col-lg-3">
-								<div class="rankbox toprank-1">
-									<div class="toprank-img">
-										<img src="/images/rank/toprank1.png">
-									</div>
-									<div class="toprank-title">
-										1등
-									</div>
-									<div class="toprank-award">
-										Premium Service
-										<p>2개월 무료</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-3">
-								<div class="rankbox toprank-2">
-									<div class="toprank-img">
-										<img src="/images/rank/toprank2.png">
-									</div>
-									<div class="toprank-title">
-										2등
-									</div>
-									<div class="toprank-award">
-										Pro Service
-										<p>2개월 무료</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-3">
-								<div class="rankbox toprank-3">
-									<div class="toprank-img">
-										<img src="/images/rank/toprank3.png">
-									</div>
-									<div class="toprank-title">
-										3등
-									</div>
-									<div class="toprank-award">
-										Pro Service
-										<p>1개월 무료</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-3">
-								<div class="rankbox toprank-4">
-									<div class="toprank-title">
-										4~10등
-									</div>
-									<div class="toprank-award">
-										Basic Service
-										<p>1개월 무료</p>
-									</div>
-								</div>
-							</div>
-						</div>-->
-						<div class="row rank-noti">
-							<span>※ 각 유저의 총 자산 데이터는 매일 00시에 업데이트 됩니다.</span><br>
-							<span>※ 유저의 수익률은 회원 가입시 초기 지급된 KRW 3천만원을 기준으로 합니다.</span>
-						</div>
-						<div class="left-title">
-							랭킹 리스트
-						</div>
+
 
 						<!--여기서부터 출력-->
-						<div class="table-responsive">
+						<div class="table-responsive rank-table">
 							<table class="table table-hover">
 								<thead class="rankthead" align="center">
 								<tr>
@@ -108,20 +55,23 @@
 									<th class="cell2" scope="col"><h5><b>닉네임</b></h5></th>
 									<th class="cell2" scope="col"><h5><b>총 자산</b></h5></th>
 									<th class="cell2" scope="col"><h5><b>수익률</b></h5></th>
-									<th class="cell2" scope="col"><h5><b>보유 코인</b></h5></th>
+									<th class="cell2" scope="col"><h5><b>보유 현황</b></h5></th>
 								</tr>
 								</thead>
 								<tbody align="center" style="vertical-align:middle;">
 								<th:block data-th-if="${ranklist != null}">
-									<tr th:each="rlist, i:${ranklist}">
-										<td th:text="${i.count}"></td>
+									<tr class="rank-row" th:each="rlist:${ranklist}">
+										<td th:text="${rlist.rn}"></td>
 										<td th:text="${rlist.nickname}"></td>
-										<td th:text="${rlist.asset}"></td>
-										<td th:text="${rlist.yield}+' %'"></td>
-										<td th:text="보유코인스"></td>
+										<td th:text="${#numbers.formatDecimal(rlist.asset,1,'COMMA',0,'POINT')+' 원'}"></td>
+										<td th:if="${rlist.yield}>0" th:text="${rlist.yield}+' %'" style="color:red;"></td>
+										<td th:if="${rlist.yield}==0" th:text="${rlist.yield}+' %'"></td>
+										<td th:if="${rlist.yield}<0" th:text="${rlist.yield}+' %'" style="color:blue;"></td>
+										<td><button id="rank-coinshow" class="btn btn-sm rank-coinshow" data-bs-toggle="popover" title="보유 코인 목록" data-bs-content="안보여!">보유 코인</button>
+										</td>
 									</tr>
 								</th:block>
-								<th:block data-th-if="${ranklist == null}">
+								<th:block data-th-if="${ranklist.size() == 0}">
 									<td colspan="5">데이터가 없습니다.</td>
 								</th:block>
 								</tbody>
@@ -129,6 +79,21 @@
 						</div>
 					</div>
 					<!-- 페이징 -->
+
+					<nav aria-label="Paging">
+						<div th:with="start=${startPage}, end=${endPage}">
+							<ul class="pagination justify-content-center mt-4">
+
+								<!-- 페이지 갯수 -->
+								<li class="page-item" th:each="i:${#numbers.sequence(start, end)}">
+									<th:block th:if="${i} != 0">
+										<a class="pagenav_a page-link activated" id="pageNav${i}" th:if="${currentPage}==${i}" th:href="@{rank(pageNum=${i})}" th:text=${i}></a>
+										<a class="pagenav_a page-link" id="pageNav${i}" th:if="${currentPage}!=${i}" th:href="@{rank(pageNum=${i})}" th:text=${i}></a>
+								</li>
+
+							</ul>
+						</div>
+					</nav>
 
 				</div>
 			</div>
@@ -143,5 +108,50 @@
 
 <!--&lt;!&ndash; Bootstrap Bundle with Popper &ndash;&gt;-->
 <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js}" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script type="text/javascript">
+	function makeChart(ctx, type, labels, myData){
+		var myChart = new Chart(ctx, {
+			type: 'pie',
+			data: {
+				labels: labels,
+				datasets: [{
+					label: labels,
+					data: myData,
+					backgroundColor: ['#F2CB61', '#86E57F', '#6799FF', '#A566FF', '#993800', '#997000', '#2F9D27', '#3F0099', '#4C4C4C', '#D1B2FF', '#FF00DD', '#8C8C8C', '#FFA7A7', '#CEF279', '#B2EBF4']
+// 				backgroundColor: randomColor(labels)
+				}]
+			},
+			// 범례 서식
+			options:{
+				legend: {
+					position: 'right',
+					labels:{
+						fontSize: 15
+					}
+				},
+				// 그래프 오버 시 값 X
+				tooltips: {
+					callbacks: {
+						label: function(tooltipItem, myData){
+							var label = myData.labels[tooltipItem.index];
+							return label;
+						}
+					}
+				}
+			}
+		});
+	}
+
+	/!* 팝오버 *!/
+	$( function () {
+
+		$( '[data-bs-toggle="popover"]' ).popover({
+			container: 'body',
+			content : '안보여!',
+		})
+	} );
+
+
+</script>
 </body>
 </html>

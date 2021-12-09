@@ -6,5 +6,6 @@ import java.util.ArrayList;
 
 public interface RankService {
 
-    ArrayList<MemberInfo> getRank();
+    ArrayList<MemberInfo> getRank(int startRow, int endRow);
+    int getTotalCnt();
 }

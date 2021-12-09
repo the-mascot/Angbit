@@ -2,7 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="RankDao">
-	<select id="getRank" resultType="MemberInfo">
-		SELECT nickname, asset, round(((asset/30000000)*100-100), 1) as yield FROM memberinfo ORDER BY yield DESC
+	<select id="getRank" parameterType="hashmap" resultType="MemberInfo">
+		SELECT *
+		FROM (SELECT rownum rn, rank.*
+			  FROM (SELECT nickname, asset, round(((asset/30000000)*100-100), 1) as yield FROM memberinfo ORDER BY yield DESC) rank)
+		WHERE rn BETWEEN #{startRow} and #{endRow}
+	</select>
+	<select id="getTotCntMember" resultType="int">
+		SELECT count(*) FROM memberinfo
 	</select>
 </mapper>

@@ -377,12 +377,45 @@ public class SHController {
     public String rankPage(HttpServletRequest request, HttpServletResponse response, Model model) {
         System.out.println("rankPage Called.");
 
-        HttpSession session = request.getSession();
-        String id = (String) session.getAttribute("sessionID");
-        System.out.println("myInfo ID? " + id);
+        int totCnt = rs.getTotalCnt();
+        System.out.println("멤버 총 합"+totCnt);
+        String pageNum = request.getParameter("pageNum");
+        if(pageNum==null||pageNum.equals("")) {
+            pageNum="1";
+        }
+        String pageSize=request.getParameter("pageSize");	// 10개씩 보기 받아오기
+        if(pageSize==null||pageSize.equals(""))
+            pageSize="10";
+        //초기 totCnt 5, currentPage 1
+        int currentPage=Integer.parseInt(pageNum);
+        int blockSize=10;
+        int startRow=(currentPage-1)*Integer.parseInt(pageSize)+1;
+        int endRow=startRow+Integer.parseInt(pageSize)-1;
+        int startNum=totCnt-startRow+1;
+        ArrayList<MemberInfo> list = rs.getRank(startRow, endRow);
+        int pageCnt=(int) Math.ceil((double)totCnt/Integer.parseInt(pageSize));
+        int StartPage=(int)(currentPage-1)/blockSize*blockSize+1;
+        int endPage=StartPage+blockSize-1;
 
-        ArrayList<MemberInfo> list = rs.getRank();
+        if (endPage > pageCnt) endPage = pageCnt; //
+
+        System.out.println("startRow"+startRow);
+        System.out.println("endRow"+endRow);
+
+        System.out.println("list의 사이즈"+list.size());
+
+        request.setAttribute("totCnt", totCnt);
+        request.setAttribute("pageNum", pageNum);
+        request.setAttribute("pageSize", pageSize);
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("startNum", startNum);
+        request.setAttribute("list", list);
+        request.setAttribute("blockSize", blockSize);
+        request.setAttribute("pageCnt", pageCnt);
+        request.setAttribute("startPage", StartPage);
+        request.setAttribute("endPage", endPage);
         model.addAttribute("ranklist", list);
+
         return "rank/ranking";
     }
 
