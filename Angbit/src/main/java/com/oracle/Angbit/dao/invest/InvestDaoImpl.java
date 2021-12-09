@@ -174,7 +174,7 @@ public class InvestDaoImpl implements InvestDao {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", "application/json");
 		HttpEntity<?> entity = new HttpEntity<>(headers);
-		
+
 		for(int i =0; i < coinList.size(); i++) {
 			try {
 				if(i == 8)
@@ -190,22 +190,40 @@ public class InvestDaoImpl implements InvestDao {
 				Map<String, String> map = new HashMap<String, String>();
 				map.put("coincode", coinList.get(i).getCoincode());
 				map.put("lowPrice", (String) nf.format(json.get("low_price")));
-				List<OrderTrade> tradeList = seesion.selectList("checkLimits", map);
-				if (tradeList.size() > 0) {
-					for(OrderTrade orderTrade : tradeList) {
+				map.put("highPrice", (String) nf.format(json.get("high_price")));
+				List<OrderTrade> buyOrderList = seesion.selectList("checkBuyLimits", map);
+				List<OrderTrade> sellOrderList = seesion.selectList("checkSellLimits", map);
+				if (buyOrderList.size() > 0) {
+					for(OrderTrade orderTrade : buyOrderList) {
 						int result1 = seesion.update("upBuyCoin", orderTrade);
 						int result2 = seesion.update("updateTrdStu", orderTrade);
 						System.out.println("coincode : "+orderTrade.getCoincode()+"id : "+orderTrade.getId()+" result1 : "+result1);
 						System.out.println("result2->"+result2);
-						
+
 					}
 				}
+				if (sellOrderList.size() > 0) {
+					for(OrderTrade orderTrade : sellOrderList) {
+						int result1 = seesion.update("upSellCoin", orderTrade);
+						int result2 = seesion.update("updateTrdStu", orderTrade);
+						// 매도 후 보유 코인량 0개일 시 해당 ROW 초기화
+						float result3 = seesion.selectOne("chkZero", orderTrade);
+						if (result3 == 0) {
+							seesion.delete("delCoinRow", orderTrade);
+							System.out.println("전량 매도 코인 ROW삭제");
+						}
+						seesion.update("increaseKRW", orderTrade);
+						System.out.println("코인명 : "+orderTrade.getCoincode()+"\nid : "+orderTrade.getId()+" 지정가 매도 성공? : "+result1);
+						System.out.println("지정가 매도 성공?->"+result2);
+					}
+				}
+
 			} catch (Exception e) {
 				System.out.println("ESController upCoinListApi Exception->"+e.getMessage());
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 
 

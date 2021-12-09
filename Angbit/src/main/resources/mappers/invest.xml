@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="InvestDao">
 	<select id="selectKRW" parameterType="String" resultType="Integer">
 		select krw from memberinfo where id=#{id}
@@ -11,16 +11,16 @@
 	<insert id="insertTrade" parameterType="Trade">
 		insert into trade values(TRD_SEQ.NEXTVAL, #{id}, #{coincode}, sysdate, #{trd_amt}, #{trd_unit_price}, #{trd_price}, #{trd_div}, #{trd_stu})
 	</insert>
- 	<update id="upBuyCoin" parameterType="OrderTrade">
+	<update id="upBuyCoin" parameterType="OrderTrade">
 		merge into coin
-    		using dual on (id=#{id} and coincode=#{coincode})
-   		when matched then 
-        	update set coin_amt = coin_amt + #{trd_amt}, avg_price = (tot_price + #{trd_price}) / (coin_amt + #{trd_amt}), tot_price = tot_price + #{trd_price}
-		when not matched then
-			insert values(#{coincode}, #{id}, #{trd_amt}, #{trd_unit_price}, #{trd_price})
+			using dual on (id=#{id} and coincode=#{coincode})
+			when matched then
+				update set coin_amt = coin_amt + #{trd_amt}, avg_price = (tot_price + #{trd_price}) / (coin_amt + #{trd_amt}), tot_price = tot_price + #{trd_price}
+			when not matched then
+				insert values(#{coincode}, #{id}, #{trd_amt}, #{trd_unit_price}, #{trd_price})
 	</update>
 	<select id="getUsableCoin" parameterType="hashmap" resultType="float">
-		SELECT NVL(coin_amt, 0)-NVL((SELECT SUM(trd_amt) FROM trade WHERE id=#{id} and coincode=#{currCoin} and trd_stu=0), 0)
+		SELECT NVL(coin_amt, 0)-NVL((SELECT SUM(trd_amt) FROM trade WHERE id=#{id} and coincode=#{currCoin} and trd_stu=0 and trd_div=1), 0)
 		FROM coin WHERE id=#{id} and coincode = #{currCoin}
 	</select>
 	<select id="searchCoin" parameterType="String" resultType="CoinInfo">
@@ -38,11 +38,13 @@
 	<delete id="delCoinRow" parameterType="OrderTrade">
 		DELETE FROM coin WHERE id=#{id} and coincode=#{coincode}
 	</delete>
- 	<select id="checkLimits" parameterType="Map" resultType="OrderTrade">
-		select * from trade where coincode=#{coincode} and trd_stu=0 and trd_unit_price >= #{lowPrice}
+	<select id="checkBuyLimits" parameterType="Map" resultType="OrderTrade">
+		select * from trade where coincode=#{coincode} and trd_stu=0 and trd_unit_price >= #{lowPrice} and trd_div=0
 	</select>
 	<update id="updateTrdStu" parameterType="OrderTrade">
 		update trade set trd_stu = 1 where trd_num = #{trd_num}
 	</update>
-	
+	<select id="checkSellLimits" parameterType="Map" resultType="OrderTrade">
+		SELECT * FROM trade WHERE coincode=#{coincode} AND trd_stu=0 AND trd_unit_price <![CDATA[<=]]> #{highPrice} AND trd_div=1
+	</select>
 </mapper>
