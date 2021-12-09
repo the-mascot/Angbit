@@ -241,7 +241,7 @@ public class ESController {
 		
 		String tickerUrl 	= "https://api.upbit.com/v1/ticker?markets="+coinListStr;
 		System.out.println(tickerUrl);
-		ResponseEntity<String> tickerResponse 	= restTemplate.exchange(tickerUrl, HttpMethod.GET, entity, String.class);
+		ResponseEntity<String> tickerResponse = restTemplate.exchange(tickerUrl, HttpMethod.GET, entity, String.class);
 		try {
 			String tickerStr 	= tickerResponse.getBody();
 			
@@ -255,7 +255,15 @@ public class ESController {
 			System.out.println("ESController upCoinListApi Exception->"+e.getMessage());
 			e.printStackTrace();
 		}
+	}
 	
+	@ResponseBody
+	@GetMapping("invest/checkLimits")
+	public int checkLimits(String cd, String tp) {
+		
+		int result = ivs.checkLimits(cd, tp);
+		
+		return result;
 	}
 	
 }

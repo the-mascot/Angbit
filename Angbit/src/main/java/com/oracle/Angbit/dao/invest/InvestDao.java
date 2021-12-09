@@ -30,7 +30,10 @@ public interface InvestDao {
 
 	void checkBuyLimits();
 	
-  int sellLimitsPrice(OrderTrade orderTrade);
+	int sellLimitsPrice(OrderTrade orderTrade);
 
-  void sellMarketPrice(OrderTrade orderTrade);
+	void sellMarketPrice(OrderTrade orderTrade);
+
+	int checkLimits(String cd, String tp);
+	
 }

@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.oracle.Angbit.model.common.CoinInfo;
+import com.oracle.Angbit.model.common.Trade;
 import com.oracle.Angbit.model.invest.OrderTrade;
 
 @Repository
@@ -171,16 +172,16 @@ public class InvestDaoImpl implements InvestDao {
 		
 		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:ss");
 		
-		System.out.println("InvestDaoImpl checkBuyLimits Start..."+timeFormatter);
+		System.out.println("InvestDaoImpl checkBuyLimits Start...");
 		List<CoinInfo> coinList = coinInfoList();
 		String coinListStr = "";
 		for(int i = 0; i < coinList.size();  i++) {
 			if(i == coinList.size()-1)
-				coinListStr += "KRW-"+coinList.get(i).getCoincode();
+				coinListStr += "KRW-"+coinList.get(i).getCoincode()+"&count=1";
 			else
 				coinListStr += "KRW-"+coinList.get(i).getCoincode()+", ";
 		}
-		System.out.println("ESController upCoinListApi coinListStr->"+coinListStr);
+		System.out.println("ESController checkBuyLimits coinListStr->"+coinListStr);
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", "application/json");
@@ -223,5 +224,24 @@ public class InvestDaoImpl implements InvestDao {
 		if (result == 0) {
 			seesion.delete("delCoinRow", orderTrade);
 		}
+	}
+
+	@Override
+	public int checkLimits(String cd, String tp) {
+
+		System.out.println("InvestDaoImpl checkLimits Start...");
+		int result = 0;
+		try {
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("cd", cd);
+			map.put("tp", tp);
+			List<Trade> tradeList = seesion.selectList("checkLimits", map);
+			System.out.println("checkLimits tradeList.size()->"+tradeList.size());
+		} catch (Exception e) {
+			System.out.println("InvestDaoImpl checkLimits Exception->"+e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return 0;
 	}
 }
