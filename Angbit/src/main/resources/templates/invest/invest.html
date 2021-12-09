@@ -160,20 +160,6 @@
  				break;
 
  			case 'trade':	// 체결 응답
- 				
- 				sendData = "cd="+jason.cd+"&tp="+jason.tp;
- 				$.ajax({
- 					type		:	'GET',
- 					url			:	'invest/checkLimits',
- 					data		:	sendData,
- 					success		:	function(data) {
- 						console.log("checkLimits result->"+data);
- 					},
- 					error		:	function(e) {
- 						console.log("error : ",e);
- 					}
- 				});
- 				
  				if(currCoin == jason['cd']) {
 
  					for(var i=0; i<10; i++) {

@@ -31,6 +31,4 @@ public interface InvestService {
 
 	void sellMarketPrice(OrderTrade orderTrade);
 
-	int checkLimits(String cd, String tp);
-
 }

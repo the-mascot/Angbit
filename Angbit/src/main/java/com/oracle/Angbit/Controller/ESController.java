@@ -256,14 +256,4 @@ public class ESController {
 			e.printStackTrace();
 		}
 	}
-	
-	@ResponseBody
-	@GetMapping("invest/checkLimits")
-	public int checkLimits(String cd, String tp) {
-		
-		int result = ivs.checkLimits(cd, tp);
-		
-		return result;
-	}
-	
 }

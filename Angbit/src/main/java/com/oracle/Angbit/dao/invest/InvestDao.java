@@ -34,6 +34,5 @@ public interface InvestDao {
 
 	void sellMarketPrice(OrderTrade orderTrade);
 
-	int checkLimits(String cd, String tp);
 	
 }

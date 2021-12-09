@@ -107,13 +107,4 @@ public class InvestServiceImpl implements InvestService {
 	public void sellMarketPrice(OrderTrade orderTrade) {
 		ivdao.sellMarketPrice(orderTrade);
 	}
-
-	@Override
-	public int checkLimits(String cd, String tp) {
-
-		int result = ivdao.checkLimits(cd, tp);
-		
-		return result;
-	}
-
 }
