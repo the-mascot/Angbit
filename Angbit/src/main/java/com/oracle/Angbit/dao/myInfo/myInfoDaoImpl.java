@@ -111,4 +111,10 @@ public class myInfoDaoImpl implements myInfoDao {
 		vo.put("asset", asset);
 		session.update("updateAsset", vo);
 	}
+
+	@Override
+	public String getId(String nickname) {
+		String id = session.selectOne("getId", nickname);
+		return id;
+	}
 }

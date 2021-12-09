@@ -1,5 +1,8 @@
 package com.oracle.Angbit.Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oracle.Angbit.model.status.CoinCoinInfo;
 import com.oracle.Angbit.service.rank.RankService;
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.common.MemberInfo;
@@ -417,6 +420,28 @@ public class SHController {
         model.addAttribute("ranklist", list);
 
         return "rank/ranking";
+    }
+
+    @ResponseBody
+    @GetMapping("rank/getChart")
+    public String chart(HttpServletRequest request) {
+        String nickname = request.getParameter("nickname");
+        System.out.println("nickname? +"+nickname);
+        String id = mis.getId(nickname);
+        List<CoinCoinInfo> list = rs.getChart(id);
+        request.setAttribute("list", list);
+        HashMap map = new HashMap();
+        map.put("list", list);
+        String json = null;
+        try {
+            json = new ObjectMapper().writeValueAsString(map);
+            System.out.println("ajax ->" + json);
+            if(json == null)
+                System.out.println("비어있습니다.");
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return json;
     }
 
 }

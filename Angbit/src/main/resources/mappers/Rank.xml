@@ -11,4 +11,7 @@
 	<select id="getTotCntMember" resultType="int">
 		SELECT count(*) FROM memberinfo
 	</select>
+	<select id="getChart" parameterType="String" resultType="CoinCoinInfo">
+		SELECT c.*, ci.coinname FROM coin c inner join coininfo ci on c.coincode=ci.coincode WHERE id=#{id} AND coin_amt != 0 ORDER BY c.coincode ASC
+	</select>
 </mapper>

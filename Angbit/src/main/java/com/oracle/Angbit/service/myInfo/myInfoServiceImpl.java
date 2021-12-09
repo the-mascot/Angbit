@@ -77,4 +77,9 @@ public class myInfoServiceImpl implements myInfoService {
 	public void updateAsset(String id, int asset) {
 		midao.updateAsset(id, asset);
 	}
+
+	@Override
+	public String getId(String nickname) {
+		return midao.getId(nickname);
+	}
 }

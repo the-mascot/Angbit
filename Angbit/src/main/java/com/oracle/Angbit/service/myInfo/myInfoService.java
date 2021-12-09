@@ -17,4 +17,5 @@ public interface myInfoService {
     List getAllId();
     List getAllCoincode(String toString);
     void updateAsset(String toString, int asset);
+    String getId(String nickname);
 }

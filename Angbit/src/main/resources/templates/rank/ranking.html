@@ -38,7 +38,8 @@
 				<div id="search_result" class="clearfix">
 					<div class="row rank-noti mb-5">
 						<span>※ 각 유저의 총 자산 데이터는 매일 00시에 업데이트 됩니다.</span><br>
-						<span>※ 유저의 수익률은 회원 가입시 초기 지급된 3천만원을 기준으로 합니다.</span>
+						<span>※ 유저의 수익률은 회원 가입시 초기 지급된 3천만원을 기준으로 하며, 보유 중인 원화와 가상 화폐의 현재 시세를 합산한 결과 입니다.</span>
+
 					</div>
 					<div class="left-title">
 						랭킹 리스트
@@ -60,9 +61,9 @@
 								</thead>
 								<tbody align="center" style="vertical-align:middle;">
 								<th:block data-th-if="${ranklist != null}">
-									<tr class="rank-row" th:each="rlist:${ranklist}">
+									<tr class="rank-row" th:each="rlist, i:${ranklist}" th:class="'rank-row '+${i.count}">
 										<td th:text="${rlist.rn}"></td>
-										<td th:text="${rlist.nickname}"></td>
+										<td class="ranknick" th:text="${rlist.nickname}"></td>
 										<td th:text="${#numbers.formatDecimal(rlist.asset,1,'COMMA',0,'POINT')+' 원'}"></td>
 										<td th:if="${rlist.yield}>0" th:text="${rlist.yield}+' %'" style="color:red;"></td>
 										<td th:if="${rlist.yield}==0" th:text="${rlist.yield}+' %'"></td>
@@ -101,14 +102,23 @@
 
 	</div>
 </main>
+<div class="card-body hidden" align="right" style="width:0px; height:0px;">
+	<canvas id="myChart" style="align-content: center;"></canvas>
+</div>
 
 <footer th:replace="common/footer :: footer"></footer>
+
+
 
 
 
 <!--&lt;!&ndash; Bootstrap Bundle with Popper &ndash;&gt;-->
 <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js}" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 <script type="text/javascript">
+
+
+	var ctx = $('#myChart');
+
 	function makeChart(ctx, type, labels, myData){
 		var myChart = new Chart(ctx, {
 			type: 'pie',
@@ -118,7 +128,6 @@
 					label: labels,
 					data: myData,
 					backgroundColor: ['#F2CB61', '#86E57F', '#6799FF', '#A566FF', '#993800', '#997000', '#2F9D27', '#3F0099', '#4C4C4C', '#D1B2FF', '#FF00DD', '#8C8C8C', '#FFA7A7', '#CEF279', '#B2EBF4']
-// 				backgroundColor: randomColor(labels)
 				}]
 			},
 			// 범례 서식
@@ -144,12 +153,50 @@
 
 	/!* 팝오버 *!/
 	$( function () {
-
 		$( '[data-bs-toggle="popover"]' ).popover({
+			html : true,
+			content: function() {
+				var labels = [];
+				var myData = [];
+				var percent = 0;
+				var clone = $($(ctx).data(this)).clone(true).removeClass('hide');
+				// var clone = $($(this).data(this)).clone(true).removeClass('hide');
+				var nick = ($(this).parent().siblings('.ranknick').text());
+				var sendData = "nickname="+nick;
+				$.ajax({
+					type: "GET",
+					url: "rank/getChart",
+					data		:	sendData,
+					dataType: "json",
+					success: function(data){
+						if (data.list[0] == null) {
+							myData.push('100')
+							labels.push('보유 코인 없음')
+							makeChart(clone, 'pie', labels, myData);
+						} else {
+							for (var i=0; i<Object.keys(data.list).length; i++){
+								percent += data.list[i].tot_price;
+							}
+							myData = [];
+							labels = [];
+
+							for(var i=0; i<Object.keys(data.list).length; i++) {
+								labels.push(data.list[i].coinname+'('+((data.list[i].tot_price/percent)*100).toFixed(2)+' %)');
+								myData.push(data.list[i].tot_price);
+							}
+							var ctx = $('#myChart');
+							makeChart(clone, 'pie', labels, myData);
+						}
+					}
+				})
+
+				makeChart(clone,'pie', labels, myData)
+				return clone;
+			},
 			container: 'body',
-			content : '안보여!',
 		})
-	} );
+
+	});
 
 
 </script>

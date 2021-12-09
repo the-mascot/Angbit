@@ -1,6 +1,7 @@
 package com.oracle.Angbit.dao.rank;
 
 import com.oracle.Angbit.model.common.MemberInfo;
+import com.oracle.Angbit.model.status.CoinCoinInfo;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -30,5 +31,12 @@ public class RankDaoImpl implements RankDao{
     public int getTotalCnt() {
         int totCnt = session.selectOne("getTotCntMember");
         return totCnt;
+    }
+
+    @Override
+    public List<CoinCoinInfo> getChart(String id) {
+        List<CoinCoinInfo> chardata = null;
+        chardata = session.selectList("getChart", id);
+        return chardata;
     }
 }

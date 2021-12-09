@@ -17,4 +17,5 @@ public interface myInfoDao {
     List getAllId();
     List getAllCoincode(String id);
     void updateAsset(String id, int asset);
+    String getId(String nickname);
 }
