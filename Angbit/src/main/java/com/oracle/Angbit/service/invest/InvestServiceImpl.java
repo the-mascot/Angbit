@@ -107,5 +107,4 @@ public class InvestServiceImpl implements InvestService {
 	public void sellMarketPrice(OrderTrade orderTrade) {
 		ivdao.sellMarketPrice(orderTrade);
 	}
-
 }

@@ -1,18 +1,15 @@
 package com.oracle.Angbit.dao.invest;
 
 import java.util.HashMap;
-import static org.hamcrest.CoreMatchers.nullValue;
-
-import java.io.PrintWriter;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import com.oracle.Angbit.model.common.Coin;
-import org.apache.ibatis.reflection.ReflectionException;
+import java.util.TimeZone;
 import org.apache.ibatis.session.SqlSession;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -22,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.invest.OrderTrade;
 
@@ -138,7 +134,7 @@ public class InvestDaoImpl implements InvestDao {
 	@Override
 	public Float getUsableCoin(String id, String currCoin) {
 		System.out.println("getMyCoin Dao Called.");
-		Map vo = new HashMap();
+		Map<String, String> vo = new HashMap<String, String>();
 		vo.put("id", id);
 		vo.put("currCoin", currCoin);
 		Float sel = seesion.selectOne("getUsableCoin", vo);
@@ -168,36 +164,46 @@ public class InvestDaoImpl implements InvestDao {
 
 	@Override
 	public void checkBuyLimits() {
-		
-		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:ss");
-		
-		System.out.println("InvestDaoImpl checkBuyLimits Start..."+timeFormatter);
+		System.out.println("InvestDaoImpl checkBuyLimits Start...");
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm'Z'");
+		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+		System.out.println("요청시간->"+sdf.format(date));
 		List<CoinInfo> coinList = coinInfoList();
-		String coinListStr = "";
-		for(int i = 0; i < coinList.size();  i++) {
-			if(i == coinList.size()-1)
-				coinListStr += "KRW-"+coinList.get(i).getCoincode();
-			else
-				coinListStr += "KRW-"+coinList.get(i).getCoincode()+", ";
-		}
-		System.out.println("ESController upCoinListApi coinListStr->"+coinListStr);
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", "application/json");
 		HttpEntity<?> entity = new HttpEntity<>(headers);
 		
-		String tickerUrl 	= "https://api.upbit.com/v1/candles/minutes/1?market="+coinListStr;
-		System.out.println(tickerUrl);
-		ResponseEntity<String> tickerResponse = restTemplate.exchange(tickerUrl, HttpMethod.GET, entity, String.class);
-		try {
-			String tickerStr = tickerResponse.getBody();
-			
-			JSONParser parser = new JSONParser();
-			JSONArray json = (JSONArray) parser.parse(tickerStr);
-			System.out.println("ESController upCoinListApi json 객체->"+json);
-		} catch (Exception e) {
-			System.out.println("ESController upCoinListApi Exception->"+e.getMessage());
-			e.printStackTrace();
+		for(int i =0; i < coinList.size(); i++) {
+			try {
+				if(i == 8)
+					Thread.sleep(1000);	// UPBIT API 요청수 제한으로 1 초 대기(초당 10회만 요청 가능)
+				String tickerUrl 	= "https://api.upbit.com/v1/candles/minutes/1?market=KRW-"+coinList.get(i).getCoincode()+"&to="+sdf.format(date)+"&count=1";
+				ResponseEntity<String> tickerResponse = restTemplate.exchange(tickerUrl, HttpMethod.GET, entity, String.class);
+				String tickerStr = tickerResponse.getBody();
+				JSONParser parser = new JSONParser();
+				JSONArray jsonArray = (JSONArray) parser.parse(tickerStr);
+				JSONObject json = (JSONObject) jsonArray.get(0);
+				NumberFormat nf = NumberFormat.getInstance();
+				nf.setGroupingUsed(false);
+				Map<String, String> map = new HashMap<String, String>();
+				map.put("coincode", coinList.get(i).getCoincode());
+				map.put("lowPrice", (String) nf.format(json.get("low_price")));
+				List<OrderTrade> tradeList = seesion.selectList("checkLimits", map);
+				if (tradeList.size() > 0) {
+					for(OrderTrade orderTrade : tradeList) {
+						int result1 = seesion.update("upBuyCoin", orderTrade);
+						int result2 = seesion.update("updateTrdStu", orderTrade);
+						System.out.println("coincode : "+orderTrade.getCoincode()+"id : "+orderTrade.getId()+" result1 : "+result1);
+						System.out.println("result2->"+result2);
+						
+					}
+				}
+			} catch (Exception e) {
+				System.out.println("ESController upCoinListApi Exception->"+e.getMessage());
+				e.printStackTrace();
+			}
 		}
 		
 	}
@@ -224,4 +230,5 @@ public class InvestDaoImpl implements InvestDao {
 			seesion.delete("delCoinRow", orderTrade);
 		}
 	}
+
 }

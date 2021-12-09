@@ -97,14 +97,14 @@
 		}
 
 		function onMessage(evt) {
-
+			
  			//console.log(evt.data);
 			var enc = new TextDecoder("utf-8");
 			var arr = new Uint8Array(evt.data);
 			var decode = enc.decode(arr);
 			var jason=JSON.parse(decode);
  			console.log(enc.decode(arr));
-
+			
  			switch(jason['ty']) {
  			case 'ticker':	// 현재가 응답
  				if(coinList.indexOf(jason['cd']) >= 0) {

@@ -38,4 +38,11 @@
 	<delete id="delCoinRow" parameterType="OrderTrade">
 		DELETE FROM coin WHERE id=#{id} and coincode=#{coincode}
 	</delete>
+ 	<select id="checkLimits" parameterType="Map" resultType="OrderTrade">
+		select * from trade where coincode=#{coincode} and trd_stu=0 and trd_unit_price >= #{lowPrice}
+	</select>
+	<update id="updateTrdStu" parameterType="OrderTrade">
+		update trade set trd_stu = 1 where trd_num = #{trd_num}
+	</update>
+	
 </mapper>
