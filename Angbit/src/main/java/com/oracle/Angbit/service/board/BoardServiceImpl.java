@@ -11,9 +11,6 @@ import com.oracle.Angbit.dao.board.BoardDao;
 import com.oracle.Angbit.model.common.Board;
 
 
-
-
-
 @Transactional
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -32,9 +29,7 @@ public class BoardServiceImpl implements BoardService {
 			return pagingbd;
 		}
 	
-	  @Override public List<Board> BoardList() {
-	  System.out.println("BoardServiceImpl BoardList Start..."); List<Board>
-	  boardList = bdao.BoardList(); return boardList; }
+	  
 	 
 
 	@Override
@@ -68,13 +63,7 @@ public class BoardServiceImpl implements BoardService {
 		return result;
 	}
 
-	/*
-	 * @Override public Board writeBoard(int b_num) {
-	 * 
-	 * System.out.println("BoardServiceImpl writeBoard start..."); Board board =
-	 * bdao.writeBoard(b_num); return board; }
-	 */
-
+	//writeForm
 	@Override
 	public int insert(Board board) {
 		System.out.println("BoardServiceImpl insert start...");
@@ -83,7 +72,7 @@ public class BoardServiceImpl implements BoardService {
 		
 		return result;
 	}
-
+	//detail
 	@Override
 	public int Delete(int b_num) {
 		int result = 0;
@@ -91,13 +80,34 @@ public class BoardServiceImpl implements BoardService {
 		result = bdao.Delete(b_num);
 		return result;
 	}
-	
+	//coinBd,detail
 	@Override
 	public int viewCnt(int b_num) {
 		System.out.println("BoardServiceImpl viewCnt start...");
 		int result = bdao.viewCnt(b_num);
 		return result;
 	}
+
+	
+	
+	//댓글정보 저장
+	@Override
+	public int instResult(Board board) {
+		System.out.println("BoardServiceImpl instResult start...");
+		int result = bdao.instResult(board);
+		
+		return result;
+	}
+	//댓글 출력
+	@Override
+	public Board levone(int ref) {
+		System.out.println("BoardServiceImpl levone start...");
+		Board levone = bdao.levone(ref);
+		
+		return levone;
+	}
+
+	
 	
 	
 

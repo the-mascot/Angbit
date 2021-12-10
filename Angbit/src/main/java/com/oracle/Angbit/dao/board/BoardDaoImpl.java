@@ -9,9 +9,6 @@ import org.springframework.stereotype.Repository;
 import com.oracle.Angbit.model.common.Board;
 
 
-
-
-
 @Repository
 public class BoardDaoImpl implements BoardDao {
 
@@ -34,22 +31,7 @@ public class BoardDaoImpl implements BoardDao {
 	}
 	
 	
-	@Override
-	public List<Board> BoardList() {
-		System.out.println("BoardDaoImpl BoardList Start...");
-		List<Board> boardList = null;
-		
-		try {
-			boardList = session.selectList("boardList"); 					//Board.xml에서 가져갈 이름
-			System.out.println("BoardDaoImpl BoardList boardList.size()->"+boardList.size());
-			
-		} catch (Exception e) {
-			System.out.println("BoardDaoImpl BoardList Exception->"+e.getMessage());
-			e.printStackTrace();
-		}
-		
-		return boardList;
-	}
+	
 
 //페이징
 	@Override
@@ -85,7 +67,7 @@ public class BoardDaoImpl implements BoardDao {
 		return board;
 	}
 	
-	//삭제기능
+		//삭제기능
 		@Override
 		public int Delete(int b_num) {
 			System.out.println("BoardDaoImpl Delete Start...");
@@ -98,7 +80,7 @@ public class BoardDaoImpl implements BoardDao {
 			}
 			return result;
 		}
-
+		//수정기능
 		@Override
 		public int update(Board board) {
 			System.out.println("BoardDaoImpl update start..");
@@ -119,7 +101,8 @@ public class BoardDaoImpl implements BoardDao {
 		 * stub System.out.println("BoardDaoImpl writeBoard start..."); Board
 		 * board=session.selectOne("writeBoard",b_num); return board; }
 		 */
-
+		
+		//write
 		@Override
 		public int insert(Board board) {
 			System.out.println("BoardDaoImpl insert start..");
@@ -131,7 +114,7 @@ public class BoardDaoImpl implements BoardDao {
 			}
 			return result;
 		}
-
+		//조회수
 		@Override
 		public int viewCnt(int b_num) {
 			System.out.println("BoardDaoImpl viewCnt start..");
@@ -143,6 +126,39 @@ public class BoardDaoImpl implements BoardDao {
 			}
 			return result;
 		}
+
+
+		//댓글부분
+		@Override
+		public int instResult(Board board) {
+			System.out.println("BoardDaoImpl instResult start..");
+			int result = 0;
+			try {
+				result  = session.insert("dyReplyResult",board);  //삽입된 행의 갯수를 반환
+			} catch (Exception e) {
+				System.out.println("BoardDaoImpl instResult Exception->"+e.getMessage());
+			}
+			return result;
+		}
+
+		@Override
+		public Board levone(int ref) {
+			System.out.println("BoardDaoImpl levone start..");	
+			Board board = new Board();
+			try {
+				//                       mapper ID   
+				board = session.selectOne("dyLevOne");
+				
+				System.out.println("BoardDaoImpl detail getTitle->"+board.getB_num());
+			} catch (Exception e) {
+				System.out.println("BoardDaoImpl detail Exception->"+e.getMessage());
+			}
+			
+			return board;
+		}
+
+
+		
 
 		
 		
