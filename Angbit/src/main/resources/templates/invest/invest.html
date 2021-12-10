@@ -40,12 +40,12 @@
 		function init() {
 			output = document.getElementById("output");
 			console.log('init() Start...');
+	 		testWebSocket();
 			investApi(event);
 			/*봉 변경시 색 변경*/
 			for (var i = 0; i < btnClicked.length; i++) {
 				btnClicked[i].addEventListener("click", handleClick);
 			}
-	 		/*testWebSocket();*/
 		}
 
 		function testWebSocket() {
@@ -61,8 +61,6 @@
 
 
 		function onOpen(evt) {
-			writeToScreen("연결완료");
-			// var msg1 = [{"ticket":"test"},{"type":"ticker","codes":["KRW-BTC", "BTC-BCH"]},{"format":"SIMPLE"}];
 			var msg = [
 				{
 					"ticket"	:	"UNIQUE_TICKET",
@@ -206,20 +204,13 @@
         }
 
 		function onError(evt) {
-			writeToScreen('<span style="color: red;">에러:</span> ' + evt.data);
+			console.log(evt.data);
 		}
 
 		function doSend(message) {
-			writeToScreen("발신: " + message);
 			websocket.send(message);
 		}
 
-		function writeToScreen(message)	{
-			var pre = document.createElement("p");
-			pre.style.wordWrap = "break-word";
-			pre.innerHTML = message;
-			output.appendChild(pre);
-		}
 		window.addEventListener("load", init, false);
 
 		function flashit(code, tp){
@@ -307,35 +298,14 @@
 			}
 
 		}
-		
-		function sessionCode(e, id) {
-			sendData = 'currCoincode = '+id;
-			console.log(sendData);
-			$.ajax({
-				type		:	'GET',
-				url			:	'invest/sessionCode',
-				data		:	sendData,
-				success		:	function(result) {
-					if(result == 1) {
-						/*<![CDATA[*/	currCoincode = "[[${session.currCoincode}]]"	/*]]>*/
-						/*<![CDATA[*/	currCoin = "[[${session.currCoincode}]]"	/*]]>*/
-					} else {
-						currCoincode = 'BTC';
-						currCoin = 'KRW-BTC';
-					}
-					console.log("currCoincode->"+currCoincode);
-					console.log("currCoin->"+currCoin);
-					investApi();
-				},
-				error		:	function(e) {
-					console.log("error : ",e);
-				}
-			});
-		}
-		
+
 		// Rest API 요청
-		function investApi() {
-			if(currCoin == null || currCoincode == null) {
+		function investApi(e, id) {
+			e.preventDefault();
+			if(id != null) {
+				currCoincode = id
+				currCoin = 'KRW-'+id;
+			} else {
 				currCoincode = 'BTC';
 				currCoin = 'KRW-BTC';
 			}
@@ -1328,11 +1298,6 @@
 <header th:replace="common/header :: header"></header>
 
 <main class="clearfix">
-	<div>
-		<input type="button" value="Connection Open" onclick="testWebSocket()">
-		<input type="button" value="Connection Close" onclick="onClose()">
-		<div id="output"></div>
-	</div>
 	<section class="section1">
 		<div class="d-flex justify-content-end mt-5">
 			<div class="coinTitle-card card">
@@ -1613,7 +1578,7 @@
 	                    <tbody id="coinlist-tbody">
 	                    	<tr th:each="list : ${coinInfoList}" th:with="code=${list.coincode}">
 								<td class="pt-1">
-									<a th:href="@{#}" class="coinlist-a text-dark" th:id="${code}" th:text="${list.coinname}" onclick="sessionCode(event, id)"></a>
+									<a th:href="@{#}" class="coinlist-a text-dark" th:id="${code}" th:text="${list.coinname}" onclick="investApi(event, id)"></a>
 		            	 			<p th:text="${code}" class="mb-0"></p>
 		                         </td>
 		                         <td class="pt-1" style="width: 98px;">
