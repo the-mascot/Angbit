@@ -9,8 +9,7 @@ import com.oracle.Angbit.model.common.Board;
 
 public interface BoardDao {
 
-	List<Board> BoardList();
-	//List<MemberInfo> MemberList();
+	
 	int Delete(int empno);
 	int total();
 	List<Board> pagingBd(Board board);
@@ -21,6 +20,9 @@ public interface BoardDao {
 	
 	int insert(Board board);
 	int viewCnt(int b_num);
+	int instResult(Board board);
+	Board levone(int ref);
+	
 	
 	
 }

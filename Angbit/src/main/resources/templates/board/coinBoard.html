@@ -92,12 +92,13 @@
 	</nav>
 	</div>
 
+<!-- 글작성버튼 -->
+	<form action="">  							<!-- 메소드끼리 건네주는 방법 물어보고 write -->
 		<div class="row">
-			<div class="col-lg-2"></div>
-			<div class="col-lg-8"></div>
-			<div class="col-lg-2"><button align:"right" type="button" class="btn btn-success me-2" th:onclick="|location.href='@{board_writeForm}'|" th:if="${session.sessionID!=null}" >글작성</button></div>
+			<div class="col-lg-10"></div>
+			<div class="col-lg-2"><button type="button" class="btn btn-success me-2" th:onclick="|location.href='@{board_writeForm}'|" th:if="${session.sessionID!=null}" >글작성</button></div>
 		</div>	
-		
+	</form>	
 	
 </div>
 </main>
