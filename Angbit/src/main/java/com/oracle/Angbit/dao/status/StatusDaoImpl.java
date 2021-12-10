@@ -335,6 +335,46 @@ public class StatusDaoImpl implements StatusDao {
 		return tot;
 	}
 
+	@Override
+	public List<TradeCoinInfo> searchBuyList(TradeCoinInfo trdCoin, String search, String id) {
+		Map param = new HashMap();
+		param.put("trdCoin", trdCoin);
+		param.put("search", search);
+		param.put("id", id);
+		List<TradeCoinInfo> searchBuyList = session.selectList("StatusSearchBuy", param);
+		return searchBuyList;
+	}
+
+	@Override
+	public int searchBuy(String id, String search) {
+		System.out.println("1111-> "+id);
+		System.out.println("1111-> "+search);
+		Map param = new HashMap();
+		param.put("id", id);
+		param.put("search", search);
+		int tot = session.selectOne("searchBuy", param);
+		return tot;
+	}
+
+	@Override
+	public int searchSell(String id, String search) {
+		Map param = new HashMap();
+		param.put("id", id);
+		param.put("search", search);
+		int tot = session.selectOne("searchSell", param);
+		return tot;
+	}
+
+	@Override
+	public List<TradeCoinInfo> searchSellList(TradeCoinInfo trdCoin, String search, String id) {
+		Map param = new HashMap();
+		param.put("trdCoin", trdCoin);
+		param.put("search", search);
+		param.put("id", id);
+		List<TradeCoinInfo> searchSellList = session.selectList("StatusSearchSell", param);
+		return searchSellList;
+	}
+
 
 
 

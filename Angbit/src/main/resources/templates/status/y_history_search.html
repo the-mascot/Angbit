@@ -22,9 +22,18 @@ $(document).ready(function(){
 <div class="row my-3" align="center" style="padding-top: 25px">
 	<h4><b>전체 조회 결과</b></h4>
 	<P>
-	<h5 th:text="'총 '+${pg.total}+'건의 결과가 검색되었습니다.'" style="margin-bottom: -40px"></h5>
+	<h5 th:text="${search}+' 을/를 포함한 검색어는 '"></h5>
+	<h5 th:text="'총 '+${pg.total}+' 건의 결과가 검색되었습니다.'" style="margin-bottom: -40px"></h5>
 </div>
-<div class="container">
+<div class="container" style="padding-top: 25px">
+	<div class="col-4" style="float: left;">&nbsp<p>
+		<button type="button" class="btn btn-outline-dark" onclick="location.href='/status_y_history'">처음으로</button>
+	</div>
+	<div class="col-4" style="float: left; margin-left: 50px">검색 결과 설정<p>
+		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" th:onclick="|location.href='@{/y_history_search(search=${search})}'|">전체</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" th:onclick="|location.href='@{/y_history_search_buy(search=${search})}'|">매수</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" th:onclick="|location.href='@{/y_history_search_sell(search=${search})}'|">매도</button>
+	</div>
 	<form action="y_history_search" style="float: right; margin-top: 25px; margin-left: -25px; margin-bottom: 15px">
 		<input class="btn-warning" type="text" id="txt" name="search" placeholder="코인명 또는 코인코드를 입력하세요." style="border: 1px solid #ffc107; height: 38px; background-color: white; text-transform: uppercase;" size="40">
 		<button type="submit" class="btn btn-warning" style="margin-top: -7px"> 
@@ -87,18 +96,19 @@ $(document).ready(function(){
 	  <ul class="pagination justify-content-center mt-4">
 <!-- 	  	이전 -->
 	    <li class="page-item" th:if="${pg.startPage>pg.pageBlock}">
-	      <a class="pagenav_a page-link" th:href="@{status_y_history_search(currentPage=${pg.startPage-pg.pageBlock})}" aria-label="previous">
+	      <a class="pagenav_a page-link" th:href="@{y_history_search(search=${search}, currentPage=${pg.startPage-pg.pageBlock})}" aria-label="previous">
 	        <span aria-hidden="true">&laquo;</span>
 	      </a>
 	    </li>
 <!-- 	    페이지 갯수 -->
 	    <li class="page-item" th:each="i:${#numbers.sequence(start, end)}">
 	    	<th:block th:if="${i} != 0">
-	    	<a class="pagenav_a page-link" id="pageNav${i}" th:href="@{status_y_history_search(currentPage=${i})}" th:text=${i}></a>
+	    	<a class="pagenav_a page-link" id="pageNav${i}" th:href="@{y_history_search(search=${search}, currentPage=${i})}" th:text=${i}></a>
+<!-- 	    	<a class="pagenav_a page-link" id="pageNav${i}" th:href="@{y_history_search(search=${search}&currentPage=${i})}" th:text=${i}></a> -->
 	    </li>
 <!-- 	    다음 -->
 	    <li class="page-item" th:if="${pg.endPage < pg.totalPage}">
-	      <a class="pagenav_a page-link" th:href="@{status_y_history_search(currentPage=${pg.startPage+pg.pageBlock})}" aria-label="Next">
+	      <a class="pagenav_a page-link" th:href="@{y_history_search(search=${search}, currentPage=${pg.startPage+pg.pageBlock})}" aria-label="Next">
 	        <span aria-hidden="true">&raquo;</span>
 	      </a>
 	    </li>

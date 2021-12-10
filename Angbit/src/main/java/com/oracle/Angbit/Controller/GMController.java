@@ -432,10 +432,68 @@ public class GMController {
 			
 			List<TradeCoinInfo> searchList = ss.searchList(trdCoin, search, id);
 			System.out.println("searchList.size() ->"+searchList.size());
+			System.out.println("search ->"+search);
 			
 			model.addAttribute("searchList", searchList);
 			model.addAttribute("pg", pg);
+			model.addAttribute("search", search);
 			return "/status/y_history_search";
+		}
+		
+		@GetMapping("/y_history_search_buy")
+		public String buySearch(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			String search = request.getParameter("search");
+			System.out.println("id -> "+id);
+			System.out.println("search -> "+search);
+			
+			int total = ss.searchBuy(id, search);
+			System.out.println("total.size() ->"+total);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			System.out.println("search.start -> "+pg.getStart());
+			System.out.println("search.end -> "+pg.getEnd());
+			
+			
+			List<TradeCoinInfo> searchBuy = ss.searchBuyList(trdCoin, search, id);
+			System.out.println("searchList.size() ->"+searchBuy.size());
+			System.out.println("search ->"+search);
+			
+			model.addAttribute("searchBuy", searchBuy);
+			model.addAttribute("pg", pg);
+			model.addAttribute("search", search);
+			return "/status/y_history_search_buy";
+		}
+		
+		@GetMapping("/y_history_search_sell")
+		public String sellSearch(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			String search = request.getParameter("search");
+			System.out.println("id -> "+id);
+			System.out.println("search -> "+search);
+			
+			int total = ss.searchSell(id, search);
+			System.out.println("total.size() ->"+total);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			System.out.println("search.start -> "+pg.getStart());
+			System.out.println("search.end -> "+pg.getEnd());
+			
+			
+			List<TradeCoinInfo> searchSell = ss.searchSellList(trdCoin, search, id);
+			System.out.println("searchList.size() ->"+searchSell.size());
+			System.out.println("search ->"+search);
+			
+			model.addAttribute("searchSell", searchSell);
+			model.addAttribute("pg", pg);
+			model.addAttribute("search", search);
+			return "/status/y_history_search_sell";
 		}
 		
 //		@GetMapping("testmethod")
