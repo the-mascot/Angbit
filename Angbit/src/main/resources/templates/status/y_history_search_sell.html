@@ -18,25 +18,25 @@ $(document).ready(function(){
 <!-- Common header -->
 <header th:replace="common/header :: header"></header>
 <main>
+
 <div class="row my-3" align="center" style="padding-top: 25px">
-	<h4><b>체결 내역</b></h4>
+	<h4><b>매도 조회 결과</b></h4>
+	<P>
+	<h5 th:text="${search}+' 을/를 포함한 검색어는 '"></h5>
+	<h5 th:text="'총 '+${pg.total}+' 건의 매도 결과가 검색되었습니다.'" style="margin-bottom: -40px"></h5>
 </div>
-<div class="container">
-	<div class="col-4" style="float: left;">기간 설정<p>
-		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history'">전체</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort7d'">7일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort30d'">30일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort90d'">90일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort180d'">180일</button>
+<div class="container" style="padding-top: 25px">
+	<div class="col-4" style="float: left;">&nbsp<p>
+		<button type="button" class="btn btn-outline-dark" onclick="location.href='/status_y_history'">처음으로</button>
 	</div>
-	<div class="col-4" style="float: left; margin-left: 50px">거래종류 설정<p>
-		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history'">전체</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_buy'">매수</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sell'">매도</button>
+	<div class="col-4" style="float: left; margin-left: 50px">검색 결과 설정<p>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" th:onclick="|location.href='@{/y_history_search(search=${search})}'|">전체</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" th:onclick="|location.href='@{/y_history_search_buy(search=${search})}'|">매수</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" th:onclick="|location.href='@{/y_history_search_buy(search=${search})}'|">매도</button>
 	</div>
-	<form action="y_history_search" style="float: right; margin-top: 25px; margin-left: -25px">
+	<form action="y_history_search" style="float: right; margin-top: 25px; margin-left: -25px; margin-bottom: 15px">
 		<input class="btn-warning" type="text" id="txt" name="search" placeholder="코인명 또는 코인코드를 입력하세요." style="border: 1px solid #ffc107; height: 38px; background-color: white; text-transform: uppercase;" size="40">
-		<button type="submit" class="btn btn-warning" style="margin-top: -7px">
+		<button type="submit" class="btn btn-warning" style="margin-top: -7px"> 
 			<svg id="search" name="search" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 	  			<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
 			</svg>
@@ -56,9 +56,9 @@ $(document).ready(function(){
     </tr>
   </thead>
   <tbody align="center" style="vertical-align:middle;">
-  	<th:block data-th-if="${yList.size != 0}">
-	    <tr class="code" th:each="ylist:${yList}">
-	      <th class="coincode" scope="row" th:switch="${ylist.coincode}"> 
+  	<th:block data-th-if="${searchSell.size != 0}">
+	    <tr class="code" th:each="searchsell:${searchSell}">
+	      <th class="coincode" scope="row" th:switch="${searchsell.coincode}"> 
 	      	<span th:case="ADA"><img class="table_images" alt="" th:src="@{images/status/ada.png}"></span>
 	      	<span th:case="AXS"><img class="table_images" alt="" th:src="@{images/status/axs.png}"></span>
 	      	<span th:case="BCH"><img class="table_images" alt="" th:src="@{images/status/bch.png}"></span>
@@ -75,17 +75,17 @@ $(document).ready(function(){
 	      	<span th:case="XLM"><img class="table_images" alt="" th:src="@{images/status/xlm.png}"></span>
 	      	<span th:case="XRP"><img class="table_images" alt="" th:src="@{images/status/xrp.png}"></span>
 	      </th>
-	      <td class="coinname" th:text="${ylist.coinname}+'&#13;&#10;'+'('+${ylist.coincode}+')'"></td>
-	      <td class="trd_div" th:if="${ylist.trd_div}==1" style="color: blue;">매도</td>
-	      <td class="trd_div" th:if="${ylist.trd_div}==0" style="color: red;">매수</td>
-	      <td class="trd_amt" th:text="${#numbers.formatDecimal(ylist.trd_amt,1,'COMMA',8,'POINT')}"></td>
-	      <td class="trd_unit-price" th:text="${#numbers.formatDecimal(ylist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
-	      <td class="trd_price" th:text="${#numbers.formatDecimal(ylist.trd_price,1,'COMMA',0,'POINT')}"></td>
-	      <td class="trd_date" th:text="${#dates.format(ylist.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
+	      <td class="coinname" th:text="${searchsell.coinname}+'&#13;&#10;'+'('+${searchsell.coincode}+')'"></td>
+	      <td class="trd_div" th:if="${searchsell.trd_div}==1" style="color: blue;">매도</td>
+	      <td class="trd_div" th:if="${searchsell.trd_div}==0" style="color: red;">매수</td>
+	      <td class="trd_amt" th:text="${#numbers.formatDecimal(searchsell.trd_amt,1,'COMMA',8,'POINT')}"></td>
+	      <td class="trd_unit-price" th:text="${#numbers.formatDecimal(searchsell.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
+	      <td class="trd_price" th:text="${#numbers.formatDecimal(searchsell.trd_price,1,'COMMA',0,'POINT')}"></td>
+	      <td class="trd_date" th:text="${#dates.format(searchsell.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
 	    </tr>
 	</th:block>
-    <th:block data-th-if="${yList.size == 0}">
-	  	<td colspan="7"><strong>매수 및 매도 내역이 없습니다.</strong></td>
+    <th:block data-th-if="${searchSell.size == 0}">
+	  	<td colspan="7"><strong>매도 내역이 없습니다.</strong></td>
 	</th:block>
   </tbody>
 </table>
@@ -94,20 +94,21 @@ $(document).ready(function(){
 <nav aria-label="Page navigation example">
 	<div th:with="start=${pg.startPage}, end=${pg.endPage}">
 	  <ul class="pagination justify-content-center mt-4">
-	  	<!-- 이전 -->
+<!-- 	  	이전 -->
 	    <li class="page-item" th:if="${pg.startPage>pg.pageBlock}">
-	      <a class="pagenav_a page-link" th:href="@{status_y_history(currentPage=${pg.startPage-pg.pageBlock})}" aria-label="previous">
+	      <a class="pagenav_a page-link" th:href="@{y_history_search_sell(search=${search}, currentPage=${pg.startPage-pg.pageBlock})}" aria-label="previous">
 	        <span aria-hidden="true">&laquo;</span>
 	      </a>
 	    </li>
-	    <!-- 페이지 갯수 -->
+<!-- 	    페이지 갯수 -->
 	    <li class="page-item" th:each="i:${#numbers.sequence(start, end)}">
 	    	<th:block th:if="${i} != 0">
-	    	<a class="pagenav_a page-link" id="pageNav${i}" th:href="@{status_y_history(currentPage=${i})}" th:text=${i}></a>
+	    	<a class="pagenav_a page-link" id="pageNav${i}" th:href="@{y_history_search_sell(search=${search}, currentPage=${i})}" th:text=${i}></a>
+<!-- 	    	<a class="pagenav_a page-link" id="pageNav${i}" th:href="@{y_history_search(search=${search}&currentPage=${i})}" th:text=${i}></a> -->
 	    </li>
-	    <!-- 다음 -->
+<!-- 	    다음 -->
 	    <li class="page-item" th:if="${pg.endPage < pg.totalPage}">
-	      <a class="pagenav_a page-link" th:href="@{status_y_history(currentPage=${pg.startPage+pg.pageBlock})}" aria-label="Next">
+	      <a class="pagenav_a page-link" th:href="@{y_history_search_sell(search=${search}, currentPage=${pg.startPage+pg.pageBlock})}" aria-label="Next">
 	        <span aria-hidden="true">&raquo;</span>
 	      </a>
 	    </li>

@@ -7,12 +7,6 @@
 <!-- Common meta tag, Bootstrap, js -->
 <th:block th:replace="common/commonHead"></th:block>
 </head>
-<!-- <script type="text/javascript"> -->
-<!--  	$(document).ready(function() -->
-<!--  	{ -->
-<!--  		$("#pageNav${currentPage}").css("color", "red");		 -->
-<!--  	}); -->
-<!-- </script> -->
 <body>
 <!-- Common header -->
 <header th:replace="common/header :: header"></header>
@@ -25,7 +19,7 @@
 	<div class="col-4" style="float: left;" >기간 설정<p>
 		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history'">전체</button>
 		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="testmethod(7)">7일</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort30d'">30일</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="testmethod(30)">30일</button>
 		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort90d'">90일</button>
 		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort180d'">180일</button>
 	</div>
