@@ -16,6 +16,5 @@ public interface myInfoService {
     boolean chkWidraw(String id);
     List getAllId();
     List getAllCoincode(String toString);
-    void updateAsset(String toString, int asset);
     String getId(String nickname);
 }

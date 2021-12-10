@@ -126,6 +126,7 @@ main::after {
 	font-family: 'Noto Sans KR', sans-serif;
 	font-weight: 700;
 	font-size: 13px;
+	cursor: pointer;
 }
 
 .orderbook-td-ap, .orderbook-td-bp {

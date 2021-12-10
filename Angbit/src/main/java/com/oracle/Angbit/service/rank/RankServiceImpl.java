@@ -27,4 +27,10 @@ public class RankServiceImpl implements RankService{
     public List<CoinCoinInfo> getChart(String id) {
         return rd.getChart(id);
     }
+
+	@Override
+	public void updateAsset() {
+		
+		rd.updateAsset();
+	}
 }

@@ -298,4 +298,24 @@ public class ESController {
 		return msg;
 	}
 	
+	@ResponseBody
+	@GetMapping("invest/sessionCode")
+	public int sessionCode(String currCoincode, HttpServletRequest request, HttpServletResponse response) {
+		
+		System.out.println("ESController sessionCode Start...");
+		int result =0;
+		System.out.println("currCoincode->"+currCoincode);
+		try {
+			HttpSession session = request.getSession();
+			session.setAttribute("currCoincode", currCoincode);
+			session.setAttribute("currCoin", "KRW-"+currCoincode);
+			result = 1;
+		} catch (Exception e) {
+			System.out.println("ESController sessionCode Exception->"+e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 }

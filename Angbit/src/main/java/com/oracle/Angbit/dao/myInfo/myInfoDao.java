@@ -16,6 +16,5 @@ public interface myInfoDao {
     boolean chkWidraw(String id);
     List getAllId();
     List getAllCoincode(String id);
-    void updateAsset(String id, int asset);
     String getId(String nickname);
 }

@@ -1,6 +1,7 @@
 package com.oracle.Angbit.dao.invest;
 
 import java.util.HashMap;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,12 +24,16 @@ import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.common.Trade;
 import com.oracle.Angbit.model.invest.OrderTrade;
 import com.oracle.Angbit.model.invest.TradeList;
+import com.oracle.Angbit.service.invest.InvestService;
+import com.oracle.Angbit.service.myInfo.myInfoService;
 
 @Repository
 public class InvestDaoImpl implements InvestDao {
 	
 	@Autowired
 	private SqlSession seesion;
+	@Autowired
+	private myInfoService mis;
 	
 	@Override
 	public List<CoinInfo> coinInfoList() {
@@ -256,5 +261,4 @@ public class InvestDaoImpl implements InvestDao {
 		seesion.update("cancelKRW", trade);
 		seesion.update("cancelTrade", trd_num);
 	}
-
 }

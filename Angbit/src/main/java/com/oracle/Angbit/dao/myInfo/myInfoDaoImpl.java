@@ -105,14 +105,6 @@ public class myInfoDaoImpl implements myInfoDao {
 	}
 
 	@Override
-	public void updateAsset(String id, int asset) {
-		Map vo = new HashMap();
-		vo.put("id", id);
-		vo.put("asset", asset);
-		session.update("updateAsset", vo);
-	}
-
-	@Override
 	public String getId(String nickname) {
 		String id = session.selectOne("getId", nickname);
 		return id;

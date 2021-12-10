@@ -15,7 +15,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.oracle.Angbit.service.invest.InvestService;
-import com.oracle.Angbit.service.invest.QuartzService;
+import com.oracle.Angbit.service.rank.RankUpdateQuartzService;
+import com.oracle.Angbit.service.invest.ChkTradeQuartzService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +33,8 @@ public class QuartzConfig {
 	public void start() {
 		log.info("JobController start invoked");
 		try {
-			scheduler.scheduleJob(buildJobDetail(), buildCronJobtrigger("0 0/1 * * * ?"));
+			scheduler.scheduleJob(chkTradeJobDetail(), buildCronJobtrigger("0 0/1 * * * ?"));
+			scheduler.scheduleJob(rankUpdateJobDetail(), buildCronJobtrigger("0 0 0 * * ?"));
 		} catch (SchedulerException e) {
 			System.out.println("QuartzConfig start() Exception->"+e.getMessage());
 			e.printStackTrace();
@@ -43,9 +45,13 @@ public class QuartzConfig {
 		return TriggerBuilder.newTrigger().withSchedule(CronScheduleBuilder.cronSchedule(scheduleExp)).build();
 	}
 	
-	public JobDetail buildJobDetail() {
+	public JobDetail chkTradeJobDetail() {
 		
-		return JobBuilder.newJob().ofType(QuartzService.class).storeDurably().withIdentity("QuartzJob").withDescription("Invoke QuartzService Job service...").build();
+		return JobBuilder.newJob().ofType(ChkTradeQuartzService.class).storeDurably().withIdentity("ChkTradeJob").withDescription("Invoke ChkTrade Job service...").build();
 	}
 	
+	public JobDetail rankUpdateJobDetail() {
+		
+		return JobBuilder.newJob().ofType(RankUpdateQuartzService.class).storeDurably().withIdentity("RankJob").withDescription("Invoke RankUpdate Job service...").build();
+	}
 }
