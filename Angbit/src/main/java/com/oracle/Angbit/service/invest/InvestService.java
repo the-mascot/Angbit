@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.invest.OrderTrade;
+import com.oracle.Angbit.model.invest.TradeList;
 
 public interface InvestService {
 
@@ -30,5 +31,9 @@ public interface InvestService {
 	int sellLimitsPrice(OrderTrade orderTrade);
 
 	void sellMarketPrice(OrderTrade orderTrade);
+
+	List<TradeList> selectTradeList(String id);
+
+	void cancelOrder(int trd_num);
 
 }

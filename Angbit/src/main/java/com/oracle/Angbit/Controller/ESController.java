@@ -30,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.invest.OrderTrade;
+import com.oracle.Angbit.model.invest.TradeList;
 import com.oracle.Angbit.service.invest.InvestService;
 
 
@@ -53,7 +54,15 @@ public class ESController {
 	public String invest(Model model, HttpServletRequest request, HttpServletResponse response) {
 		
 		System.out.println("ESController invest Start...");
+		HttpSession session = request.getSession();
+		String id = (String) session.getAttribute("sessionID");
+		
 		List<CoinInfo> coinInfoList =  ivs.coinInfoList();
+		
+		if(id != null) {
+			List<TradeList> tradeList = ivs.selectTradeList(id);
+			model.addAttribute("tradeList", tradeList);
+		}
 		model.addAttribute("coinInfoList", coinInfoList);
 		
 		return "/invest/invest";
@@ -256,4 +265,37 @@ public class ESController {
 			e.printStackTrace();
 		}
 	}
+	
+	@ResponseBody
+	@GetMapping("invest/tradeList")
+	public List<TradeList> tradeList(HttpServletRequest request, HttpServletResponse response) {
+		
+		System.out.println("ESController tradeList Start...");
+		HttpSession session = request.getSession();
+		String id = (String) session.getAttribute("sessionID");
+		List<TradeList> tradeList = null;
+		if(id != null) {
+			tradeList = ivs.selectTradeList(id);
+		}
+		
+		return tradeList;
+	}
+	
+	@ResponseBody
+	@PostMapping("invest/cancelOrder")
+	public String cancelOrder(int trd_num) {
+		
+		System.out.println("ESController cancelOrder Start...");
+		String msg = null;
+		try {
+			ivs.cancelOrder(trd_num);
+			msg = "주문이 취소되었습니다.";
+		} catch (Exception e) {
+			System.out.println("ESController cancelOrder Exception->"+e.getMessage());
+			msg = "주문 취소에 실패하였습니다.";
+		}
+		
+		return msg;
+	}
+	
 }

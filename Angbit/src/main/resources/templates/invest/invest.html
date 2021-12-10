@@ -714,7 +714,13 @@
 					  }
 				  });
 				}); */
-
+		
+			$('.orderbook-ap').on('click', function() {
+				$('#order-unit_price').val($(this).text());
+				
+				
+			});
+			
 		});
 		
 		function upCoinListApi() {
@@ -806,7 +812,7 @@
 				}
 			};
 		
-		// 매수 onsubmit
+		// 매수 onsubmit시 조건확인
 		async function chkBuy() {
 			var trd_price = uncomma($('#order-trd_price').val()) * 1;
 			var krw = await selectKRW() * 1;
@@ -822,7 +828,18 @@
 			}
 
 			else {
-					buyCoin();
+				if( $("input[name='trd_method']:checked").val() == 'market') {
+					
+				} else {
+					$('#chkModal-trdMethod').text('지정가 매수');
+					console.log($('#order-trd_unit_price').val())
+					$('#chkModal-trd_unit_price').text($('#order-unit_price').val());
+					$('#chkModal-trd_amt').text($('#order-trd_amt').val());
+					$('#chkModal-trd_price').text($('#order-trd_price').val());
+					$('#chkModal-currCoin').text(currCoincode);
+					$('#confirmBuyBtn').attr('onclick', 'buyCoin()')
+					$("#chkTradeModal").modal('toggle');
+				}
 			}
 		};
 		
@@ -851,6 +868,7 @@
 					$('#modal-msg').text(msg);
 					$('#warmModal').modal('toggle');
 					selectKRW();
+					tradeList();
 				},
 				error		:	function(e) {
 					console.log("error : ",e);
@@ -1223,8 +1241,60 @@
 			}
 		};
 
-
-
+		function tradeList() {
+			$.ajax({
+				type		:	'GET',
+				url			:	'invest/tradeList',
+				data		:	sendData,
+				dataType 	: 	'json',
+				success		:	function(json) {
+					console.log(json);
+					var table = "";
+					for(var i = 0; i < json.length; i++) {
+						table += "<tr class='align-middle'>"
+						table += "<td>"+json[i].trd_num
+						table += "<td>"+json[i].coinname+" ("+json.coincode+')'
+						table += "<td>"+comma(json[i].trd_unit_price)
+						table += "<td>"+json[i].trd_amt
+						table += "<td>"+comma(json[i].trd_price)
+						if(json[i].trd_div == 0)
+							table += "<td class='text-danger'>매수"
+						else
+							table += "<td class='text-primary'>매도"
+						table += "<td><button class='cancelOrder-btn btn btn-warning' onclick=cancelOrder("+json[i].trd_num+")>취소</button></td>"						
+						table += "</tr>"
+					}
+					$('#orderList-tbody').html(table);
+				},
+				error		:	function(e) {
+					console.log("error : ",e);
+				}
+			});
+		}
+		
+		function chkCancelOrder(trd_num) {
+			document.getElementById('confirmCancelBtn').setAttribute("onclick", "cancelOrder("+trd_num+")")
+			$('#chkCancelModal').modal('toggle');
+		}
+		
+		function cancelOrder(trd_num) {
+			console.log('cancelOrder trd_num->'+trd_num);
+			sendData = "trd_num="+trd_num;
+			$.ajax({
+				type		:	'POST',
+				url			:	'invest/cancelOrder',
+				data		:	sendData,
+				success		:	function(data) {
+					$('#modal-msg').text(data);
+					$('#warmModal').modal('toggle');
+					tradeList();
+				},
+				error		:	function(e) {
+					console.log("error : ",e);
+				}
+			});
+		}
+		
 </script>
 </head>
 <body>
@@ -1238,8 +1308,7 @@
 		<div id="output"></div>
 	</div>
 	<section class="section1">
-
-		<div class="d-flex justify-content-center mt-5">
+		<div class="d-flex justify-content-end mt-5">
 			<div class="coinTitle-card card">
 				<div class="card-header">
 					<div class="d-flex justify-content-between">
@@ -1261,12 +1330,12 @@
 				</div>
 				<div class="card-body" id="coinTitle-body">
 				 <div id="coinTitle-tp"></div>
-					<span class="text-secondary" style="font-size: 13px;">전일대비</span><span class="ms-2 me-2" id="coinTitle-scr"></span><span id="coinTitle-scp"></span>
+					<span class="text-secondary" style="font-size: 14px;">전일대비</span><span class="ms-2 me-2" id="coinTitle-scr"></span><span id="coinTitle-scp"></span>
 				</div>
 			</div>
 		</div>
 
-		<div class="d-flex justify-content-center mt-3 mb-3">
+		<div class="d-flex justify-content-end mt-3 mb-3">
 			<div class="coinChart card">
 				<div class="coinChart c-buttonarea">
 					<button type="button" class="c-buttonarea-button" onclick="candleChange('minutes/1')" id="minutes/1">1분</button>
@@ -1280,7 +1349,7 @@
 				<div class="coinChart c-chartarea" id="coinChart"></div>
 			</div>
 		</div>
-		<div class="orderSection d-flex justify-content-between mx-auto">
+		<div class="d-flex justify-content-end">
 			<div class="orderbook-div card" id="orderbook-div">
 				<table class="table table-bordered table-responsive" id="orderbook-table">
 					<tr>
@@ -1431,7 +1500,7 @@
 							<div>주문구분</div>
 							<div>
 								<input type="radio" class="form-check-input" id="trd_method-limits" name="trd_method" value="limits" checked="checked" onclick="clickLimits()">지정가
-								<input type="radio" class="form-check-input" id="trd_method-market" name="trd_method" value="market" onclick="clickMarket()">시장가
+								<input type="radio" class="form-check-input ms-1" id="trd_method-market" name="trd_method" value="market" onclick="clickMarket()">시장가
 							</div>
 						</div>
 						<div class="d-flex justify-content-between mb-3">
@@ -1466,23 +1535,91 @@
 					</form>
 				</div>
 			</div>
-			<div class="modal" tabindex="-1" id="warmModal">
-			  <div class="modal-dialog modal-dialog-centered modal-sm">
-			    <div class="modal-content">
-			      <div class="modal-body">
-			        <p class="modal-title fw-bold fs-5 mb-3">매매 알람</p>
-			        <p class="mb-5" id="modal-msg"></p>
-			        <div class="d-flex justify-content-end">
-				        <button type="button" class="btn btn-primary fw-bold" data-bs-dismiss="modal">확인</button>
-			        </div>
-			      </div>
-			    </div>
-			  </div>
+		</div>
+		<div class="modal" tabindex="-1" id="warmModal">
+			<div class="modal-dialog modal-dialog-centered modal-sm">
+				<div class="modal-content">
+		      		<div class="modal-body">
+		        		<p class="modal-title mb-3">매매 알람</p>
+		        		<p class="mb-5" id="modal-msg"></p>
+		        		<div class="d-flex justify-content-end">
+			        		<button type="button" class="modal-btn btn btn-primary" data-bs-dismiss="modal">확인</button>
+	        			</div>
+	      			</div>
+		    	</div>
+			</div>
+		</div>
+		<div class="modal" tabindex="-1" id="chkTradeModal">
+			<div class="modal-dialog modal-dialog-centered modal-sm">
+				<div class="modal-content">
+		      		<div class="modal-body">
+		        		<p class="modal-title mb-3">주문확인</p>
+		      			<div class="d-flex justify-content-between mb-2">
+		      				<span class="text-secondary">주문구분</span><span class="text-danger" id="chkModal-trdMethod"></span>
+		      			</div>
+		      			<div class="d-flex justify-content-between mb-2">
+		      				<span class="text-secondary">주문가격</span><div><span id="chkModal-trd_unit_price"></span><span class="text-secondary ms-2">KRW</span></div>
+		      			</div>
+		      			<div class="d-flex justify-content-between mb-2">
+		      				<span class="text-secondary">주문수량</span><div><span id="chkModal-trd_amt"></span><span class="text-secondary  ms-2" id="chkModal-currCoin"></span></div>
+		      			</div>
+		      			<div class="d-flex justify-content-between mb-4">
+		      				<span class="text-secondary">주문총액</span><div><span id="chkModal-trd_price"></span><span class="text-secondary  ms-2">KRW</span></div>
+		      			</div>
+		        		<div class="d-flex justify-content-end">
+			        		<button type="button" class="modal-btn btn btn-secondary me-2" data-bs-dismiss="modal">취소</button>
+		        			<button type="button" class="modal-btn btn btn-primary" id="confirmBuyBtn" data-bs-dismiss="modal">확인</button>
+	        			</div>
+	      			</div>
+		    	</div>
+			</div>
+		</div>
+		<div class="modal" tabindex="-1" id="chkCancelModal">
+			<div class="modal-dialog modal-dialog-centered modal-sm">
+				<div class="modal-content">
+		      		<div class="modal-body">
+		        		<p class="modal-title mb-3">취소확인</p>
+		        		<p class="mb-5">정말로 주문을 취소하시겠습니까?</p>
+		        		<div class="d-flex justify-content-end">
+			        		<button type="button" class="modal-btn btn btn-secondary fw-bold me-2" data-bs-dismiss="modal">취소</button>
+		        			<button type="button" class="modal-btn btn btn-primary fw-bold" id="confirmCancelBtn" data-bs-dismiss="modal">확인</button>
+	        			</div>
+	      			</div>
+		    	</div>
+			</div>
+		</div>
+		<div class="d-flex justify-content-end">
+			<div class="mt-5">
+				<table class="orderList-table table table-striped table-hover">
+					<thead>
+						<tr>
+							<th>주문번호</th>
+							<th>코인명</th>
+							<th>주문가격</th>
+							<th>주문수량</th>
+							<th>주문총액</th>
+							<th>주문분류</th>
+							<th>주문취소</th>
+						</tr>
+					</thead>
+					<tbody id="orderList-tbody">
+						<tr class="align-middle" th:each="list : ${tradeList}">
+							<td th:text="${list.trd_num}">
+							<td th:text="${list.coinname}+' ('+${list.coincode}+')'">
+							<td th:text="${#numbers.formatInteger(list.trd_unit_price, 3, 'COMMA')}">
+							<td th:text="${list.trd_amt}">
+							<td th:text="${#numbers.formatInteger(list.trd_price, 3, 'COMMA')}">
+							<td class="text-danger" th:if="${list.trd_div == 0 }" th:text="매수">
+							<td class="text-primary" th:if="${list.trd_div == 1 }" th:text="매도">
+							<td><button class="cancelOrder-btn btn btn-warning" th:onclick="'chkCancelOrder('+${list.trd_num}+')'">취소</button></td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</section>
 	<section class="section2">
-	    <div class="card mt-5" id="coinlist-card">
+	    <div class="card mt-5 ms-3" id="coinlist-card">
 	    	<div class="card-header">
 	    		<input type="text" class="form-control" placeholder="코인명/심볼검색" style="font-size: 14px;" id="coinlist-search">
 	    	</div>

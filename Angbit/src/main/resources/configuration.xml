@@ -9,6 +9,7 @@
 		<typeAlias alias="TradeCoinInfo" type="com.oracle.Angbit.model.status.TradeCoinInfo"/>
 		<typeAlias alias="CoinCoinInfo" type="com.oracle.Angbit.model.status.CoinCoinInfo"/>
 		<typeAlias alias="MemberInfo" type="com.oracle.Angbit.model.common.MemberInfo"/>
-		
+		<typeAlias alias="OrderTrade" type="com.oracle.Angbit.model.invest.OrderTrade"/>
+		<typeAlias alias="TradeList" type="com.oracle.Angbit.model.invest.TradeList"/>
 	</typeAliases>
 </configuration>
