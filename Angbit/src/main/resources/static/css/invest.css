@@ -13,17 +13,20 @@ main::after {
 }
 
 .section1 {
-	width: 70%;
+	width: 60%;
 }
 
 /* Coin List Table */
 
 .coinlist-a {
 	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: 700;
+	font-size: 14px;
 }
 
 #coinlist-card {
 	width: 450px;
+	font-family: 'Noto Sans KR', sans-serif;
 
 }
 
@@ -42,6 +45,7 @@ main::after {
 
 .coinlist-price {
 	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: 500;
 	width: 90px;
 	height: 40px;
 }
@@ -53,10 +57,13 @@ main::after {
 
 }
 
-
+#coinTitle-body {
+	font-family: 'Noto Sans KR', sans-serif;
+} 
 
 #coinTitle-coinname {
 	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: 700;
 	font-size: 20px;
 	margin-right: 5px;
 }
@@ -67,6 +74,7 @@ main::after {
 
 #coinTitle-tp {
 	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: 700;
 	font-size: 25px;
 }
 
@@ -106,6 +114,7 @@ main::after {
 	width: 495px;
 	height: 600px;
 	overflow: auto;
+	margin-right: 15px;
 }
 
 #orderbook-table tr, td {
@@ -115,6 +124,7 @@ main::after {
 
 .orderbook-ap, .orderbook-bp {
 	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: 700;
 	font-size: 13px;
 }
 
@@ -175,12 +185,18 @@ main::after {
 
 /* orderSection */
 .orderSection {
-	width: 990px;
+/*  	width: 990px;  */
 }
 
+/* 매매창 */
 .order-card {
 	width: 480px;
 	height: 520px;
+}
+
+#order-card-body {
+	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: 400;
 }
 
 .order-form {
@@ -201,12 +217,14 @@ main::after {
 	width: 100px;
 	height: 45px;
 	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: 700;
 }
 
 .order-form-submit {
 	width: 280px;
 	height: 45px;
 	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: 700;
 	color: white;
 }
 
@@ -278,6 +296,36 @@ main::after {
 	color: #fff;
 	background-color: #487fb0;
 	border-radius: 3px;
+}
+
+/* OrderList */
+
+.orderList-table {
+	width: 990px;
+}
+
+.orderList-table td {
+	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: 400;
+	font-size: 16px;
+}
+
+.modal-title {
+	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: 700;
+	font-size: 25px;
+}
+
+.modal-body {
+	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: 400;
+	font-size: 18px;
+}
+
+.modal-btn {
+	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: 500;
+	font-size: 20px;
 }
 
 /* 링크 */
