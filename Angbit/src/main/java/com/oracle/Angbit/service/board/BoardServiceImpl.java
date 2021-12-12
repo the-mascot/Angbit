@@ -29,6 +29,13 @@ public class BoardServiceImpl implements BoardService {
 			return pagingbd;
 		}
 	
+		@Override
+		public int arrange() {
+			System.out.println("BoardServiceImpl arrange Start..." );
+			int arrange = bdao.arrange();
+			
+			return arrange;
+		}
 	  
 	 
 
@@ -46,11 +53,11 @@ public class BoardServiceImpl implements BoardService {
 	
 	//detail,updateForm
 	@Override
-	public Board detailBoard(int b_num) {
+	public Board detailBoard(int ref) {
 		System.out.println("BoardServiceImpl detailBoard ...");
 		Board board = null;
 		
-		board = bdao.detailBoard(b_num); //dao에서 리턴받은값 여기로
+		board = bdao.detailBoard(ref); //dao에서 리턴받은값 여기로
 		
 		return board;//리턴 컨트롤러로
 	}
@@ -74,22 +81,31 @@ public class BoardServiceImpl implements BoardService {
 	}
 	//detail
 	@Override
-	public int Delete(int b_num) {
+	public int Delete(int ref) {
 		int result = 0;
 		System.out.println("BoardServiceImpl delete Start...");
-		result = bdao.Delete(b_num);
+		result = bdao.Delete(ref);
 		return result;
 	}
+	
+	@Override
+	public int replyDelete(int ref) {
+		int result = 0;
+		System.out.println("BoardServiceImpl delete Start...");
+		result = bdao.replyDelete(ref);
+		return result;
+	}
+	
+	
+	
 	//coinBd,detail
 	@Override
-	public int viewCnt(int b_num) {
+	public int viewCnt(int ref) { //controller 에서 return한 값 여기로.
 		System.out.println("BoardServiceImpl viewCnt start...");
-		int result = bdao.viewCnt(b_num);
+		int result = bdao.viewCnt(ref);
 		return result;
 	}
 
-	
-	
 	//댓글정보 저장
 	@Override
 	public int instResult(Board board) {
@@ -106,6 +122,16 @@ public class BoardServiceImpl implements BoardService {
 		
 		return levone;
 	}
+
+
+
+
+	
+
+
+
+
+	
 
 	
 	

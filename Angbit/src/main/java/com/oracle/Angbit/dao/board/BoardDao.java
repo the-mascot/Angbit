@@ -22,6 +22,8 @@ public interface BoardDao {
 	int viewCnt(int b_num);
 	int instResult(Board board);
 	Board levone(int ref);
+	int replyDelete(int ref);
+	int arrange();
 	
 	
 	

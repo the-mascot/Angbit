@@ -30,7 +30,18 @@ public class BoardDaoImpl implements BoardDao {
 		return pagingbd;
 	}
 	
-	
+	@Override
+	public int arrange() {
+		System.out.println("BoardDaoImpl pagingBd Start ..." );
+		int arrange = 0;
+		
+		try {
+			arrange  = session.update("dyArrange");
+		} catch (Exception e) {
+			System.out.println("BoardDaoImpl arrange Exception->"+e.getMessage());
+		}
+		return arrange;
+	}
 	
 
 //페이징
@@ -53,12 +64,12 @@ public class BoardDaoImpl implements BoardDao {
 	
 	//detail,updateForm
 	@Override
-	public Board detailBoard(int b_num) {
+	public Board detailBoard(int ref) {
 		System.out.println("BoardDaoImpl detail start..");
 		Board board = new Board();
 		try {
 			//                       mapper ID   ,    Parameter
-			board = session.selectOne("dyBoardSelOne",    b_num);
+			board = session.selectOne("dyBoardSelOne",    ref);
 			
 			System.out.println("BoardDaoImpl detail getTitle->"+board.getB_num());
 		} catch (Exception e) {
@@ -69,17 +80,31 @@ public class BoardDaoImpl implements BoardDao {
 	
 		//삭제기능
 		@Override
-		public int Delete(int b_num) {
+		public int Delete(int ref) {
 			System.out.println("BoardDaoImpl Delete Start...");
 			int result = 0;
 			try {
-				result  = session.delete("delete",b_num);
+				result  = session.delete("delete",ref);
 				System.out.println("BoardDaoImpl delete result->"+result);
 			} catch (Exception e) {
 				System.out.println("BoardDaoImpl delete Exception->"+e.getMessage());
 			}
 			return result;
 		}
+		
+		@Override
+		public int replyDelete(int ref) {
+			System.out.println("BoardDaoImpl Delete Start...");
+			int result = 0;
+			try {
+				result  = session.delete("dyReplyDelete",ref);
+				System.out.println("BoardDaoImpl replyDelete result->"+result);
+			} catch (Exception e) {
+				System.out.println("BoardDaoImpl replyDelete Exception->"+e.getMessage());
+			}
+			return result;
+		}
+		
 		//수정기능
 		@Override
 		public int update(Board board) {
@@ -116,11 +141,11 @@ public class BoardDaoImpl implements BoardDao {
 		}
 		//조회수
 		@Override
-		public int viewCnt(int b_num) {
+		public int viewCnt(int ref) {
 			System.out.println("BoardDaoImpl viewCnt start..");
 			int result = 0;
 			try {
-				result  = session.insert("dyViewCnt",b_num);  //삽입된 행의 갯수를 반환
+				result  = session.insert("dyViewCnt",ref);  //삽입된 행의 갯수를 반환
 			} catch (Exception e) {
 				System.out.println("BoardDaoImpl viewCnt Exception->"+e.getMessage());
 			}
@@ -156,6 +181,16 @@ public class BoardDaoImpl implements BoardDao {
 			
 			return board;
 		}
+
+
+
+
+	
+
+
+
+
+		
 
 
 		

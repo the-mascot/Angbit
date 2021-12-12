@@ -38,9 +38,5 @@ public class SpringConfig implements WebMvcConfigurer {
 //		registry.addInterceptor(new WidrawInterceptor()).addPathPatterns("/LoginProcess");
 	}
 	
-	//동엽 paging
-	public ArrayList<Integer> blockChk(){
-		return new ArrayList<Integer>();
-	}
 	
 }
