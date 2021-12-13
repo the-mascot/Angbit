@@ -1264,7 +1264,7 @@
 						$('#orderList-tbody').html(table);
 					} else {
 						table += "<tr class='align-middle'>"
-						table += "<td colspan='7'>주문 내역이 없습니다.</td>"
+						table += "<td colspan='7' style='text-align: center;'>주문 내역이 없습니다.</td>"
 						table += "</tr>"
 						$('#orderList-tbody').html(table);
 					}
@@ -1566,7 +1566,7 @@
 							<td><button class="cancelOrder-btn btn btn-warning" th:onclick="'chkCancelOrder('+${list.trd_num}+')'">취소</button></td>
 						</tr>
 						<tr th:if="${tradeList.size()}==0">
-							<td colspan="7">주문 내역이 없습니다.</td>
+							<td colspan="7" style="text-align: center;">주문 내역이 없습니다.</td>
 						</tr>
 					</tbody>
 				</table>
