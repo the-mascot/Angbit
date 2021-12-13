@@ -6,6 +6,7 @@ import com.oracle.Angbit.model.common.Coin;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.oracle.Angbit.model.common.CoinInfo;
+import com.oracle.Angbit.model.common.Trade;
 import com.oracle.Angbit.model.invest.OrderTrade;
 import com.oracle.Angbit.model.invest.TradeList;
 
@@ -37,7 +38,9 @@ public interface InvestDao {
 
 	List<TradeList> selectTradeList(String id);
 
-	void cancelOrder(int trd_num);
-
+	Trade selectTrade(int trd_num);
+	
+	void cancelOrder(Trade trade);
+	
 	
 }

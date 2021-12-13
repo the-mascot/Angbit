@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.oracle.Angbit.dao.invest.InvestDao;
 import com.oracle.Angbit.model.common.CoinInfo;
+import com.oracle.Angbit.model.common.Trade;
 import com.oracle.Angbit.model.invest.OrderTrade;
 import com.oracle.Angbit.model.invest.TradeList;
 
@@ -118,10 +119,19 @@ public class InvestServiceImpl implements InvestService {
 	}
 
 	@Override
-	public void cancelOrder(int trd_num) {
+	public Trade selectTrade(int trd_num) {
 
-		System.out.println("InvestServiceImpl cancelOrder Start...");
-		ivdao.cancelOrder(trd_num);
+		System.out.println("InvestServiceImpl selectTrade Start...");
+		Trade trade = ivdao.selectTrade(trd_num);
 		
+		return trade;
 	}
+	
+	@Override
+	public void cancelOrder(Trade trade) {
+		
+		System.out.println("InvestServiceImpl cancelOrder Start...");
+		ivdao.cancelOrder(trade);
+	}
+
 }
