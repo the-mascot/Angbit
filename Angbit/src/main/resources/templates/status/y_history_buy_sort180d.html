@@ -56,7 +56,7 @@ $(document).ready(function(){
       <th class="cell2" scope="col" width="20.9%"><h5><b>체결시간</b></h5></th>
     </tr>
   </thead>
-  <tbody align="center" style="vertical-align:middle;">
+  <tbody align="center" style="vertical-align:middle;" class="y_history">
   	<th:block data-th-if="${Buy180List.size != 0}">
 	    <tr th:each="buy180List:${Buy180List}">
 	      <th scope="row" th:switch="${buy180List.coincode}">

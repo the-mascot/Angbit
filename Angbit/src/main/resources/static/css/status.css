@@ -6,6 +6,10 @@
 	font-weight: bold;
 	margin-top: 10px;
 }
+/* 투자현황 글꼴 */
+#statusList{
+	font-family: 'Noto Sans KR', sans-serif !important;
+}
 
 /* 이미지 */
 .status_img{
@@ -46,9 +50,20 @@
 	height: 50px;
 }
 
+/* 버튼 css */
+.btn{
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
 /* -------------------------------- */
 /* y_history */
-
+.y_history{
+	font-family: 'Noto Sans KR', sans-serif;
+}
+/* n_history 글꼴 */
+.n_history{
+	font-family: 'Noto Sans KR', sans-serif;
+}
 
 
 

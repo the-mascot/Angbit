@@ -294,7 +294,7 @@ window.addEventListener("load", init, false);
 	<div class="row my-3" align="center" style="padding-top: 20px;">
 		<h4><b>투자 현황</b></h4>
 	</div>
-	<div class="row my-2">
+	<div class="row my-2" id="statusList">
 		<div class="col-lg-6" style="padding-bottom: 25px; border-right:3px solid orange; text-align:justify">
 			<div class="container">
 	  			<div class="row status_status" th:each="klist:${krwList}">
@@ -355,7 +355,7 @@ window.addEventListener("load", init, false);
       <th class="cell2" scope="col"><h5><b>평가손익</b></h5></th>
     </tr>
   </thead>
-  <tbody align="center" style="vertical-align:middle;">
+  <tbody align="center" style="vertical-align:middle;" id="statusList">
   	<th:block data-th-if="${totPrice != null}">
 	    <tr th:each="slist:${statusList}">
 	      <th scope="row" th:switch="${slist.coincode}">

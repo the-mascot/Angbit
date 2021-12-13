@@ -33,7 +33,7 @@
       <th scope="col" width="14.6%"><h5><b>주문시간</b></h5></th>
     </tr>
   </thead>
-  <tbody align="center" style="vertical-align:middle;">
+  <tbody align="center" style="vertical-align:middle;" class="n_history">
 	  <th:block data-th-if="${nCancleList.size != 0}">
 	    <tr th:each="nclist:${nCancleList}">
 	      <th scope="row" th:switch="${nclist.coincode}">
@@ -56,7 +56,7 @@
 	      <td th:text="${nclist.coinname}+'&#13;&#10;'+'('+${nclist.coincode}+')'"></td>
 	      <td th:if="${nclist.trd_div}==1" style="color: blue;">매도</td>
 	      <td th:if="${nclist.trd_div}==0" style="color: red;">매수</td>
-	      <td th:if="${nclist.trd_stu}==2" style="color: gray;">취소</td>
+	      <td th:if="${nclist.trd_stu}==2" style="color: gray; font-weight: 700">취소</td>
 	      <td th:text="${#numbers.formatDecimal(nclist.trd_amt,1,'COMMA',8,'POINT')}"></td>
 	      <td th:text="${#numbers.formatDecimal(nclist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
 	      <td th:text="${#numbers.formatDecimal(nclist.trd_price,1,'COMMA',0,'POINT')}"></td>
