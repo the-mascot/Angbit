@@ -50,5 +50,7 @@ public interface StatusDao {
 	int searchBuy(String id, String search);
 	int searchSell(String id, String search);
 	List<TradeCoinInfo> searchSellList(TradeCoinInfo trdCoin, String search, String id);
+	List<TradeCoinInfo> nWaitList(String id);
+	List<TradeCoinInfo> nCancleList(String id);
 
 }

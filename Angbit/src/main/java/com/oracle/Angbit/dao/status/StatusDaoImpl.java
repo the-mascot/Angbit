@@ -375,6 +375,18 @@ public class StatusDaoImpl implements StatusDao {
 		return searchSellList;
 	}
 
+	@Override
+	public List<TradeCoinInfo> nWaitList(String id) {
+		List<TradeCoinInfo> nWaitList = session.selectList("StatusNWaitList", id);
+		return nWaitList;
+	}
+
+	@Override
+	public List<TradeCoinInfo> nCancleList(String id) {
+		List<TradeCoinInfo> nCancleList = session.selectList("StatusNCancleList", id);
+		return nCancleList;
+	}
+
 
 
 
