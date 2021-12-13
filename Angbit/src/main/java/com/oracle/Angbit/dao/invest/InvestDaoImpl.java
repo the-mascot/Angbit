@@ -17,6 +17,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -34,6 +35,8 @@ public class InvestDaoImpl implements InvestDao {
 	private SqlSession seesion;
 	@Autowired
 	private myInfoService mis;
+	@Autowired
+	private SimpMessagingTemplate template;
 	
 	@Override
 	public List<CoinInfo> coinInfoList() {
@@ -204,8 +207,10 @@ public class InvestDaoImpl implements InvestDao {
 					for(OrderTrade orderTrade : buyOrderList) {
 						int result1 = seesion.update("upBuyCoin", orderTrade);
 						int result2 = seesion.update("updateTrdStu", orderTrade);
-						System.out.println("coincode : "+orderTrade.getCoincode()+"id : "+orderTrade.getId()+" result1 : "+result1);
-						System.out.println("result2->"+result2);
+						System.out.println("coincode : "+orderTrade.getCoincode()+"id : "+orderTrade.getId()+" result1 : "+result1+" result2 : "+result2);
+						if(result1 > 0 && result2 > 0) {
+							template.convertAndSend("/topic/"+orderTrade.getId(), orderTrade.getTrd_num()+"번 거래가 체결 되었습니다!");
+						}
 					}
 				}
 				if (sellOrderList.size() > 0) {
@@ -218,7 +223,10 @@ public class InvestDaoImpl implements InvestDao {
 							seesion.delete("delCoinRow", orderTrade);
 							System.out.println("전량 매도 코인 ROW삭제");
 						}
-						seesion.update("increaseKRW", orderTrade);
+						int result4 = seesion.update("increaseKRW", orderTrade);
+						if(result1 > 0 && result2 > 0 && result4 > 0) {
+							template.convertAndSend("/topic/"+orderTrade.getId(), orderTrade.getTrd_num()+"번 거래가 체결 되었습니다!");
+						}
 						System.out.println("코인명 : "+orderTrade.getCoincode()+"\nid : "+orderTrade.getId()+" 지정가 매도 성공? : "+result1);
 						System.out.println("지정가 매도 성공?->"+result2);
 					}
@@ -270,11 +278,24 @@ public class InvestDaoImpl implements InvestDao {
 	}
 
 	@Override
-	@Transactional
-	public void cancelOrder(int trd_num) {
+	public Trade selectTrade(int trd_num) {
+		
 		System.out.println("InvestDaoImpl cancelOrder Start...");
 		Trade trade =seesion.selectOne("selectTrade", trd_num);
-		seesion.update("cancelKRW", trade);
-		seesion.update("cancelTrade", trd_num);
+		
+		return trade;
+	}
+	
+	@Override
+	@Transactional
+	public void cancelOrder(Trade trade) {
+		
+		System.out.println("InvestDaoImpl cancelBuyOrder Start...");
+		if(trade.getTrd_div() == 0) {
+			seesion.update("cancelKRW", trade);
+			seesion.update("cancelTrade", trade.getTrd_num());
+		} else {
+			seesion.update("cancelTrade", trade.getTrd_num());
+		}
 	}
 }

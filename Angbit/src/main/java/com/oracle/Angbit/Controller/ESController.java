@@ -23,6 +23,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.oracle.Angbit.model.common.CoinInfo;
+import com.oracle.Angbit.model.common.Trade;
 import com.oracle.Angbit.model.invest.OrderTrade;
 import com.oracle.Angbit.model.invest.TradeList;
 import com.oracle.Angbit.service.invest.InvestService;
@@ -297,8 +299,15 @@ public class ESController {
 		System.out.println("ESController cancelOrder Start...");
 		String msg = null;
 		try {
-			ivs.cancelOrder(trd_num);
-			msg = "주문이 취소되었습니다.";
+			Trade trade = ivs.selectTrade(trd_num);
+			if(trade.getTrd_stu() == 0) {
+				ivs.cancelOrder(trade);
+				msg = "주문이 취소되었습니다.";
+			} else if(trade.getTrd_stu() == 1) {
+				msg = "체결이 완료된 주문입니다.";
+			} else {
+				msg = "이미 취소된 주문입니다.";
+			}
 		} catch (Exception e) {
 			System.out.println("ESController cancelOrder Exception->"+e.getMessage());
 			msg = "주문 취소에 실패하였습니다.";
@@ -306,23 +315,15 @@ public class ESController {
 		
 		return msg;
 	}
-	
+	@Autowired
 	private SimpMessagingTemplate template;
 	
 	@MessageMapping("/good")
 	public void sendMessageTo(OrderTrade orderTrade) {
 		System.out.println("good 실행");
 		orderTrade.setId("dmstn1812@naver.com");
-		
+		template.convertAndSend("/topic/dmstn1812@naver.com", "안녕디지몬");
 	}
 	
-	@ResponseBody
-	@GetMapping("invest/call")
-	public void call() {
-		
-		System.out.println("ESController call Start...");
-		template.convertAndSend("/topic", "안녕디지몬");
-		
-	}
 	
 }
