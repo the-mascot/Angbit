@@ -20,9 +20,12 @@
 <!-- lightweight-chart -->
 <script th:src="@{https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js}"></script>
 
+ <!-- Toastr -->
+<link th:href="@{https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css}" rel="stylesheet">
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js}"></script>
+
 <script type="text/javascript">
-
-
+		window.addEventListener("load", init, false);
 		var wsUri = "wss://api.upbit.com/websocket/v1";	// Upbit websoket 여는 uri
 		var output;
 		var currCoin = null;	// 현재 위치한 코인 페이지
@@ -31,14 +34,12 @@
 		var currCandle = null;
 		var coinList = ["KRW-BTC", "KRW-ETH", "KRW-ADA", "KRW-XRP", "KRW-DOT", "KRW-DOGE", "KRW-MANA",
 			"KRW-LTC", "KRW-SAND", "KRW-VET", "KRW-AXS", "KRW-SOL", "KRW-BCH", "KRW-XLM", "KRW-ETC"]
-
 		/*<![CDATA[*/
 		var sessionID = "[[${session.sessionID}]]"
 		/*]]>*/
 
 		// 페이지 로딩 되면 실행되는 initial 함수
 		function init() {
-			output = document.getElementById("output");
 			console.log('init() Start...');
 	 		testWebSocket();
 			investApi(event);
@@ -86,22 +87,19 @@
 			];
 			msg = JSON.stringify(msg);
 			doSend(msg);
-
 		}
 
 		function onClose(evt) {
  	 		websocket.close();
-			writeToScreen("연결해제");
 		}
 
 		function onMessage(evt) {
-			
  			//console.log(evt.data);
 			var enc = new TextDecoder("utf-8");
 			var arr = new Uint8Array(evt.data);
 			var decode = enc.decode(arr);
 			var jason=JSON.parse(decode);
- 			console.log(enc.decode(arr));
+ 			//console.log(enc.decode(arr));
 			
  			switch(jason['ty']) {
  			case 'ticker':	// 현재가 응답
@@ -113,9 +111,8 @@
  				}
  				break;
  			case 'orderbook':	// 호가 응답
-
  				if(currCoin == jason['cd']) {
- 					console.log('pcp->'+pcp);
+ 					//console.log('pcp->'+pcp);
  					for(var i = 0; i < jason['obu'].length; i++) {
  						askSize = jason['obu'][i].as.toFixed(3);
  						bidSize = jason['obu'][i].bs.toFixed(3);
@@ -141,7 +138,6 @@
  							document.getElementById('ap-'+i).style.color 		= "black";
  							document.getElementById('apPercent-'+i).style.color	= "black";
  						}
-
  						if(pcp < bp) {
  							document.getElementById('bp-'+i).style.color 		= "red";
  							document.getElementById('bpPercent-'+i).style.color	= "red";
@@ -152,55 +148,45 @@
  							document.getElementById('bp-'+i).style.color 		= "black";
  							document.getElementById('bpPercent-'+i).style.color	= "black";
  						}
-
  					}
  				}
  				break;
 
  			case 'trade':	// 체결 응답
  				if(currCoin == jason['cd']) {
-
  					for(var i=0; i<10; i++) {
  						if(document.getElementById('ap-'+i).innerText == jason['tp'].toLocaleString()) {
  							document.getElementById('orderbook-td-ap-'+i).style.border = "2px solid black";
  						} else {
  							document.getElementById('orderbook-td-ap-'+i).style.border = "0px";
  						}
-
 	 					if(document.getElementById('bp-'+i).innerText == jason['tp'].toLocaleString()) {
 								document.getElementById('orderbook-td-bp-'+i).style.border = "2px solid black";
 							} else {
 								document.getElementById('orderbook-td-bp-'+i).style.border = "0px";
 							}
  					}
-
  	 				for(var i=9; i>0; i--) {
 	 					document.getElementById('trd-tp-'+i).innerText = document.getElementById('trd-tp-'+(i-1)).innerText;
 	 					document.getElementById('trd-tv-'+i).innerText = document.getElementById('trd-tv-'+(i-1)).innerText;
 	 					document.getElementById('trd-tp-'+i).style.color = document.getElementById('trd-tp-'+(i-1)).style.color;
 	 					document.getElementById('trd-tv-'+i).style.color = document.getElementById('trd-tv-'+(i-1)).style.color;
 	 				}
-
 	 				if(jason.tv >= 100) {
 	 					document.getElementById('trd-tv-0').innerText = Math.round(jason['tv']).toLocaleString();
 	 				} else {
 	 					document.getElementById('trd-tv-0').innerText = jason['tv'].toFixed(3);
 	 				}
-
 	 				if(jason.ab == 'ASK') {
 	 					document.getElementById('trd-tv-0').style.color = "blue";
 	 				} else {
 	 					document.getElementById('trd-tv-0').style.color = "red";
 	 				}
-
 	 				document.getElementById('trd-tp-0').innerText = jason['tp'].toLocaleString();
  				}
 
-
  				break;
-
  			}
-
         }
 
 		function onError(evt) {
@@ -211,11 +197,9 @@
 			websocket.send(message);
 		}
 
-		window.addEventListener("load", init, false);
-
 		function flashit(code, tp){
 			var trade_price = tp.toLocaleString();
-			console.log(trade_price);
+			//console.log(trade_price);
 			if(document.getElementById(code+'-price').innerText < trade_price) {
 				document.getElementById(code+'-price').style.border = "1px solid red";
 			} if(document.getElementById(code+'-price').innerText > trade_price) {
@@ -1291,6 +1275,10 @@
 			});
 		}
 		
+		function callToastr() {
+			onAlarmClose();
+		}
+		
 </script>
 </head>
 <body>
@@ -1298,6 +1286,7 @@
 <header th:replace="common/header :: header"></header>
 
 <main class="clearfix">
+	<button onclick="callToastr()">눌러봥</button>
 	<section class="section1">
 		<div class="d-flex justify-content-end mt-5">
 			<div class="coinTitle-card card">

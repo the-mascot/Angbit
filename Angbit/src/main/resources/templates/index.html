@@ -5,6 +5,12 @@
 <!-- Common meta tag, Bootstrap, js -->
 <th:block th:replace="common/commonHead"></th:block>
 
+<!-- Jquery -->
+<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
+
+<script type="text/javascript">
+
+</script>
 </head>
 <body>
 <!-- Common header -->
@@ -12,7 +18,8 @@
 
 <main>
 <div>
-
+	<button onclick="alarmWebSocket()">누러봐</button>
+	<button onclick="sendMessage()">전송</button>
 </div>
 
 </main>

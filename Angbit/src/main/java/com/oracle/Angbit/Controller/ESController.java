@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.NumberFormat;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,6 +22,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -27,6 +32,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.invest.OrderTrade;
@@ -41,6 +48,8 @@ public class ESController {
 	
 	@Autowired
 	private InvestService ivs;
+	@Autowired
+	private EchoHandler echo;
 	
 	@GetMapping("/")
 	public String home() {
@@ -296,6 +305,24 @@ public class ESController {
 		}
 		
 		return msg;
+	}
+	
+	private SimpMessagingTemplate template;
+	
+	@MessageMapping("/good")
+	public void sendMessageTo(OrderTrade orderTrade) {
+		System.out.println("good 실행");
+		orderTrade.setId("dmstn1812@naver.com");
+		
+	}
+	
+	@ResponseBody
+	@GetMapping("invest/call")
+	public void call() {
+		
+		System.out.println("ESController call Start...");
+		template.convertAndSend("/topic", "안녕디지몬");
+		
 	}
 	
 }
