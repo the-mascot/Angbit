@@ -24,7 +24,7 @@
 		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=1 order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end} 
 	</select>
 	<select id="TradeListKRW" parameterType="String" resultType="Integer">
-		select sum(trd_price) from trade where id=#{id} and trd_stu = 0 and trd_div = 0
+		select NVL(sum(trd_price), 0) from trade where id=#{id} and trd_stu = 0 and trd_div = 0
 	</select>
 	
 	<!-- 기간별 전체정렬 -->
