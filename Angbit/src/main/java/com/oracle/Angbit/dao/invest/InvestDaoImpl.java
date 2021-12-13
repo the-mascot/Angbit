@@ -205,7 +205,6 @@ public class InvestDaoImpl implements InvestDao {
 						int result2 = seesion.update("updateTrdStu", orderTrade);
 						System.out.println("coincode : "+orderTrade.getCoincode()+"id : "+orderTrade.getId()+" result1 : "+result1);
 						System.out.println("result2->"+result2);
-						
 					}
 				}
 			} catch (Exception e) {
