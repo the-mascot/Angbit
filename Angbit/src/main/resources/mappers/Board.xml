@@ -16,13 +16,12 @@
 			 memberinfo mb
 			ON 
 			 bd.id = mb.id
-			ORDER BY bd.b_num DESC) a
+			ORDER BY bd.ref DESC) a
 		  )
 			WHERE (rn between #{start} and #{end}) and re_level=0  
 	</select>
 	
-	
-	
+
 	
 	
 	<!-- total -->
@@ -35,24 +34,24 @@
 	
 	
 	
-	<!-- detail, updateForm -->
+	<!-- detailboard, updateForm -->
 	<select id="dyBoardSelOne" parameterType="int" resultType="Board">
 		SELECT * 
 		FROM Board bd
 		LEFT OUTER JOIN memberinfo mb
 		ON bd.id = mb.id
-		WHERE (b_num = #{b_num}) and bd.re_level=0
+		WHERE (ref = #{ref}) and bd.re_level=0
 	</select>
 	
 	<!-- 조회수 -->
 	<update id="dyViewCnt" parameterType="int">
 		UPDATE board
 		SET views = views+1
-		WHERE (b_num = #{b_num}) and re_level=0
+		WHERE (ref = #{ref}) and re_level=0
 	</update>
 	
 	
-	<!-- update -->
+	<!--게시글 update -->
 	<update id="dyBoardUpdate" parameterType="Board">
 		 update board 
 		 set    title=#{title}, content=#{content}, uploaddate=sysdate
@@ -70,8 +69,8 @@
 	<!-- write insert -->
 	<insert id="dyBoardInsert" parameterType="Board">
 	     INSERT  
-	     INTO  board b
-	     values(#{title},#{content})
+	     INTO  board(B_NUM,ID,UPLOADDATE,TITLE,CONTENT,VIEWS,REF,RE_LEVEL,RE_STEP) b
+	     values(b.MAX(B_NUM)+1,id,sysdate,#{title},#{content},views,ref,re_level,re_step)
 	     WHERE b.id=(select id
 			    	 from   memberinfo m
 			    	 where  m.nickname = #{nickname}) 
@@ -79,20 +78,27 @@
 	
 	
 	
-	<!-- delete -->
+	<!--게시글 delete -->
 	<delete id="delete" parameterType="int">
-		delete from BOARD where b_num = #{b_num}
+		DELETE FROM board 
+		WHERE ref = #{ref} AND re_level=0;
+	</delete>
+	<!--댓글 delete -->
+	<delete id="dyReplyDelete" parameterType="int">
+		DELETE FROM board 
+		WHERE  ref = #{ref} AND re_level=1;
 	</delete>
 	
 	
-	<!-- 댓글 수정중-->
 	
+	<!-- 댓글 추가부분-->
 	<insert id="dyReplyResult" parameterType="Board">
 		INSERT
 		INTO   board(B_NUM,ID,UPLOADDATE,TITLE,CONTENT,VIEWS,REF,RE_LEVEL,RE_STEP)
-		values (#{b_num},#{id},sysdate,#{title},#{content},#{views},#{ref},#{re_level},#{re_step+1})
+		values (#{b_num},#{id},to_date(sysdate,'YYYY-MM-DD HH24:mi:SS'),#{title},#{content},#{views},#{ref},#{re_level},#{re_step}+1)
 	</insert>
-		
+	
+	<!-- 댓글가져가기 -->	
 	<select id="dyLevOne" parameterType="int" resultType="Board">
 		SELECT * 
 		FROM Board bd

@@ -2,15 +2,21 @@ package com.oracle.Angbit.model.common;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 
 
 @Data
 public class Board {
 	
+	private int rownum;
 	private int b_num;
 	private String id;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date uploaddate;
+	
 	private String title;
 	private String content;
 	private String imagepath;
