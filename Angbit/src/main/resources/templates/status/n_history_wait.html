@@ -33,7 +33,7 @@
       <th scope="col" width="14.6%"><h5><b>주문시간</b></h5></th>
     </tr>
   </thead>
-  <tbody align="center" style="vertical-align:middle;">
+  <tbody align="center" style="vertical-align:middle;" class="n_history">
 	  <th:block data-th-if="${nWaitList.size != 0}">
 	    <tr th:each="nwlist:${nWaitList}">
 	      <th scope="row" th:switch="${nwlist.coincode}">
@@ -56,7 +56,7 @@
 	      <td th:text="${nwlist.coinname}+'&#13;&#10;'+'('+${nwlist.coincode}+')'"></td>
 	      <td th:if="${nwlist.trd_div}==1" style="color: blue;">매도</td>
 	      <td th:if="${nwlist.trd_div}==0" style="color: red;">매수</td>
-	      <td th:if="${nwlist.trd_stu}==0" style="color: #1DDB16;">대기</td>
+	      <td th:if="${nwlist.trd_stu}==0" style="color: #1DDB16; font-weight: 700">대기</td>
 	      <td th:text="${#numbers.formatDecimal(nwlist.trd_amt,1,'COMMA',8,'POINT')}"></td>
 	      <td th:text="${#numbers.formatDecimal(nwlist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
 	      <td th:text="${#numbers.formatDecimal(nwlist.trd_price,1,'COMMA',0,'POINT')}"></td>
