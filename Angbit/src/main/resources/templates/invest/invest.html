@@ -1507,9 +1507,11 @@
 							<td class="text-primary" th:if="${list.trd_div == 1 }" th:text="매도">
 							<td><button class="cancelOrder-btn btn btn-warning" th:onclick="'chkCancelOrder('+${list.trd_num}+')'">취소</button></td>
 						</tr>
-						<tr th:if="${tradeList.size()}==0">
-							<td colspan="7" style="text-align: center;">주문 내역이 없습니다.</td>
-						</tr>
+						<th:block data-th-if="${tradeList == null or tradeList.isEmpty() == true}">
+                        <tr>
+                            <td colspan="7" style="text-align: center;">주문 내역이 없습니다.</td>
+                        </tr>
+                        </th:block>
 					</tbody>
 				</table>
 			</div>
