@@ -23,6 +23,7 @@ public interface BoardService {
 	Board levone(int ref);
 	int replyDelete(int ref);
 	int arrange();
+	Board detailReply(int ref);
 	
 	
 	

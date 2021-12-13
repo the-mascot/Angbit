@@ -57,6 +57,15 @@
 		 set    title=#{title}, content=#{content}, uploaddate=sysdate
 		 where (b_num=#{b_num}) and re_level=0 
 	</update>
+	<!-- 상세게시판 댓글 리턴 -->
+	<select id="dyReplySelOne" parameterType="int" resultType="Board">
+		SELECT * 
+		FROM Board bd
+		LEFT OUTER JOIN memberinfo mb
+		ON bd.id = mb.id
+		WHERE (ref = #{ref}) and bd.re_level=1
+	</select>
+	
 	
 	<!-- <select id="writeBoard" resultType="Board">
 		SELECT * 

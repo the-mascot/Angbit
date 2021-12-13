@@ -121,6 +121,26 @@ public class BoardDaoImpl implements BoardDao {
 			return result;
 		}
 
+		@Override
+		public Board detailReply(int ref) {
+			System.out.println("BoardDaoImpl detailReply start..");
+			Board board = new Board();
+			try {
+				//                       mapper ID   ,    Parameter
+				board = session.selectOne("dyReplySelOne",    ref);
+				
+				System.out.println("BoardDaoImpl detailReply getRef->"+board.getRef());
+			} catch (Exception e) {
+				System.out.println("BoardDaoImpl detailReply Exception->"+e.getMessage());
+			}
+			return board;
+		}
+
+		
+		
+		
+		
+		
 		/*
 		 * @Override public Board writeBoard(int b_num) { // TODO Auto-generated method
 		 * stub System.out.println("BoardDaoImpl writeBoard start..."); Board
@@ -182,6 +202,7 @@ public class BoardDaoImpl implements BoardDao {
 			return board;
 		}
 
+		
 
 
 

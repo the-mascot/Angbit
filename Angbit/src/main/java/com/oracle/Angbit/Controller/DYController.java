@@ -163,9 +163,28 @@ public class DYController {
 		
 
 		//		댓글수정자리ajax
+		@GetMapping(value="reply_updateForm")
+		public String replyUpdateForm(Board board, Model model) {
+			System.out.println("DYController Start updateForm..." );
+			Board bd = bs.detailReply(board.getRef()); 
+			
+			model.addAttribute("board",bd);
+			
+			return "board/replyUpdateForm";
+		}
+		//댓글 db에 보내기 만드는중 ....@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+		@PostMapping(value="reply_update")
+	    public String replyUpdate(Board board, Model model) {
+			System.out.println("board.getBnum->"+board.getB_num());
+			int result = bs.update(board);
+			System.out.println("DYController update result->"+result);
+			model.addAttribute("result", result);               		// Test Controller간 Data 전달
+			
+			return "redirect:board_list";  						//갱신시에 계속 수정해줘야돼서 포워드로 반복 
+	    }
 		
 		
-		
+		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 		
 		
 		
