@@ -305,7 +305,7 @@ window.addEventListener("load", init, false);
 	   			<div class="row status_status" th:each="klist:${krwList}">
 	   				<img class="status_img" alt="" src="images/status/krw1.png">
 	    			<div class="col">보유 현금</div>
-				    <div th:id="cash" class="col" align="right" th:text="${#numbers.formatDecimal(klist.krw-totPrice,1,'COMMA',0,'POINT')+' KRW'}"></div>
+				    <div th:id="cash" class="col" align="right" th:text="${#numbers.formatDecimal(klist.krw,1,'COMMA',0,'POINT')+' KRW'}"></div>
 				</div>
 				<hr class="line" style="height: 3px"/>
 				<div class="row status_status">
