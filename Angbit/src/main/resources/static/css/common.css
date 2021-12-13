@@ -18,6 +18,13 @@ header {
 	font-family: 'Noto Sans KR', sans-serif;
 	font-size: 20px;
 	z-index: 9999;
+	font-weight: 700;
+}
+
+.header-btn {
+	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: 500;
+	font-size: 20px;
 }
 
 footer {

@@ -11,9 +11,6 @@ import com.oracle.Angbit.dao.board.BoardDao;
 import com.oracle.Angbit.model.common.Board;
 
 
-
-
-
 @Transactional
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -32,9 +29,14 @@ public class BoardServiceImpl implements BoardService {
 			return pagingbd;
 		}
 	
-	  @Override public List<Board> BoardList() {
-	  System.out.println("BoardServiceImpl BoardList Start..."); List<Board>
-	  boardList = bdao.BoardList(); return boardList; }
+		@Override
+		public int arrange() {
+			System.out.println("BoardServiceImpl arrange Start..." );
+			int arrange = bdao.arrange();
+			
+			return arrange;
+		}
+	  
 	 
 
 	@Override
@@ -49,13 +51,13 @@ public class BoardServiceImpl implements BoardService {
 	
 
 	
-	//detail,updateForm
+	//detail,boardupdateForm
 	@Override
-	public Board detailBoard(int b_num) {
+	public Board detailBoard(int ref) {
 		System.out.println("BoardServiceImpl detailBoard ...");
 		Board board = null;
 		
-		board = bdao.detailBoard(b_num); //dao에서 리턴받은값 여기로
+		board = bdao.detailBoard(ref); //dao에서 리턴받은값 여기로
 		
 		return board;//리턴 컨트롤러로
 	}
@@ -67,14 +69,22 @@ public class BoardServiceImpl implements BoardService {
 		int result = bdao.update(board);
 		return result;
 	}
-
-	/*
-	 * @Override public Board writeBoard(int b_num) {
-	 * 
-	 * System.out.println("BoardServiceImpl writeBoard start..."); Board board =
-	 * bdao.writeBoard(b_num); return board; }
-	 */
-
+	//replyUpdateform
+	@Override
+	public Board detailReply(int ref) {
+		System.out.println("BoardServiceImpl detailReply ...");
+		Board board = null;
+		
+		board = bdao.detailReply(ref);
+		return board;
+	}
+	
+	
+	
+	
+	
+	
+	//writeForm
 	@Override
 	public int insert(Board board) {
 		System.out.println("BoardServiceImpl insert start...");
@@ -83,21 +93,63 @@ public class BoardServiceImpl implements BoardService {
 		
 		return result;
 	}
-
+	//detail
 	@Override
-	public int Delete(int b_num) {
+	public int Delete(int ref) {
 		int result = 0;
 		System.out.println("BoardServiceImpl delete Start...");
-		result = bdao.Delete(b_num);
+		result = bdao.Delete(ref);
 		return result;
 	}
 	
 	@Override
-	public int viewCnt(int b_num) {
-		System.out.println("BoardServiceImpl viewCnt start...");
-		int result = bdao.viewCnt(b_num);
+	public int replyDelete(int ref) {
+		int result = 0;
+		System.out.println("BoardServiceImpl delete Start...");
+		result = bdao.replyDelete(ref);
 		return result;
 	}
+	
+	
+	
+	//coinBd,detail
+	@Override
+	public int viewCnt(int ref) { //controller 에서 return한 값 여기로.
+		System.out.println("BoardServiceImpl viewCnt start...");
+		int result = bdao.viewCnt(ref);
+		return result;
+	}
+
+	//댓글정보 저장
+	@Override
+	public int instResult(Board board) {
+		System.out.println("BoardServiceImpl instResult start...");
+		int result = bdao.instResult(board);
+		
+		return result;
+	}
+	//댓글 출력
+	@Override
+	public Board levone(int ref) {
+		System.out.println("BoardServiceImpl levone start...");
+		Board levone = bdao.levone(ref);
+		
+		return levone;
+	}
+
+	
+
+
+
+
+	
+
+
+
+
+	
+
+	
 	
 	
 

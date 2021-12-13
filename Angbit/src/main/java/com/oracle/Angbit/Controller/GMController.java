@@ -32,7 +32,7 @@ public class GMController {
 		@Autowired
 		private StatusService ss;
 
-//		Status Controller
+//		투자현황
 		@GetMapping("/statusList")
 		public String statusList(HttpServletRequest request, Model model) {
 			System.out.println("GMController statusList start...");
@@ -56,6 +56,7 @@ public class GMController {
 			}
 		}
 		
+//		chart.js ajax
 		@ResponseBody
 		@RequestMapping("/statusListAjax")
 		public String chart(HttpServletRequest request) {
@@ -79,7 +80,7 @@ public class GMController {
 			return json;
 		}
 		
-		
+//		체결내역 - 전체 - 전체
 		@GetMapping("/status_y_history")
 		public String statusYHistory(TradeCoinInfo trdCoin, HttpServletRequest request, String currentPage, Model model) {
 			System.out.println("GMController StatusYHistory Start...");
@@ -100,6 +101,7 @@ public class GMController {
 			
 			List<TradeCoinInfo> tradeList = ss.yStatus(trdCoin, id);
 			model.addAttribute("yList", tradeList);
+			System.out.println("y_history tradeList.size() -> "+tradeList.size());
 			model.addAttribute("pg", pg);
 			System.out.println("startPage -> " +pg.getStartPage());
 			System.out.println("endPage -> " +pg.getEndPage());
@@ -108,6 +110,7 @@ public class GMController {
 			return "/status/y_history";
 		}
 		
+//		체결내역 - 전체 - 7일
 		@GetMapping("/status_y_history_sort7d")
 		public String allDateSort7(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_dateSort Start...");
@@ -130,6 +133,7 @@ public class GMController {
 			return "/status/y_history_sort7d"; 
 		}
 		
+//		체결내역 - 전체 - 30일
 		@GetMapping("/status_y_history_sort30d")
 		public String allDateSort30(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_dateSort Start...");
@@ -152,6 +156,7 @@ public class GMController {
 			return "/status/y_history_sort30d"; 
 		}
 		
+//		체결내역 - 전체 - 90일
 		@GetMapping("/status_y_history_sort90d")
 		public String allDateSort90(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_dateSort Start...");
@@ -173,7 +178,7 @@ public class GMController {
 			
 			return "/status/y_history_sort90d"; 
 		}
-		
+//		체결내역 - 전체 - 180일
 		@GetMapping("/status_y_history_sort180d")
 		public String allDateSort180(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_dateSort Start...");
@@ -195,6 +200,7 @@ public class GMController {
 			return "/status/y_history_sort180d"; 
 		}
 		
+//		미체결내역 - 전체
 		@GetMapping("/status_n_history")
 		public String statusNHistory(HttpServletRequest request, Model model) {
 			System.out.println("GMController StatusNHistory Start...");
@@ -209,7 +215,7 @@ public class GMController {
 			return "/status/n_history";
 		}
 		
-		// 매수
+//		체결내역 - 매수 - 전체
 		@GetMapping("/status_y_history_buy")
 		public String statusBuycom(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_buy Start...");
@@ -230,6 +236,7 @@ public class GMController {
 			return "/status/y_history_buy";
 		}
 		
+//		체결내역 - 매수 - 7일
 		@GetMapping("/status_y_history_buy_sort7d")
 		public String statusBuycomSort7d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_buy_sort7 Start...");
@@ -250,6 +257,7 @@ public class GMController {
 			return "/status/y_history_buy_sort7d";
 		}
 		
+//		체결내역 - 매수 - 30일
 		@GetMapping("/status_y_history_buy_sort30d")
 		public String statusBuycomSort30d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_buy_sort30 Start...");
@@ -270,6 +278,7 @@ public class GMController {
 			return "/status/y_history_buy_sort30d";
 		}
 		
+//		체결내역 - 매수 - 90일
 		@GetMapping("/status_y_history_buy_sort90d")
 		public String statusBuycomSort90d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_buy_sort90 Start...");
@@ -290,6 +299,7 @@ public class GMController {
 			return "/status/y_history_buy_sort90d";
 		}
 		
+//		체결내역 - 매수 - 180일
 		@GetMapping("/status_y_history_buy_sort180d")
 		public String statusBuycomSort180d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_buy_sort180 Start...");
@@ -310,7 +320,7 @@ public class GMController {
 			return "/status/y_history_buy_sort180d";
 		}
 		
-		// 매도
+//		 체결내역 - 매도 - 전체
 		@GetMapping("/status_y_history_sell")
 		public String statusSellcom(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_sell Start...");
@@ -331,6 +341,7 @@ public class GMController {
 			return "/status/y_history_sell";
 		}
 		
+//		체결내역 - 매도 - 7일
 		@GetMapping("/status_y_history_sell_sort7d")
 		public String statusSellcomsort7d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_sell_sort7 Start...");
@@ -351,6 +362,7 @@ public class GMController {
 			return "/status/y_history_sell_sort7d";
 		}
 		
+//		체결내역 - 매도 - 30일
 		@GetMapping("/status_y_history_sell_sort30d")
 		public String statusSellcomsort30d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_sell_sort7 Start...");
@@ -371,6 +383,7 @@ public class GMController {
 			return "/status/y_history_sell_sort30d";
 		}
 		
+//		체결내역 - 매도 - 90일
 		@GetMapping("/status_y_history_sell_sort90d")
 		public String statusSellcomsort90d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_sell_sort7 Start...");
@@ -391,6 +404,7 @@ public class GMController {
 			return "/status/y_history_sell_sort90d";
 		}
 		
+//		체결내역 - 매도 - 180일
 		@GetMapping("/status_y_history_sell_sort180d")
 		public String statusSellcomsort180d(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			System.out.println("GMController status_y_history_sell_sort7 Start...");
@@ -411,16 +425,119 @@ public class GMController {
 			return "/status/y_history_sell_sort180d";
 		}
 		
+//		체결내역 - 검색 - 전체
 		@GetMapping("/y_history_search")
-		public String historySearch(HttpServletRequest request, Model model) {
+		public String historySearch(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
 			HttpSession session = request.getSession();
 			String id = (String) session.getAttribute("sessionID");
 			String search = request.getParameter("search");
 			System.out.println("id -> "+id);
 			System.out.println("search -> "+search);
+			
+			int total = ss.searchTotal(id, search);
+			System.out.println("total.size() ->"+total);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			System.out.println("search.start -> "+pg.getStart());
+			System.out.println("search.end -> "+pg.getEnd());
+			
+			
+			List<TradeCoinInfo> searchList = ss.searchList(trdCoin, search, id);
+			System.out.println("searchList.size() ->"+searchList.size());
+			System.out.println("search ->"+search);
+			
+			model.addAttribute("searchList", searchList);
+			model.addAttribute("pg", pg);
+			model.addAttribute("search", search);
 			return "/status/y_history_search";
 		}
 		
+//		체결내역 - 검색 - 매수
+		@GetMapping("/y_history_search_buy")
+		public String buySearch(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			String search = request.getParameter("search");
+			System.out.println("id -> "+id);
+			System.out.println("search -> "+search);
+			
+			int total = ss.searchBuy(id, search);
+			System.out.println("total.size() ->"+total);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			System.out.println("search.start -> "+pg.getStart());
+			System.out.println("search.end -> "+pg.getEnd());
+			
+			
+			List<TradeCoinInfo> searchBuy = ss.searchBuyList(trdCoin, search, id);
+			System.out.println("searchList.size() ->"+searchBuy.size());
+			System.out.println("search ->"+search);
+			
+			model.addAttribute("searchBuy", searchBuy);
+			model.addAttribute("pg", pg);
+			model.addAttribute("search", search);
+			return "/status/y_history_search_buy";
+		}
+		
+//		체결내역 - 검색 - 매도
+		@GetMapping("/y_history_search_sell")
+		public String sellSearch(TradeCoinInfo trdCoin, String currentPage, HttpServletRequest request, Model model) {
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			String search = request.getParameter("search");
+			System.out.println("id -> "+id);
+			System.out.println("search -> "+search);
+			
+			int total = ss.searchSell(id, search);
+			System.out.println("total.size() ->"+total);
+			
+			StatusPaging pg = new StatusPaging(total, currentPage);
+			trdCoin.setStart(pg.getStart());
+			trdCoin.setEnd(pg.getEnd());
+			System.out.println("search.start -> "+pg.getStart());
+			System.out.println("search.end -> "+pg.getEnd());
+			
+			
+			List<TradeCoinInfo> searchSell = ss.searchSellList(trdCoin, search, id);
+			System.out.println("searchList.size() ->"+searchSell.size());
+			System.out.println("search ->"+search);
+			
+			model.addAttribute("searchSell", searchSell);
+			model.addAttribute("pg", pg);
+			model.addAttribute("search", search);
+			return "/status/y_history_search_sell";
+		}
+		
+//		미체결내역 - 대기내역
+		@GetMapping("/status_n_history_wait")
+		public String nhistoryWait(HttpServletRequest request, Model model) {
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			System.out.println("id-> "+id);
+			
+			List<TradeCoinInfo> nWaitList = ss.nWaitList(id);
+			model.addAttribute("nWaitList", nWaitList);
+			
+			return "/status/n_history_wait";
+		}
+		
+//		미체결내역 - 취소내역
+		@GetMapping("/status_n_history_cancle")
+		public String nhistoryCancle(HttpServletRequest request, Model model) {
+			HttpSession session = request.getSession();
+			String id = (String) session.getAttribute("sessionID");
+			
+			List<TradeCoinInfo> nCancleList = ss.nCancleList(id);
+			model.addAttribute("nCancleList", nCancleList);
+			
+			return "/status/n_history_cancle";
+		}
+		
+//		승훈이 전수 - 테스트용 ajax
 //		@GetMapping("testmethod")
 //		@ResponseBody
 //		public List<TradeCoinInfo> testmethod(HttpServletRequest request, HttpServletResponse response, Model model) {

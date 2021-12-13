@@ -3,7 +3,7 @@
 			<div>주문구분</div>
 			<div>
 				<input type="radio" class="form-check-input" id="trd_method-limits" name="trd_method" value="limits" checked="checked" onclick="clickLimits()">지정가
-				<input type="radio" class="form-check-input" id="trd_method-market" name="trd_method" value="market" onclick="clickMarket()">시장가
+				<input type="radio" class="form-check-input ms-1" id="trd_method-market" name="trd_method" value="market" onclick="clickMarket()">시장가
 			</div>
 		</div>
 		<div class="d-flex justify-content-between mb-3">
@@ -18,10 +18,10 @@
 		</div>
 		<div class="d-flex justify-content-end mb-3">
 			<div class="d-flex justify-content-between mt-1" id="order-div-amt-butn">
-				<input type="button" class="order-form-amt-butn form-control" value="10%">
-				<input type="button" class="order-form-amt-butn form-control" value="25%">
-				<input type="button" class="order-form-amt-butn form-control" value="50%">
-				<input type="button" class="order-form-amt-butn form-control" value="100%">
+				<input type="button" class="order-form-amt-butn form-control" value="10%" onclick="amtPercent(10)">
+				<input type="button" class="order-form-amt-butn form-control" value="25%" onclick="amtPercent(25)">
+				<input type="button" class="order-form-amt-butn form-control" value="50%" onclick="amtPercent(50)">
+				<input type="button" class="order-form-amt-butn form-control" value="100%" onclick="amtPercent(100)">
 			</div>
 		</div>	
 		<div class="d-flex justify-content-between mb-3">
@@ -29,6 +29,6 @@
 		</div>
 		<p class="text-end" style="font-size: 14px;">최소주문금액 : 5,000 KRW / 수수료 : 없음</p>
 		<div class="d-flex justify-content-center">
-			<input type="reset" class="order-form-reset form-control me-3" value="초기화"><input type="button" class="order-form-submit form-control bg-danger" id="buySubmit" value="매 수">
+			<input type="reset" class="order-form-reset form-control me-3" value="초기화"><input type="button" class="order-form-submit form-control bg-danger" id="buySubmit" value="매 수" onclick="chkBuy()">
 		</div>
 	</form>

@@ -1,6 +1,7 @@
 package com.oracle.Angbit.dao.invest;
 
 import java.util.HashMap;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,13 +21,19 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import com.oracle.Angbit.model.common.CoinInfo;
+import com.oracle.Angbit.model.common.Trade;
 import com.oracle.Angbit.model.invest.OrderTrade;
+import com.oracle.Angbit.model.invest.TradeList;
+import com.oracle.Angbit.service.invest.InvestService;
+import com.oracle.Angbit.service.myInfo.myInfoService;
 
 @Repository
 public class InvestDaoImpl implements InvestDao {
 	
 	@Autowired
 	private SqlSession seesion;
+	@Autowired
+	private myInfoService mis;
 	
 	@Override
 	public List<CoinInfo> coinInfoList() {
@@ -191,15 +198,14 @@ public class InvestDaoImpl implements InvestDao {
 				map.put("coincode", coinList.get(i).getCoincode());
 				map.put("lowPrice", (String) nf.format(json.get("low_price")));
 				map.put("highPrice", (String) nf.format(json.get("high_price")));
-				List<OrderTrade> buyOrderList = seesion.selectList("checkBuyLimits", map);
 				List<OrderTrade> sellOrderList = seesion.selectList("checkSellLimits", map);
+				List<OrderTrade> buyOrderList = seesion.selectList("checkBuyLimits", map);
 				if (buyOrderList.size() > 0) {
 					for(OrderTrade orderTrade : buyOrderList) {
 						int result1 = seesion.update("upBuyCoin", orderTrade);
 						int result2 = seesion.update("updateTrdStu", orderTrade);
 						System.out.println("coincode : "+orderTrade.getCoincode()+"id : "+orderTrade.getId()+" result1 : "+result1);
 						System.out.println("result2->"+result2);
-
 					}
 				}
 				if (sellOrderList.size() > 0) {
@@ -219,7 +225,7 @@ public class InvestDaoImpl implements InvestDao {
 				}
 
 			} catch (Exception e) {
-				System.out.println("ESController upCoinListApi Exception->"+e.getMessage());
+				System.out.println("InvestDaoImpl upCoinListApi Exception->"+e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -249,4 +255,26 @@ public class InvestDaoImpl implements InvestDao {
 		}
 	}
 
+	@Override
+	public List<TradeList> selectTradeList(String id) {
+
+		System.out.println("InvestDaoImpl selectTradeList Start...");
+		List<TradeList> tradeList =null;
+		try {
+			tradeList = seesion.selectList("selectTradeList", id);
+		} catch (Exception e) {
+			System.out.println("InvestDaoImpl selectTradeList Exception->"+e.getMessage());
+			e.printStackTrace();
+		}
+		return tradeList;
+	}
+
+	@Override
+	@Transactional
+	public void cancelOrder(int trd_num) {
+		System.out.println("InvestDaoImpl cancelOrder Start...");
+		Trade trade =seesion.selectOne("selectTrade", trd_num);
+		seesion.update("cancelKRW", trade);
+		seesion.update("cancelTrade", trd_num);
+	}
 }

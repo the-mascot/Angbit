@@ -38,13 +38,26 @@
 	<delete id="delCoinRow" parameterType="OrderTrade">
 		DELETE FROM coin WHERE id=#{id} and coincode=#{coincode}
 	</delete>
-	<select id="checkBuyLimits" parameterType="Map" resultType="OrderTrade">
-		select * from trade where coincode=#{coincode} and trd_stu=0 and trd_unit_price >= #{lowPrice} and trd_div=0
+ 	<select id="checkBuyLimits" parameterType="Map" resultType="OrderTrade">
+		select * from trade where coincode=#{coincode} and trd_stu=0 and trd_div = 0 and trd_unit_price >= #{lowPrice}
 	</select>
 	<update id="updateTrdStu" parameterType="OrderTrade">
 		update trade set trd_stu = 1 where trd_num = #{trd_num}
 	</update>
+
 	<select id="checkSellLimits" parameterType="Map" resultType="OrderTrade">
 		SELECT * FROM trade WHERE coincode=#{coincode} AND trd_stu=0 AND trd_unit_price <![CDATA[<=]]> #{highPrice} AND trd_div=1
+  </select>
+	<select id="selectTradeList" parameterType="String" resultType="TradeList">
+		select  c.coinname, t.* from trade t inner join coininfo c on t.coincode = c.coincode where t.id = #{id} and t.trd_stu = 0 order by t.trd_date desc
 	</select>
+	<select id="selectTrade" parameterType="Integer" resultType="Trade">
+		select * from trade where trd_num = #{trd_num}
+	</select>
+	<update id="cancelKRW" parameterType="Trade">
+		update memberinfo set krw = krw + #{trd_price} where id = #{id}
+	</update>
+	<update id="cancelTrade" parameterType="Integer">
+		update trade set trd_stu = 2 where trd_num = #{id}
+	</update>
 </mapper>

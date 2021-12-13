@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.NumberFormat;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,6 +22,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -27,9 +32,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.invest.OrderTrade;
+import com.oracle.Angbit.model.invest.TradeList;
 import com.oracle.Angbit.service.invest.InvestService;
 
 
@@ -40,6 +48,8 @@ public class ESController {
 	
 	@Autowired
 	private InvestService ivs;
+	@Autowired
+	private EchoHandler echo;
 	
 	@GetMapping("/")
 	public String home() {
@@ -53,7 +63,15 @@ public class ESController {
 	public String invest(Model model, HttpServletRequest request, HttpServletResponse response) {
 		
 		System.out.println("ESController invest Start...");
+		HttpSession session = request.getSession();
+		String id = (String) session.getAttribute("sessionID");
+		
 		List<CoinInfo> coinInfoList =  ivs.coinInfoList();
+		
+		if(id != null) {
+			List<TradeList> tradeList = ivs.selectTradeList(id);
+			model.addAttribute("tradeList", tradeList);
+		}
 		model.addAttribute("coinInfoList", coinInfoList);
 		
 		return "/invest/invest";
@@ -256,4 +274,55 @@ public class ESController {
 			e.printStackTrace();
 		}
 	}
+	
+	@ResponseBody
+	@GetMapping("invest/tradeList")
+	public List<TradeList> tradeList(HttpServletRequest request, HttpServletResponse response) {
+		
+		System.out.println("ESController tradeList Start...");
+		HttpSession session = request.getSession();
+		String id = (String) session.getAttribute("sessionID");
+		List<TradeList> tradeList = null;
+		if(id != null) {
+			tradeList = ivs.selectTradeList(id);
+		}
+		
+		return tradeList;
+	}
+	
+	@ResponseBody
+	@PostMapping("invest/cancelOrder")
+	public String cancelOrder(int trd_num) {
+		
+		System.out.println("ESController cancelOrder Start...");
+		String msg = null;
+		try {
+			ivs.cancelOrder(trd_num);
+			msg = "주문이 취소되었습니다.";
+		} catch (Exception e) {
+			System.out.println("ESController cancelOrder Exception->"+e.getMessage());
+			msg = "주문 취소에 실패하였습니다.";
+		}
+		
+		return msg;
+	}
+	
+	private SimpMessagingTemplate template;
+	
+	@MessageMapping("/good")
+	public void sendMessageTo(OrderTrade orderTrade) {
+		System.out.println("good 실행");
+		orderTrade.setId("dmstn1812@naver.com");
+		
+	}
+	
+	@ResponseBody
+	@GetMapping("invest/call")
+	public void call() {
+		
+		System.out.println("ESController call Start...");
+		template.convertAndSend("/topic", "안녕디지몬");
+		
+	}
+	
 }

@@ -1,10 +1,24 @@
 @charset "UTF-8";
 
+ a:link { text-decoration:none; color:#000000;}
+
+ a:visited { text-decoration:none;color:#000000;}
+
+ a:active {text-decoration:none; color:#000000; }
+
+ a:hover { text-decoration:none; color:#EDA900;}
+	
+textarea {
+    
+    border: none;
+    resize: none;
+  }	
+	
+	
 .btnbox{
 	height:100px;
 	weight:auto;
 }
-
 .row_free{
 	
 	font-color:black;
@@ -12,6 +26,8 @@
 	weight:auto;
 }
 
-.textbox{
-	
+.box{
+	 border: 1px solid red;
+	 width : 100px;
+  	 height: 100px;
 }

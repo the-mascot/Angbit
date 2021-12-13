@@ -307,6 +307,86 @@ public class StatusDaoImpl implements StatusDao {
 		return tot;
 	}
 
+	@Override
+	public List<TradeCoinInfo> searchList(TradeCoinInfo trdCoin, String search, String id) {
+		Map param = new HashMap();
+		param.put("trdCoin", trdCoin);
+		param.put("search", search);
+		param.put("id", id);
+		System.out.println("daoImpl -> "+trdCoin.getStart());
+		System.out.println("daoImpl -> "+trdCoin.getEnd());
+		System.out.println("daoImpl -> "+search);
+		System.out.println("daoImpl -> "+id);
+		List<TradeCoinInfo> searchList = session.selectList("Statussearch", param);
+		return searchList;
+	}
+
+	@Override
+	public int searchTotal(String id, String search) {
+		System.out.println("dao - "+search);
+		System.out.println("dao - "+id);
+		Map<String, String> param = new HashMap<String, String>();
+		param.put("search", search);
+		param.put("id", id);
+		System.out.println("search -> "+param.get("search"));
+		System.out.println("id -> "+param.get("id"));
+		int tot = session.selectOne("searchTotal", param);
+		System.out.println("result->"+tot);
+		return tot;
+	}
+
+	@Override
+	public List<TradeCoinInfo> searchBuyList(TradeCoinInfo trdCoin, String search, String id) {
+		Map param = new HashMap();
+		param.put("trdCoin", trdCoin);
+		param.put("search", search);
+		param.put("id", id);
+		List<TradeCoinInfo> searchBuyList = session.selectList("StatusSearchBuy", param);
+		return searchBuyList;
+	}
+
+	@Override
+	public int searchBuy(String id, String search) {
+		System.out.println("1111-> "+id);
+		System.out.println("1111-> "+search);
+		Map param = new HashMap();
+		param.put("id", id);
+		param.put("search", search);
+		int tot = session.selectOne("searchBuy", param);
+		return tot;
+	}
+
+	@Override
+	public int searchSell(String id, String search) {
+		Map param = new HashMap();
+		param.put("id", id);
+		param.put("search", search);
+		int tot = session.selectOne("searchSell", param);
+		return tot;
+	}
+
+	@Override
+	public List<TradeCoinInfo> searchSellList(TradeCoinInfo trdCoin, String search, String id) {
+		Map param = new HashMap();
+		param.put("trdCoin", trdCoin);
+		param.put("search", search);
+		param.put("id", id);
+		List<TradeCoinInfo> searchSellList = session.selectList("StatusSearchSell", param);
+		return searchSellList;
+	}
+
+	@Override
+	public List<TradeCoinInfo> nWaitList(String id) {
+		List<TradeCoinInfo> nWaitList = session.selectList("StatusNWaitList", id);
+		return nWaitList;
+	}
+
+	@Override
+	public List<TradeCoinInfo> nCancleList(String id) {
+		List<TradeCoinInfo> nCancleList = session.selectList("StatusNCancleList", id);
+		return nCancleList;
+	}
+
 
 
 

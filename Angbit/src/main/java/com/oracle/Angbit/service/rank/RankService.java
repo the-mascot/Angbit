@@ -9,6 +9,10 @@ import java.util.List;
 public interface RankService {
 
     ArrayList<MemberInfo> getRank(int startRow, int endRow);
+    
     int getTotalCnt();
+    
     List<CoinCoinInfo> getChart(String id);
+    
+	void updateAsset();
 }

@@ -44,6 +44,12 @@ dependencies {
 	implementation group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.2'
 	// Spring Context Support (Quartz 도우미)
 	implementation group: 'org.springframework', name: 'spring-context-support', version: '5.3.13'
+	// Spring WebSocket
+	implementation group: 'org.springframework', name: 'spring-websocket', version: '5.3.13'
+	
+	// https://mvnrepository.com/artifact/org.springframework/spring-messaging
+	implementation group: 'org.springframework', name: 'spring-messaging', version: '5.3.13'
+	
 	
 }
 
