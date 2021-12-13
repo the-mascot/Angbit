@@ -691,13 +691,13 @@
 				}); */
 		
 			$('.orderbook-ap').on('click', function() {
-				alert('응답')
 				$('#order-unit_price').val($(this).text());
+				$('#sell-unit_price').val($(this).text());
 			});
 			
 			$('.orderbook-bp').on('click', function() {
-				alert('응답')
 				$('#order-unit_price').val($(this).text());
+				$('#sell-unit_price').val($(this).text());
 			});
 		});
 		
@@ -1064,9 +1064,6 @@
 				}
 			});
 		}
-
-
-
 
 		function inSellAmt(evt) {
 			var charCode = (evt.which) ? evt.which : event.keyCode;
