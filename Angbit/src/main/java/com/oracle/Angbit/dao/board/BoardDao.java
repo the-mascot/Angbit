@@ -24,6 +24,7 @@ public interface BoardDao {
 	Board levone(int ref);
 	int replyDelete(int ref);
 	int arrange();
+	Board detailReply(int ref);
 	
 	
 	

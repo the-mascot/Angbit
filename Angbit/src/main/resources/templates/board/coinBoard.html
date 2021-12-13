@@ -21,7 +21,6 @@
 
 <!-- 몸통 -->
 <main>
-<div th:text="${result}"></div>  <!-- 결과값 띄어주기 -->
 
 
 <div class="container">
@@ -50,17 +49,19 @@
 		           </tr>
 		       </thead>
 		       <tbody>
-		       		
-			          	<th:block th:each="blist : ${boardList}">
-			          	<tr>
-			          		   <td class="text-center" th:text="${blist.b_num}"></td>   
-				               <td><a th:href="@{board_detailBoard( ref=${blist.ref})}" th:text="${blist.title}" class="text-decoration-none"></a></td>
-				               <td class="text-center" th:text="${#dates.format(blist.uploaddate, 'yyyy-MM-dd')}"></td>  
-				               <td class="text-center" th:text="${blist.views}"></td>
-				               <td class="text-center" th:text="${blist.nickname}"></td>
-				        </tr>
-			            </th:block>
-		            
+		       	<div th:with="cnt=${total+1}">
+		          	<th:block th:each="blist : ${boardList}">
+			          	<div th:if="blist!=null" th:with="cnt=cnt-1" >
+				          	<tr>
+				          		   <td class="text-center" th:text="cnt"></td>   
+					               <td><a th:href="@{board_detailBoard( ref=${blist.ref})}" th:text="${blist.title}" class="text-decoration-none"></a></td>
+					               <td class="text-center" th:text="${#dates.format(blist.uploaddate, 'yyyy-MM-dd')}"></td>  
+					               <td class="text-center" th:text="${blist.views}"></td>
+					               <td class="text-center" th:text="${blist.nickname}"></td>
+					        </tr>
+					     </div>   
+			         </th:block>
+		         </div>
 		       </tbody>
 		</table>
 		
@@ -102,6 +103,8 @@
 	
 </div>
 </main>
+
+
 
 <!-- footer -->
 <footer th:replace="common/footer :: footer"></footer>

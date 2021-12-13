@@ -51,7 +51,7 @@ public class BoardServiceImpl implements BoardService {
 	
 
 	
-	//detail,updateForm
+	//detail,boardupdateForm
 	@Override
 	public Board detailBoard(int ref) {
 		System.out.println("BoardServiceImpl detailBoard ...");
@@ -69,7 +69,21 @@ public class BoardServiceImpl implements BoardService {
 		int result = bdao.update(board);
 		return result;
 	}
-
+	//replyUpdateform
+	@Override
+	public Board detailReply(int ref) {
+		System.out.println("BoardServiceImpl detailReply ...");
+		Board board = null;
+		
+		board = bdao.detailReply(ref);
+		return board;
+	}
+	
+	
+	
+	
+	
+	
 	//writeForm
 	@Override
 	public int insert(Board board) {
@@ -122,6 +136,8 @@ public class BoardServiceImpl implements BoardService {
 		
 		return levone;
 	}
+
+	
 
 
 
