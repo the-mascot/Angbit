@@ -801,22 +801,19 @@
 		
 		// 매수 주문
 		async function buyCoin() {
+			console.log("buyCoin시작")
 			var trd_price = uncomma($('#order-trd_price').val());
-			var trd_unit_price = uncomma($('#order-unit_price').val());
+			var trd_unit_price = 0;
 			var trd_amt = 0;
 			var trd_method = $("input[name='trd_method']:checked").val();
 			
-			var apiTP = await upUnitPrice();
-			if(trd_method == 'market' || (trd_unit_price * 1) > (apiTP * 1)) {
-				trd_unit_price = apiTP;
+			if(trd_method == 'market') {
+				trd_unit_price = await upUnitPrice();
 				trd_amt = (trd_price / trd_unit_price).toFixed(8);
-				console.log("시장가 구매")
 			} else {
-					trd_amt = $('#order-trd_amt').val();
-					console.log("지정가 구매")
-				}
+				trd_amt = $('#order-trd_amt').val();
+				trd_unit_price = uncomma($('#order-unit_price').val());
 			}
-			
 			var formData = 'trd_method='+trd_method+'&trd_unit_price='+trd_unit_price+'&trd_amt='+trd_amt+'&trd_price='+trd_price+'&coincode='+currCoincode;
 			$.ajax({
 				type		:	'POST',
