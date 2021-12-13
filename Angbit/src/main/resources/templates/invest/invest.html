@@ -655,9 +655,11 @@
 			
 			// 호가 클릭시 매수가격 업데이트
 			$('.orderbook-ap').on('click', function() {
+
 				var unit_price = $(this).text();
 				$('#order-unit_price').val(unit_price);
 				$('#order-trd_price').val(comma(uncomma(unit_price) * $('#order-trd_amt').val()));
+        $('#sell-unit_price').val($(this).text());
 			});
 			
 			$('.orderbook-bp').on('click', function() {
@@ -665,6 +667,7 @@
 				$('#order-unit_price').val(unit_price);
 				console.log("trd->"+$('#order-trd_amt').val())
 				$('#order-trd_price').val(comma(uncomma(unit_price) * $('#order-trd_amt').val()));
+        $('#sell-unit_price').val($(this).text());
 			});
 			
 			$('#sell-unit_price, #sell-trd_amt').on('keyup',function () {
@@ -783,11 +786,15 @@
 			else {
 				if( $("input[name='trd_method']:checked").val() == 'market') {
 					$('#chkMarketModal-trdMethod').text('시장가 매수');
+					$('#chkModal-trdMethod').removeClass('text-primary');
+					$('#chkModal-trdMethod').addClass('text-danger');
 					$('#chkMarketModal-trd_price').text($('#order-trd_price').val());
 					$('#confirmBuyMarketBtn').attr('onclick', 'buyCoin()')
 					$("#chkMarketModal").modal('toggle');
 				} else {
 					$('#chkModal-trdMethod').text('지정가 매수');
+					$('#chkModal-trdMethod').removeClass('text-primary');
+					$('#chkModal-trdMethod').addClass('text-danger');
 					console.log($('#order-trd_unit_price').val())
 					$('#chkModal-trd_unit_price').text($('#order-unit_price').val());
 					$('#chkModal-trd_amt').text($('#order-trd_amt').val());
@@ -1089,12 +1096,24 @@
 			}
 
 			else {
-				if($('input[name=sell_method]:checked').val() == 'limits') {
-					console.log('지정가 매도시작')
-					sellCoin();
+				if( $("input[name='sell_method']:checked").val() == 'market') {
+					$('#chkMarketModal-trdMethod').text('시장가 매도');
+					$('#chkModal-trdMethod').removeClass('text-danger');
+					$('#chkModal-trdMethod').addClass('text-primary');
+					$('#chkMarketModal-trd_price').text($('#sell-trd_price').val());
+					$('#confirmBuyMarketBtn').attr('onclick', 'sellCoin()')
+					$("#chkMarketModal").modal('toggle');
 				} else {
-					console.log('시장가 매도시작')
-					sellMarketCoin();
+					$('#chkModal-trdMethod').text('지정가 매도');
+					$('#chkModal-trdMethod').removeClass('text-danger');
+					$('#chkModal-trdMethod').addClass('text-primary');
+					console.log($('#sell-unit_price').val())
+					$('#chkModal-trd_unit_price').text($('#sell-unit_price').val());
+					$('#chkModal-trd_amt').text($('#sell-trd_amt').val());
+					$('#chkModal-trd_price').text($('#sell-trd_price').val());
+					$('#chkModal-currCoin').text(currCoincode);
+					$('#confirmBuyBtn').attr('onclick', 'sellCoin()')
+					$("#chkTradeModal").modal('toggle');
 				}
 			}
 		};
@@ -1144,6 +1163,7 @@
 				success		:	function(msg) {
 					$('#modal-msg').text(msg);
 					$('#warmModal').modal('toggle');
+					tradeList();
 					// selectKRW();
 				},
 				error		:	function(e) {
@@ -1174,21 +1194,29 @@
 				success		:	function(json) {
 					console.log(json);
 					var table = "";
-					for(var i = 0; i < json.length; i++) {
+					if (json.length > 0) {
+						for(var i = 0; i < json.length; i++) {
+							table += "<tr class='align-middle'>"
+							table += "<td>"+json[i].trd_num
+							table += "<td>"+json[i].coinname+" ("+json.coincode+')'
+							table += "<td>"+comma(json[i].trd_unit_price)
+							table += "<td>"+json[i].trd_amt
+							table += "<td>"+comma(json[i].trd_price)
+							if(json[i].trd_div == 0)
+								table += "<td class='text-danger'>매수"
+							else
+								table += "<td class='text-primary'>매도"
+							table += "<td><button class='cancelOrder-btn btn btn-warning' onclick=cancelOrder("+json[i].trd_num+")>취소</button></td>"
+							table += "</tr>"
+						}
+						$('#orderList-tbody').html(table);
+					} else {
 						table += "<tr class='align-middle'>"
-						table += "<td>"+json[i].trd_num
-						table += "<td>"+json[i].coinname+" ("+json[i].coincode+')'
-						table += "<td>"+comma(json[i].trd_unit_price)
-						table += "<td>"+json[i].trd_amt
-						table += "<td>"+comma(json[i].trd_price)
-						if(json[i].trd_div == 0)
-							table += "<td class='text-danger'>매수"
-						else
-							table += "<td class='text-primary'>매도"
-						table += "<td><button class='cancelOrder-btn btn btn-warning' onclick=cancelOrder("+json[i].trd_num+")>취소</button></td>"						
+						table += "<td colspan='7' style='text-align: center;'>주문 내역이 없습니다.</td>"
 						table += "</tr>"
+						$('#orderList-tbody').html(table);
 					}
-					$('#orderList-tbody').html(table);
+
 				},
 				error		:	function(e) {
 					console.log("error : ",e);
@@ -1478,6 +1506,9 @@
 							<td class="text-danger" th:if="${list.trd_div == 0 }" th:text="매수">
 							<td class="text-primary" th:if="${list.trd_div == 1 }" th:text="매도">
 							<td><button class="cancelOrder-btn btn btn-warning" th:onclick="'chkCancelOrder('+${list.trd_num}+')'">취소</button></td>
+						</tr>
+						<tr th:if="${tradeList.size()}==0">
+							<td colspan="7" style="text-align: center;">주문 내역이 없습니다.</td>
 						</tr>
 					</tbody>
 				</table>
