@@ -34,7 +34,9 @@ public class StatusDaoImpl implements StatusDao {
 	public List<MemberInfo> listKrw(String id) {
 		System.out.println("StatusDaoImpl listKrw start...");
 		List<MemberInfo> krwList = null;
+		int krw = session.selectOne("TradeListKRW", id);
 		krwList = session.selectList("KrwList", id);
+		krwList.get(0).setKrw(krw+krwList.get(0).getKrw());
 		return krwList;
 	}
 	
