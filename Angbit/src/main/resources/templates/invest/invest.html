@@ -1198,7 +1198,7 @@
 						for(var i = 0; i < json.length; i++) {
 							table += "<tr class='align-middle'>"
 							table += "<td>"+json[i].trd_num
-							table += "<td>"+json[i].coinname+" ("+json.coincode+')'
+							table += "<td>"+json[i].coinname+" ("+json[i].coincode+')'
 							table += "<td>"+comma(json[i].trd_unit_price)
 							table += "<td>"+json[i].trd_amt
 							table += "<td>"+comma(json[i].trd_price)
@@ -1507,9 +1507,11 @@
 							<td class="text-primary" th:if="${list.trd_div == 1 }" th:text="매도">
 							<td><button class="cancelOrder-btn btn btn-warning" th:onclick="'chkCancelOrder('+${list.trd_num}+')'">취소</button></td>
 						</tr>
-						<tr th:if="${tradeList} == 0 or tradeList.isEmpty() == true">
-							<td colspan="7" style="text-align: center;">주문 내역이 없습니다.</td>
-						</tr>
+						<th:block data-th-if="${tradeList == null or tradeList.isEmpty() == true}">
+                        <tr>
+                            <td colspan="7" style="text-align: center;">주문 내역이 없습니다.</td>
+                        </tr>
+                        </th:block>
 					</tbody>
 				</table>
 			</div>

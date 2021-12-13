@@ -56,8 +56,6 @@ dependencies {
 	
 	// https://mvnrepository.com/artifact/org.springframework/spring-messaging
 	implementation group: 'org.springframework', name: 'spring-messaging', version: '5.3.13'
-	
-	
 }
 
 test {
