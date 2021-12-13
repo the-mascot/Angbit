@@ -154,6 +154,7 @@
 	/!* 팝오버 *!/
 	$( function () {
 		$( '[data-bs-toggle="popover"]' ).popover({
+			trigger: 'focus',
 			html : true,
 			content: function() {
 				var labels = [];
