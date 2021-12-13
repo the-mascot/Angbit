@@ -255,11 +255,11 @@ public class SHController {
         float amount = ivs.getUsableCoin(id, coin); // 내 보유 코인량
 
         if (amount >= orderTrade.getTrd_amt()) {
-
             if (orderTrade.getTrd_method().equals("limits")) {
                 try {
                     orderTrade.setTrd_stu(0); // 체결 상태 미체결 설정
-                    result = ivs.sellLimitsPrice(orderTrade);
+                    ivs.sellLimitsPrice(orderTrade);
+                    msg = "지정가 매도 주문을 하였습니다.";
                 } catch (Exception e) {
                     System.out.println("limits! 지정가 매도 에러->" + e.getMessage());
                     msg = "매도 주문에 실패하였습니다.";
