@@ -255,9 +255,7 @@
 					document.getElementById('orderbook-atv24h').innerText = jason.atv24h.toFixed(3)
 					document.getElementById('orderbook-atv24h-unit').innerText = currCoincode;
 				}
-
 				document.getElementById('orderbook-atp24h').innerText = subPrice24h;
-
 				document.getElementById('orderbook-h52wp').innerText = jason.h52wp.toLocaleString();
 				document.getElementById('orderbook-h52wdt').innerText = '('+jason.h52wdt+')';
 				document.getElementById('orderbook-l52wp').innerText = jason.l52wp.toLocaleString();
@@ -269,9 +267,7 @@
 				document.getElementById('coinTitle-tp').innerText = trade_price;
 				document.getElementById('coinTitle-scr').innerText = (jason['scr']*100).toFixed(2)+'%';
 				document.getElementById('coinTitle-scp').innerText = (jason['scp'].toLocaleString());
-
 			}
-
 		}
 
 		// Rest API 요청
@@ -301,21 +297,16 @@
 					console.log("error : ",e);
 				}
 			});
-
 			chartApi();
-
 			if ($('#order-buy-a').hasClass("active") == true) {
 				selectKRW();
 			} else {
 				availableQunatity();
 			}
-
-
 		};
 
 		// API 정보 업데이트
 		function upApiData(jason) {
-
 			document.getElementById('coinTitle-coinname').innerText = document.getElementById(currCoincode).innerText;
 			document.getElementById('coinTitle-coincode').innerText = currCoin;
 			if ($('#order-buy-a').hasClass("active") == true) {
@@ -369,7 +360,6 @@
 				document.getElementById('bpPercent-'+i).innerText = ((bp-pcp)/pcp*100).toFixed(2)+'%';
 				document.getElementById('orderbook-pcp').innerText = pcp.toLocaleString();
 
-
 				// 10호가 전일대비로 Text CSS 변경
 				if(pcp < ap) {
 					document.getElementById('ap-'+i).style.color 		= "red";
@@ -414,7 +404,6 @@
 			document.getElementById('orderbook-hp').innerText = jason[1].high_price.toLocaleString();
 			document.getElementById('orderbook-lp').innerText = jason[1].low_price.toLocaleString();
 
-
 			// coinTitle 업데이트
 			if(document.getElementById('coinTitle-value-a').className == 'nav-link active') {
 				document.getElementById('coinTitle-tp').innerText = jason[1].trade_price.toLocaleString();
@@ -439,7 +428,6 @@
 			}
 
 		}
-
 
 		// 매수 가능 KRW 조회
 		function selectKRW() {
@@ -667,12 +655,24 @@
 			
 			// 호가 클릭시 매수가격 업데이트
 			$('.orderbook-ap').on('click', function() {
-				$('#order-unit_price').val($(this).text());
+				var unit_price = $(this).text();
+				$('#order-unit_price').val(unit_price);
+				$('#order-trd_price').val(comma(uncomma(unit_price) * $('#order-trd_amt').val()));
 			});
 			
 			$('.orderbook-bp').on('click', function() {
-				$('#order-unit_price').val($(this).text());
+				var unit_price = $(this).text();
+				$('#order-unit_price').val(unit_price);
+				console.log("trd->"+$('#order-trd_amt').val())
+				$('#order-trd_price').val(comma(uncomma(unit_price) * $('#order-trd_amt').val()));
 			});
+			
+			$('#sell-unit_price, #sell-trd_amt').on('keyup',function () {
+				let sell_price = $('#sell-trd_amt').val() * uncomma($('#sell-unit_price').val());
+				console.log(sell_price);
+				// $('#sell-trd_price').val(comma(sell_price));
+			});
+			
 		});
 		
 		function upCoinListApi() {
@@ -991,7 +991,6 @@
 		/* 매도 */
 		var sell_amt = null; // 매도 가능 수량
 
-
 		// 매도 가능 수량
 		function availableQunatity() {
 			const availQuan = document.getElementById('sell-avaliableKRW');
@@ -1014,9 +1013,6 @@
 				}
 			});
 		}
-
-
-
 
 		function inSellAmt(evt) {
 			var charCode = (evt.which) ? evt.which : event.keyCode;
@@ -1042,12 +1038,6 @@
 
 			return true;
 		}
-
-		$('#sell-unit_price, #sell-trd_amt').on('keyup',function () {
-			let sell_price = $('#sell-trd_amt').val() * uncomma($('#sell-unit_price').val());
-			console.log(sell_price);
-			// $('#sell-trd_price').val(comma(sell_price));
-		});
 
 		function inputEvent(key) {
 			let sell_price = $('#sell-trd_amt').val() * uncomma($('#sell-unit_price').val());
@@ -1110,7 +1100,6 @@
 		};
 
 		function amtChk() {
-
 			let cnt = $('#sell-trd_amt').val();
 			if (cnt > sell_amt) {
 				console.log('초과')
@@ -1139,7 +1128,6 @@
 				}
 			});
 		};
-
 
 		// 매도 주문
 		function sellCoin() {
@@ -1230,11 +1218,6 @@
 				}
 			});
 		}
-		
-		function callToastr() {
-			onAlarmClose();
-		}
-		
 </script>
 </head>
 <body>
@@ -1242,7 +1225,6 @@
 <header th:replace="common/header :: header"></header>
 
 <main class="clearfix">
-	<button onclick="callToastr()">눌러봥</button>
 	<section class="section1">
 		<div class="d-flex justify-content-end mt-5">
 			<div class="coinTitle-card card">
