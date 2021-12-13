@@ -287,6 +287,18 @@ public class StatusServiceImpl implements StatusService {
 		return searchSellList;
 	}
 
+	@Override
+	public List<TradeCoinInfo> nWaitList(String id) {
+		List<TradeCoinInfo> nWaitList = sd.nWaitList(id);
+		return nWaitList;
+	}
+
+	@Override
+	public List<TradeCoinInfo> nCancleList(String id) {
+		List<TradeCoinInfo> nCancleList = sd.nCancleList(id);
+		return nCancleList;
+	}
+
 
 
 }

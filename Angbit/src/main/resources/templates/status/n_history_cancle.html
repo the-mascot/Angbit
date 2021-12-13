@@ -15,9 +15,9 @@
 </div>
 <div class="container">
 	<div class="col-4" style="float: left; margin-left: 50px">거래상태 설정<p>
-		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_n_history'">전체</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_n_history'">전체</button>
 		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_n_history_wait'">대기</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_n_history_cancle'">취소</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_n_history_cancle'">취소</button>
 	</div>
 </div>
 <table class="table table-hover" style="width: 90%; margin: auto;">
@@ -34,9 +34,9 @@
     </tr>
   </thead>
   <tbody align="center" style="vertical-align:middle;">
-	  <th:block data-th-if="${nList.size != 0}">
-	    <tr th:each="nlist:${nList}">
-	      <th scope="row" th:switch="${nlist.coincode}">
+	  <th:block data-th-if="${nCancleList.size != 0}">
+	    <tr th:each="nclist:${nCancleList}">
+	      <th scope="row" th:switch="${nclist.coincode}">
 	      	<span th:case="ADA"><img class="table_images" alt="" src="images/status/ada.png"></span>
 	      	<span th:case="AXS"><img class="table_images" alt="" src="images/status/axs.png"></span>
 	      	<span th:case="BCH"><img class="table_images" alt="" src="images/status/bch.png"></span>
@@ -53,19 +53,18 @@
 	      	<span th:case="XLM"><img class="table_images" alt="" src="images/status/xlm.png"></span>
 	      	<span th:case="XRP"><img class="table_images" alt="" src="images/status/xrp.png"></span>
 	      </th>
-	      <td th:text="${nlist.coinname}+'&#13;&#10;'+'('+${nlist.coincode}+')'"></td>
-	      <td th:if="${nlist.trd_div}==1" style="color: blue;">매도</td>
-	      <td th:if="${nlist.trd_div}==0" style="color: red;">매수</td>
-	      <td th:if="${nlist.trd_stu}==0" style="color: #1DDB16;">대기</td>
-	      <td th:if="${nlist.trd_stu}==2" style="color: gray;">취소</td>
-	      <td th:text="${#numbers.formatDecimal(nlist.trd_amt,1,'COMMA',8,'POINT')}"></td>
-	      <td th:text="${#numbers.formatDecimal(nlist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
-	      <td th:text="${#numbers.formatDecimal(nlist.trd_price,1,'COMMA',0,'POINT')}"></td>
-	      <td th:text="${#dates.format(nlist.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
+	      <td th:text="${nclist.coinname}+'&#13;&#10;'+'('+${nclist.coincode}+')'"></td>
+	      <td th:if="${nclist.trd_div}==1" style="color: blue;">매도</td>
+	      <td th:if="${nclist.trd_div}==0" style="color: red;">매수</td>
+	      <td th:if="${nclist.trd_stu}==2" style="color: gray;">취소</td>
+	      <td th:text="${#numbers.formatDecimal(nclist.trd_amt,1,'COMMA',8,'POINT')}"></td>
+	      <td th:text="${#numbers.formatDecimal(nclist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
+	      <td th:text="${#numbers.formatDecimal(nclist.trd_price,1,'COMMA',0,'POINT')}"></td>
+	      <td th:text="${#dates.format(nclist.trd_date, 'yyyy-MM-dd HH:mm')}"></td>
 	    </tr>
 	  </th:block>
-	  <th:block data-th-if="${nList.size == 0}">
-	  	<td colspan="7">취소 및 대기중인 매수, 매도 내역이 없습니다.</td>
+	  <th:block data-th-if="${nCancleList.size == 0}">
+	  	<td colspan="7">매수 및 매도 취소 내역이 없습니다.</td>
 	  </th:block>
   </tbody>
 </table>

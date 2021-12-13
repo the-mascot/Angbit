@@ -31,9 +31,9 @@ $(document).ready(function(){
 		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sell_sort180d'">180일</button>
 	</div>
 	<div class="col-4" style="float: left; margin-left: 50px">거래종류 설정<p>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history'">전체</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_buy'">매수</button>
-		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history_sell'">매도</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_sort30d'">전체</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history_buy_sort30d'">매수</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" onclick="location.href='/status_y_history_sell_sort30d'">매도</button>
 	</div>
 	<form action="y_history_search" style="float: right; margin-top: 25px; margin-left: -25px">
 		<input class="btn-warning" type="text" id="txt" name="search" placeholder="코인명 또는 코인코드를 입력하세요." style="border: 1px solid #ffc107; height: 38px; background-color: white; text-transform: uppercase" size="40">
@@ -79,7 +79,6 @@ $(document).ready(function(){
 	      <td th:text="${sell30List.coinname}+'&#13;&#10;'+'('+${sell30List.coincode}+')'"></td>
 	      <td th:if="${sell30List.trd_div}==1" style="color: blue;">매도</td>
 	      <td th:if="${sell30List.trd_div}==0" style="color: red;">매수</td>
-	<!--       <td th:unless="${ylsit.trd_div}==0">매수</td> -->
 	      <td th:text="${#numbers.formatDecimal(sell30List.trd_amt,1,'COMMA',8,'POINT')}"></td>
 	      <td th:text="${#numbers.formatDecimal(sell30List.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
 	      <td th:text="${#numbers.formatDecimal(sell30List.trd_price,1,'COMMA',0,'POINT')}"></td>

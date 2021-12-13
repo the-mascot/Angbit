@@ -79,7 +79,6 @@ $(document).ready(function(){
 	      <td th:text="${cblist.coinname}+'&#13;&#10;'+'('+${cblist.coincode}+')'"></td>
 	      <td th:if="${cblist.trd_div}==1" style="color: blue;">매도</td>
 	      <td th:if="${cblist.trd_div}==0" style="color: red;">매수</td>
-	<!--       <td th:unless="${ylsit.trd_div}==0">매수</td> -->
 	      <td th:text="${#numbers.formatDecimal(cblist.trd_amt,1,'COMMA',8,'POINT')}"></td>
 	      <td th:text="${#numbers.formatDecimal(cblist.trd_unit_price,1,'COMMA',0,'POINT')}"></td>
 	      <td th:text="${#numbers.formatDecimal(cblist.trd_price,1,'COMMA',0,'POINT')}"></td>

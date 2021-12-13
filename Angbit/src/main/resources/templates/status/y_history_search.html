@@ -27,7 +27,7 @@ $(document).ready(function(){
 </div>
 <div class="container" style="padding-top: 25px">
 	<div class="col-4" style="float: left;">&nbsp<p>
-		<button type="button" class="btn btn-outline-dark" onclick="location.href='/status_y_history'">처음으로</button>
+		<button type="button" class="btn btn-outline-warning" style="color: black;" onclick="location.href='/status_y_history'">처음으로</button>
 	</div>
 	<div class="col-4" style="float: left; margin-left: 50px">검색 결과 설정<p>
 		<button type="button" class="btn btn-outline-warning" style="color: black; background-color: orange;" th:onclick="|location.href='@{/y_history_search(search=${search})}'|">전체</button>
@@ -104,7 +104,6 @@ $(document).ready(function(){
 	    <li class="page-item" th:each="i:${#numbers.sequence(start, end)}">
 	    	<th:block th:if="${i} != 0">
 	    	<a class="pagenav_a page-link" id="pageNav${i}" th:href="@{y_history_search(search=${search}, currentPage=${i})}" th:text=${i}></a>
-<!-- 	    	<a class="pagenav_a page-link" id="pageNav${i}" th:href="@{y_history_search(search=${search}&currentPage=${i})}" th:text=${i}></a> -->
 	    </li>
 <!-- 	    다음 -->
 	    <li class="page-item" th:if="${pg.endPage < pg.totalPage}">
@@ -115,52 +114,8 @@ $(document).ready(function(){
 	  </ul>
   	</div>
 </nav>
-	
 </main>
  <footer th:replace="common/footer :: footer"></footer>
 </body>
 <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js}" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
-<script type="text/javascript">
-	function testmethod(days) {
-		sendData = "days="+days
-		
-		$.ajax({
-			
-			type		:	'GET', // mapping 타입
-			url			:	'testmethod', // mapping 호출명
-			data		:	sendData, // mapping 호출할때 가지고 갈 매개 변수
-			/* contentType : 	'application/json; charset=UTF-8', // 보내는 데이터 타입(java로) */
-			dataType 	: 	'json', // 받는 데이터압 (JS로)
-			success		:	function(data) { // 성공시 실행되는 함수
-				$('.coincode').remove();
-				$('.coinname').remove();
-				$('.trd_div').remove();
-				$('.trd_amt').remove();
-				$('.trd_unit-price').remove();
-				$('.trd_price').remove();
-				$('.trd_date').remove();
-				
-				spann = document.createElement('span');
-				
-				console.log("받아온 데이터"+data);
-				var res = [];
-				for (var i=0; i<Object.keys(data).length; i++) {
-					res.push(data[i]);
-				}
-				/* 데이터 불러오기 */
-				/* 1. 지운 영역만큼의 셀 다시 만들기
-				2. 새로 생성된 셀에 데이터 채워넣기 */
-				
-				for (var i=0; i<Object.keys(res).length; i++) {
-					console.log("코인코드 : "+res[i].coincode)
-					$('.coin').append(spann);
-					
-				}
-			},
-			error		:	function(e) {
-				console.log("error : ",e);
-			}
-		});
-	}
-</script>
 </html>

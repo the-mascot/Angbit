@@ -143,4 +143,12 @@
 	<select id="StatusSearchSell" parameterType="hashmap" resultType="TradeCoinInfo">
 		select * from (select rownum rn, a.* from(select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=1 and trd_div=1 and (t.coincode like '%'||#{search}||'%' or c.coinname like '%'||#{search}||'%') order by trd_date desc )a) where rn between #{trdCoin.start} and #{trdCoin.end}
 	</select>
+	<!-- 미체결내역 대기 리스트 -->
+	<select id="StatusNWaitList" parameterType="java.lang.String" resultType="TradeCoinInfo">
+		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=0 order by trd_date desc
+	</select>
+	<!-- 미체결내역 취소 리스트 -->
+	<select id="StatusNCancleList" parameterType="java.lang.String" resultType="TradeCoinInfo">
+		select t.*, c.coinname from trade t inner join coininfo c on t.coincode=c.coincode where id=#{id} and trd_stu=2 order by trd_date desc
+	</select>
 </mapper>
