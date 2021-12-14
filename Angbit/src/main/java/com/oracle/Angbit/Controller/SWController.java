@@ -145,7 +145,7 @@ public class SWController {
         session.removeAttribute("id");
         
         session.invalidate();
-        return "/index";
+        return "redirect:/";
     }
     
     // 로그인 페이지에서 '비밀번호 찾기' 버튼을 누르면 비밀번호 찾기 페이지로 이동하는 컨트롤러
@@ -205,15 +205,5 @@ public class SWController {
 	@RequestMapping(value = "RankPage")
 	public void RankPage(Model model, HttpServletRequest request,  HttpServletResponse response) {
     	
-    	
-    	
     }
-    
-
-    
-    
-    
-    
-	
-	
 }
