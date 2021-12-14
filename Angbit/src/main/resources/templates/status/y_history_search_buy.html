@@ -59,21 +59,21 @@ $(document).ready(function(){
   	<th:block data-th-if="${searchBuy.size != 0}">
 	    <tr class="code" th:each="searchbuy:${searchBuy}">
 	      <th class="coincode" scope="row" th:switch="${searchbuy.coincode}"> 
-	      	<span th:case="ADA"><img class="table_images" alt="" th:src="@{images/status/ada.png}"></span>
-	      	<span th:case="AXS"><img class="table_images" alt="" th:src="@{images/status/axs.png}"></span>
-	      	<span th:case="BCH"><img class="table_images" alt="" th:src="@{images/status/bch.png}"></span>
-	      	<span th:case="BTC"><img class="table_images" alt="" th:src="@{images/status/btc.png}"></span>
-	      	<span th:case="DOGE"><img class="table_images" alt="" th:src="@{images/status/doge.png}"></span>
-	      	<span th:case="DOT"><img class="table_images" alt="" th:src="@{images/status/dot.png}"></span>
-	      	<span th:case="ETC"><img class="table_images" alt="" th:src="@{images/status/etc.png}"></span>
-	      	<span th:case="ETH"><img class="table_images" alt="" th:src="@{images/status/eth.png}"></span>
-	      	<span th:case="LTC"><img class="table_images" alt="" th:src="@{images/status/ltc.png}"></span>
-	      	<span th:case="MANA"><img class="table_images" alt="" th:src="@{images/status/mana.png}"></span>
-	      	<span th:case="SAND"><img class="table_images" alt="" th:src="@{images/status/sand.png}"></span>
-	      	<span th:case="SOL"><img class="table_images" alt="" th:src="@{images/status/sol.png}"></span>
-	      	<span th:case="VET"><img class="table_images" alt="" th:src="@{images/status/vet.png}"></span>
-	      	<span th:case="XLM"><img class="table_images" alt="" th:src="@{images/status/xlm.png}"></span>
-	      	<span th:case="XRP"><img class="table_images" alt="" th:src="@{images/status/xrp.png}"></span>
+	      	<span th:case="ADA"><img class="table_images" alt="" th:src="@{images/status/ADA.png}"></span>
+	      	<span th:case="AXS"><img class="table_images" alt="" th:src="@{images/status/AXS.png}"></span>
+	      	<span th:case="BCH"><img class="table_images" alt="" th:src="@{images/status/BCH.png}"></span>
+	      	<span th:case="BTC"><img class="table_images" alt="" th:src="@{images/status/BTC.png}"></span>
+	      	<span th:case="DOGE"><img class="table_images" alt="" th:src="@{images/status/DOGE.png}"></span>
+	      	<span th:case="DOT"><img class="table_images" alt="" th:src="@{images/status/DOT.png}"></span>
+	      	<span th:case="ETC"><img class="table_images" alt="" th:src="@{images/status/ETC.png}"></span>
+	      	<span th:case="ETH"><img class="table_images" alt="" th:src="@{images/status/ETH.png}"></span>
+	      	<span th:case="LTC"><img class="table_images" alt="" th:src="@{images/status/LTC.png}"></span>
+	      	<span th:case="MANA"><img class="table_images" alt="" th:src="@{images/status/MANA.png}"></span>
+	      	<span th:case="SAND"><img class="table_images" alt="" th:src="@{images/status/SAND.png}"></span>
+	      	<span th:case="SOL"><img class="table_images" alt="" th:src="@{images/status/SOL.png}"></span>
+	      	<span th:case="VET"><img class="table_images" alt="" th:src="@{images/status/VET.png}"></span>
+	      	<span th:case="XLM"><img class="table_images" alt="" th:src="@{images/status/XLM.png}"></span>
+	      	<span th:case="XRP"><img class="table_images" alt="" th:src="@{images/status/XRP.png}"></span>
 	      </th>
 	      <td class="coinname" th:text="${searchbuy.coinname}+'&#13;&#10;'+'('+${searchbuy.coincode}+')'"></td>
 	      <td class="trd_div" th:if="${searchbuy.trd_div}==1" style="color: blue;">매도</td>
