@@ -5,20 +5,24 @@
 	
 	<!-- getList -->
 	<select id="pagingbd" parameterType="Board" resultType="Board">
-		SELECT *
-		FROM
-		  (
-		    Select rownum rn , a.*
-		    From   (SELECT  *
-			FROM
-			 board bd
-			LEFT OUTER JOIN
-			 memberinfo mb
-			ON 
-			 bd.id = mb.id
-			ORDER BY bd.ref DESC) a
-		  )
-			WHERE (rn between #{start} and #{end}) and re_level=0  
+
+select *
+from(select rownum no, b.*		
+			 FROM(Select rownum rn , a.*
+			      From   (SELECT           *
+						  FROM             board bd
+						  LEFT OUTER JOIN  memberinfo mb 
+						  ON               bd.id = mb.id
+				 		  WHERE            re_level=0 
+						  ORDER BY         ref asc
+						  ) a
+		   		  ) b
+	 ORDER BY b.rn desc)
+WHERE (no between #{start} and #{end})					<!-- #{start} and #{end} -->
+	
+	 				
+					
+					
 	</select>
 	
 
@@ -27,8 +31,8 @@
 	<!-- total -->
 	<select id="dyboardTotal" resultType="int">
 		select count(*) 
-		FROM board
-		where re_level=0
+		FROM   board
+		where  re_level=0
 	</select>
 	
 	
@@ -79,7 +83,7 @@
 	<insert id="dyBoardInsert" parameterType="Board">
 	     INSERT  
 	     INTO  board(B_NUM,ID,UPLOADDATE,TITLE,CONTENT,VIEWS,REF,RE_LEVEL,RE_STEP) b
-	     values(b.MAX(B_NUM)+1,id,sysdate,#{title},#{content},views,ref,re_level,re_step)
+	     values(COINBD_SEQ.NEXTVAL,#{id},sysdate,#{title},#{content},#{views},REF_SEQ.NEXTVAL,#{re_level},#{re_step})
 	     WHERE b.id=(select id
 			    	 from   memberinfo m
 			    	 where  m.nickname = #{nickname}) 
@@ -93,18 +97,18 @@
 		WHERE ref = #{ref} AND re_level=0;
 	</delete>
 	<!--댓글 delete -->
-	<delete id="dyReplyDelete" parameterType="int">
+	<delete id="dyReplyDelete" parameterType="Board">
 		DELETE FROM board 
-		WHERE  ref = #{ref} AND re_level=1;
+		WHERE  ref = #{ref} AND re_level=1 AND re_step = #{re_step};
 	</delete>
 	
 	
 	
-	<!-- 댓글 추가부분-->
+	<!-- 댓글 입력 부분-->
 	<insert id="dyReplyResult" parameterType="Board">
 		INSERT
 		INTO   board(B_NUM,ID,UPLOADDATE,TITLE,CONTENT,VIEWS,REF,RE_LEVEL,RE_STEP)
-		values (#{b_num},#{id},to_date(sysdate,'YYYY-MM-DD HH24:mi:SS'),#{title},#{content},#{views},#{ref},#{re_level},#{re_step}+1)
+		values (#{b_num},#{id},to_date(sysdate,'YYYY-MM-DD HH24:mi:SS'),#{title},#{content},#{views},#{ref},#{re_level},RESTEP_SEQ.NEXTVAL)
 	</insert>
 	
 	<!-- 댓글가져가기 -->	
@@ -116,7 +120,12 @@
 		WHERE  (bd.ref=#{ref} and bd.re_level=1) order by bd.re_step DESC
 	</select>	
 
-
+	<!-- 댓글 수정부분 -->
+	<update id="dyReplyUpdate" parameterType="Board" >
+	UPDATE board 
+	SET    content=#{content} AND uploaddate=sysdate	 
+	WHERE  ref=#{ref} AND id=#{id} AND re_step=#{re_step} AND re_level=1
+	</update>
 
 	
 </mapper>

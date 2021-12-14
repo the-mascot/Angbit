@@ -33,20 +33,11 @@ public class DYController {
 	@GetMapping("board_list")
 	public String getList(Board board, String currentPage, Model model, HttpServletRequest request) {
 		System.out.println("DYController getList Start...");
-		
-		//순번 rownum과 정렬
-		int result = bs.arrange();
-		
-		
+
 		 int total = bs.total(); 											    				//total service
 		 System.out.println("DYController total=>" + total);									//select count(*) FROM board ,  테이블 전체 행  40	
 		 
 		  Paging pg = new Paging(total, currentPage);											//paging(40,1)
-		  
-		  int[] oriNo = new int[total];							//게시물번호
-		  for(int i=1; i<total+1; i++) {
-			  oriNo[i-1]=total-i+1;
-		  }
 		  
 		  board.setStart(pg.getStart()); 														// 1, board에  start 필드값 생김
 		  board.setEnd(pg.getEnd()); 															//10, board에  end 필드값 생김
@@ -57,14 +48,7 @@ public class DYController {
 		  			   model.addAttribute("total", total); 										//total==40
 					   model.addAttribute("boardList", boardList);								//pagingBd==1~10까지의 행수로 보드데이터를 보내줌
 					   model.addAttribute("pg", pg);											//pg==	paging 객체로 DB 40개와 현재1페이지라는 정보 있음
-					   model.addAttribute("oriNo", oriNo);//수정중 순번부분...
 					   
-					   
-			System.out.println("rownum->"+board.getRownum());		  
-			
-			
-			
-					  
 		return "board/coinBoard";
 	}
 	
@@ -82,7 +66,9 @@ public class DYController {
 			}
 			
 			//(조회수 증가한) 보드 정보 출력용
+			System.out.println("DYController Start detailBoard bd..." );
 			Board bd = bs.detailBoard(board.getRef());      					
+			System.out.println("DYController bd->"+bd); 
 			
 			//댓글db추가
 			if(board.getRe_level()==1 && board.getContent()!=null) {
@@ -175,8 +161,8 @@ public class DYController {
 		//댓글 db에 보내기 만드는중 ....@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 		@PostMapping(value="reply_update")
 	    public String replyUpdate(Board board, Model model) {
-			System.out.println("board.getBnum->"+board.getB_num());
-			int result = bs.update(board);
+			System.out.println("board.getref->"+board.getRef());
+			int result = bs.replyUpdate(board);
 			System.out.println("DYController update result->"+result);
 			model.addAttribute("result", result);               		// Test Controller간 Data 전달
 			
@@ -198,7 +184,7 @@ public class DYController {
 		}
 		
 		//제목, 글내용 작성 후 글쓰기 버튼을 눌렀을 때, DB에 저장되는 컨트롤러
-		@PostMapping(value="writeProcess")
+		@PostMapping(value="board_writeProcess")
 		public String writeProcess(Board board, Model model, HttpServletRequest request) {
 			System.out.println("DYController Start writeProcess..." );
 			System.out.println("board.getTitle() -> " + board.getTitle());
@@ -230,10 +216,10 @@ public class DYController {
 		}
 		// 댓삭제
 			@GetMapping(value = "reply_delete")
-			public String replyDelete(int ref, Model model) {
+			public String replyDelete(Board board, Model model) {
 				System.out.println("DYController Start delete...");
 				
-				int result = bs.replyDelete(ref);
+				int result = bs.replyDelete(board);     //ref 와 re_step모두 넘기기 /어떤글의 몇번째 댓글인지 알고 삭제하기위해
 				System.out.println("delete성공여부->"+result);
 				//model.addAttribute("result", result);
 				

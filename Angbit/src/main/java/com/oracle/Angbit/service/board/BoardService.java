@@ -21,9 +21,10 @@ public interface BoardService {
 	int viewCnt(int b_num);
 	int instResult(Board board);
 	Board levone(int ref);
-	int replyDelete(int ref);
-	int arrange();
+	int replyDelete(Board board);
+	
 	Board detailReply(int ref);
+	int replyUpdate(Board board);
 	
 	
 	

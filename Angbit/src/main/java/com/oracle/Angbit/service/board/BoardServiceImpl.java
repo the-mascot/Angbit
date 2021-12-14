@@ -29,13 +29,7 @@ public class BoardServiceImpl implements BoardService {
 			return pagingbd;
 		}
 	
-		@Override
-		public int arrange() {
-			System.out.println("BoardServiceImpl arrange Start..." );
-			int arrange = bdao.arrange();
-			
-			return arrange;
-		}
+	
 	  
 	 
 
@@ -78,7 +72,15 @@ public class BoardServiceImpl implements BoardService {
 		board = bdao.detailReply(ref);
 		return board;
 	}
-	
+	//reply update db
+	@Override
+	public int replyUpdate(Board board) {
+		System.out.println("BoardServiceImpl replyUpdate ...");
+		int result =  0;
+		result=bdao.replyUpdate(board);
+		
+		return result;
+	}
 	
 	
 	
@@ -103,10 +105,10 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override
-	public int replyDelete(int ref) {
+	public int replyDelete(Board board) {
 		int result = 0;
 		System.out.println("BoardServiceImpl delete Start...");
-		result = bdao.replyDelete(ref);
+		result = bdao.replyDelete(board);
 		return result;
 	}
 	
@@ -120,6 +122,9 @@ public class BoardServiceImpl implements BoardService {
 		return result;
 	}
 
+	
+	
+	
 	//댓글정보 저장
 	@Override
 	public int instResult(Board board) {
@@ -136,6 +141,12 @@ public class BoardServiceImpl implements BoardService {
 		
 		return levone;
 	}
+
+
+
+
+
+	
 
 	
 

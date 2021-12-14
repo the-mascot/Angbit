@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class Board {
 	
-	private int rownum;
+	private int rn;
 	private int b_num;
 	private String id;
 	
