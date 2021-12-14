@@ -66,7 +66,7 @@ public class ESController {
 		}
 		model.addAttribute("coinInfoList", coinInfoList);
 		
-		return "/invest/invest";
+		return "invest/invest";
 	}
 	
 	@ResponseBody
