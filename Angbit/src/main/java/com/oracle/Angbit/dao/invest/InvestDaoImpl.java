@@ -220,7 +220,7 @@ public class InvestDaoImpl implements InvestDao {
 						int result2 = seesion.update("updateTrdStu", orderTrade);
 						// 매도 후 보유 코인량 0개일 시 해당 ROW 초기화
 						float result3 = seesion.selectOne("chkZero", orderTrade);
-						if (result3 == 0) {
+						if (result3 <= 0) {
 							seesion.delete("delCoinRow", orderTrade);
 							System.out.println("전량 매도 코인 ROW삭제");
 						}
@@ -259,7 +259,7 @@ public class InvestDaoImpl implements InvestDao {
 
 		// 매도 후 보유 코인량 0개일 시 해당 ROW 초기화
 		float result = seesion.selectOne("chkZero", orderTrade);
-		if (result == 0) {
+		if (result <= 0) {
 			seesion.delete("delCoinRow", orderTrade);
 		}
 	}
