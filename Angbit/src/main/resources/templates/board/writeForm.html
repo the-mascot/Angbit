@@ -21,7 +21,7 @@
 		<h2>게시글 등록</h2>
 		<div th:if="${msg!=null}" th:text="${msg}"></div>
 		
-		<form action="writeProcess" method="post">
+		<form action="board_writeProcess" method="post">
 			<table class="table">
 				<tr>
 				 <th>작성자</th>
@@ -32,17 +32,27 @@
 					</th>
 					<th hidden="${session.sessionID}" id="id" name="id">
 						<span class="welcomemsg" th:text="${session.sessionNickName}"></span>
+						
+						<input type="hidden"  name="id"  value="${session.sessionID}">
+						<input type="hidden"  name="nickname"  value="${session.sessionNickName}">
+						<input type="hidden"  name="b_num"  value="40">
+						<input type="hidden"  name="uploaddate"  value="sysdate">
+						<input type="hidden"  name="views"  value="0">
+						<input type="hidden"  name="ref"  value="40">
+						<input type="hidden"  name="re_level"  value="0">
+						<input type="hidden"  name="re_step"  value="0">
+						
 					</th>
 				</tr>
 				
 				<tr>
 					<th>제목</th>
-					<th><input type="text" id="title" name="title">
+					<th><input type="text" id="title" name="title" required="required">
 				</tr>
 				
 				<tr>
 					<th>내용</th>
-					<th><input type="text" id="content" name="content">
+					<th><input type="text" id="content" name="content" required="required">
 					<!-- <input type="hidden" id="id" name="id" th:value="${session.sessionID}"> -->
 				</tr>
 

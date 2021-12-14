@@ -30,19 +30,6 @@ public class BoardDaoImpl implements BoardDao {
 		return pagingbd;
 	}
 	
-	@Override
-	public int arrange() {
-		System.out.println("BoardDaoImpl pagingBd Start ..." );
-		int arrange = 0;
-		
-		try {
-			arrange  = session.update("dyArrange");
-		} catch (Exception e) {
-			System.out.println("BoardDaoImpl arrange Exception->"+e.getMessage());
-		}
-		return arrange;
-	}
-	
 
 //페이징
 	@Override
@@ -93,11 +80,11 @@ public class BoardDaoImpl implements BoardDao {
 		}
 		
 		@Override
-		public int replyDelete(int ref) {
+		public int replyDelete(Board board) {
 			System.out.println("BoardDaoImpl Delete Start...");
 			int result = 0;
 			try {
-				result  = session.delete("dyReplyDelete",ref);
+				result  = session.delete("dyReplyDelete",board);
 				System.out.println("BoardDaoImpl replyDelete result->"+result);
 			} catch (Exception e) {
 				System.out.println("BoardDaoImpl replyDelete Exception->"+e.getMessage());
@@ -135,8 +122,23 @@ public class BoardDaoImpl implements BoardDao {
 			}
 			return board;
 		}
-
 		
+		//reply update db
+		@Override
+		public int replyUpdate(Board board) {
+			System.out.println("BoardDaoImpl replyUpdate start..");
+			int result = 0;
+			System.out.println(board.getRef());
+			System.out.println(board.getContent());
+
+			try {
+				result  = session.update("dyReplyUpdate", board);
+			} catch (Exception e) {
+				System.out.println("BoardDaoImpl update Exception->"+e.getMessage());
+			}
+			return result;
+		}
+
 		
 		
 		
@@ -202,6 +204,8 @@ public class BoardDaoImpl implements BoardDao {
 			return board;
 		}
 
+
+		
 		
 
 
