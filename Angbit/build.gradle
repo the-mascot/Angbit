@@ -28,6 +28,8 @@ repositories {
 dependencies {
 	// Spring Web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	// Spring-Boot-Start-Tomcat	
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: '2.6.1'
 	// JPA
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	// Thymeleaf
@@ -53,8 +55,7 @@ dependencies {
 	implementation group: 'org.springframework', name: 'spring-context-support', version: '5.3.13'
 	// Spring WebSocket
 	implementation group: 'org.springframework', name: 'spring-websocket', version: '5.3.13'
-	
-	// https://mvnrepository.com/artifact/org.springframework/spring-messaging
+	// STOMP
 	implementation group: 'org.springframework', name: 'spring-messaging', version: '5.3.13'
 }
 
