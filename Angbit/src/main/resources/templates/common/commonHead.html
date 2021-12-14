@@ -37,6 +37,10 @@
 	/*<![CDATA[*/
 	var sessionID = "[[${session.sessionID}]]"
 	/*]]>*/
+
+    toastr.options = {
+        positionClass: "toast-bottom-right"
+    };
 	
 	function toastrBtn(msg) {
 	Command: toastr["success"](msg, "매매알람")
