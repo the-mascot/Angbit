@@ -188,7 +188,7 @@ public class InvestDaoImpl implements InvestDao {
 		for(int i =0; i < coinList.size(); i++) {
 			try {
 				if(i == 8)
-					Thread.sleep(1000);	// UPBIT API 요청수 제한으로 1 초 대기(초당 10회만 요청 가능)
+					Thread.sleep(2000);	// UPBIT API 요청수 제한으로 1 초 대기(초당 10회만 요청 가능)
 				String tickerUrl 	= "https://api.upbit.com/v1/candles/minutes/1?market=KRW-"+coinList.get(i).getCoincode()+"&to="+sdf.format(date)+"&count=1";
 				ResponseEntity<String> tickerResponse = restTemplate.exchange(tickerUrl, HttpMethod.GET, entity, String.class);
 				String tickerStr = tickerResponse.getBody();
@@ -201,6 +201,7 @@ public class InvestDaoImpl implements InvestDao {
 				map.put("coincode", coinList.get(i).getCoincode());
 				map.put("lowPrice", (String) nf.format(json.get("low_price")));
 				map.put("highPrice", (String) nf.format(json.get("high_price")));
+				//System.out.println("lowPrice->"+map.get("lowPrice"));
 				List<OrderTrade> sellOrderList = seesion.selectList("checkSellLimits", map);
 				List<OrderTrade> buyOrderList = seesion.selectList("checkBuyLimits", map);
 				if (buyOrderList.size() > 0) {
