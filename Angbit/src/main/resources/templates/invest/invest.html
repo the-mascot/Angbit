@@ -214,24 +214,6 @@
 				document.getElementById(code+'-cPercent').style.color = "blue";
 				document.getElementById(code+'-cPrice').style.color = "blue";
 			}
-
-			if(code == currCoin) {
-				if(change=='RISE') {
-					document.getElementById('coinTitle-tp').style.color = "red";
-					document.getElementById('coinTitle-scr').style.color = "red";
-					document.getElementById('coinTitle-scp').style.color = "red";
-				} else if(change=='EVEN') {
-					document.getElementById('coinTitle-tp').style.color = "black";
-					document.getElementById('coinTitle-scr').style.color = "black";
-					document.getElementById('coinTitle-scp').style.color = "black";
-				} else if(change=='FALL') {
-					document.getElementById('coinTitle-tp').style.color = "blue";
-					document.getElementById('coinTitle-scr').style.color = "blue";
-					document.getElementById('coinTitle-scp').style.color = "blue";
-				}
-			}
-
-
 		}
 
 		// 코인 리스트 Soket 업데이트
@@ -264,9 +246,24 @@
 				document.getElementById('orderbook-lp').innerText = jason.lp.toLocaleString();
 
 				// coinTitle 업데이트
-				document.getElementById('coinTitle-tp').innerText = trade_price;
-				document.getElementById('coinTitle-scr').innerText = (jason['scr']*100).toFixed(2)+'%';
-				document.getElementById('coinTitle-scp').innerText = (jason['scp'].toLocaleString());
+				if(document.getElementById('coinTitle-value-a').className == 'nav-link active') {
+					document.getElementById('coinTitle-tp').innerText = trade_price;
+					document.getElementById('coinTitle-scr').innerText = (jason['scr']*100).toFixed(2)+'%';
+					document.getElementById('coinTitle-scp').innerText = (jason['scp'].toLocaleString());
+					if(jason.c =='RISE') {
+						document.getElementById('coinTitle-tp').style.color = "red";
+						document.getElementById('coinTitle-scr').style.color = "red";
+						document.getElementById('coinTitle-scp').style.color = "red";
+					} else if(jason.c =='EVEN') {
+						document.getElementById('coinTitle-tp').style.color = "black";
+						document.getElementById('coinTitle-scr').style.color = "black";
+						document.getElementById('coinTitle-scp').style.color = "black";
+					} else if(jason.c =='FALL') {
+						document.getElementById('coinTitle-tp').style.color = "blue";
+						document.getElementById('coinTitle-scr').style.color = "blue";
+						document.getElementById('coinTitle-scp').style.color = "blue";
+					}
+				}
 			}
 		}
 
@@ -281,8 +278,6 @@
 				currCoin = 'KRW-BTC';
 			}
 			sendData = "currCoin="+currCoin;
-			console.log('currCoin->'+sendData);
-
 			$.ajax({
 				type		:	'GET',
 				url			:	'invest/investApi',
@@ -290,7 +285,6 @@
 	 			contentType : 	'application/json; charset=UTF-8',
 			    dataType 	: 	'json',
 				success		:	function(data) {
-					console.log('data->'+data)
 					upApiData(data);
 				},
 				error		:	function(e) {
@@ -617,7 +611,7 @@
 
 			// 필터
 			$('#coinlist-search').keyup(function() {
-				console.log('keyWord->'+$('#coinlist-search').val().toUpperCase())
+				//console.log('keyWord->'+$('#coinlist-search').val().toUpperCase())
 				var keyWord = 'keyWord='+$('#coinlist-search').val().toUpperCase();
 				$.ajax({
 					type		:	'GET',
@@ -626,7 +620,6 @@
 					contentType : 	'application/json; charset=UTF-8',
 				    dataType 	: 	'json',
 					success		:	function(json) {
-						console.log(json);
 						var table = "";
 						for(var i = 0; i < json.length; i++) {
 							table += "<tr>"
@@ -665,33 +658,34 @@
 			$('.orderbook-bp').on('click', function() {
 				var unit_price = $(this).text();
 				$('#order-unit_price').val(unit_price);
-				console.log("trd->"+$('#order-trd_amt').val())
+				//console.log("trd->"+$('#order-trd_amt').val())
 				$('#order-trd_price').val(comma(uncomma(unit_price) * $('#order-trd_amt').val()));
         $('#sell-unit_price').val($(this).text());
 			});
 			
 			$('#sell-unit_price, #sell-trd_amt').on('keyup',function () {
 				let sell_price = $('#sell-trd_amt').val() * uncomma($('#sell-unit_price').val());
-				console.log(sell_price);
 				// $('#sell-trd_price').val(comma(sell_price));
 			});
 			
 		});
 		
 		function upCoinListApi() {
-			$.ajax({
-				type		:	'GET',
-				url			:	'invest/upCoinListApi',
-				data		:	{"coinList" : coinList},
-			    dataType 	: 	'json',
-				success		:	function(data) {
-					console.log('data->'+data)
-					upCListApiData(data);
-				},
-				error		:	function(e) {
-					console.log("error : ",e);
-				}
-			});
+			if(coinList.length > 0) {
+				$.ajax({
+					type		:	'GET',
+					url			:	'invest/upCoinListApi',
+					data		:	{"coinList" : coinList},
+				    dataType 	: 	'json',
+					success		:	function(data) {
+						console.log('data->'+data)
+						upCListApiData(data);
+					},
+					error		:	function(e) {
+						console.log("error : ",e);
+					}
+				});
+			}
 		}
 		
 		// 코인 리스트 api 업데이트
@@ -759,7 +753,6 @@
 			// 주문 금액 10, 25, 50, 100% 버튼 선택
 				var price =  Math.floor(uncomma($('#order-avaliableKRW').text()) * (percent * 0.01));
 				var unit_price =uncomma($('#order-unit_price').val());
-				console.log(unit_price)
 				var trd_amt = price / unit_price;
 	
 				if(trd_amt >= 0 && unit_price != 0) {
@@ -795,7 +788,6 @@
 					$('#chkModal-trdMethod').text('지정가 매수');
 					$('#chkModal-trdMethod').removeClass('text-primary');
 					$('#chkModal-trdMethod').addClass('text-danger');
-					console.log($('#order-trd_unit_price').val())
 					$('#chkModal-trd_unit_price').text($('#order-unit_price').val());
 					$('#chkModal-trd_amt').text($('#order-trd_amt').val());
 					$('#chkModal-trd_price').text($('#order-trd_price').val());
@@ -1011,8 +1003,8 @@
 					sell_amt = data;
 					$('#sell-availableAmt').text(data.toFixed(8));
 					$('.selected').text(selected);
-					console.log('받아온 데이터' + data);
-					console.log('현재 선택된 코인' + selected);
+					//console.log('받아온 데이터' + data);
+					//console.log('현재 선택된 코인' + selected);
 					upUnitPrice();
 				},
 			error        :    function (e) {
@@ -1081,8 +1073,8 @@
 			var sell_amt = $('#sell-trd_amt').val(); // 판매할 수량
 			var avail_amt = $('#sell-availableAmt').text() * 1; // 판매 가능 수량
 			// var sell_price = uncomma($('#sell-unit_price').val()) * 1; // 매도 가격
-			console.log('매도 수량?'+sell_amt)
-			console.log('주문 가능 수량?'+avail_amt)
+			//console.log('매도 수량?'+sell_amt)
+			//console.log('주문 가능 수량?'+avail_amt)
 
 			if(avail_amt < sell_amt) {
 				$('#modal-msg').text('주문가능 수량이 부족합니다')
@@ -1107,7 +1099,7 @@
 					$('#chkModal-trdMethod').text('지정가 매도');
 					$('#chkModal-trdMethod').removeClass('text-danger');
 					$('#chkModal-trdMethod').addClass('text-primary');
-					console.log($('#sell-unit_price').val())
+					//console.log($('#sell-unit_price').val())
 					$('#chkModal-trd_unit_price').text($('#sell-unit_price').val());
 					$('#chkModal-trd_amt').text($('#sell-trd_amt').val());
 					$('#chkModal-trd_price').text($('#sell-trd_price').val());
@@ -1121,7 +1113,7 @@
 		function amtChk() {
 			let cnt = $('#sell-trd_amt').val();
 			if (cnt > sell_amt) {
-				console.log('초과')
+				//console.log('초과')
 				alert('입력된 수량이 판매 가능 수량을 초과합니다.');
 				return false;
 			}
@@ -1138,8 +1130,8 @@
 				dataType 	: 	'json',
 				success		:	function(data) {
 					document.getElementById('sell-unit_price').value = data[1].trade_price.toLocaleString();
-					console.log('trade_price->'+data[1].trade_price.toLocaleString())
-					console.log('DOM SET?'+document.getElementById('sell-unit_price').value)
+					//console.log('trade_price->'+data[1].trade_price.toLocaleString())
+					//console.log('DOM SET?'+document.getElementById('sell-unit_price').value)
 					sellCoin();
 				},
 				error		:	function(e) {
@@ -1150,7 +1142,7 @@
 
 		// 매도 주문
 		function sellCoin() {
-			console.log("sellCoin시작")
+			//console.log("sellCoin시작")
 			var trd_amt = $('#sell-trd_amt').val(); // 매도 수량
 			var trd_price = uncomma($('#sell-trd_price').val()); // 주문 총액
 			var trd_unit_price = uncomma($('#sell-unit_price').val()); // 매도 가격
@@ -1173,11 +1165,9 @@
 		}
 
 		function per(num) {
-			console.log('퍼센트 호출!->'+num);
+			//console.log('퍼센트 호출!->'+num);
 			var price = parseFloat(($('#sell-availableAmt').text()) * (num * 0.01));
 			var tot = price * uncomma($('#sell-unit_price').val());
-			console.log(price)
-			console.log('tot?'+tot)
 
 			if(price >= 0) {
 				$('#sell-trd_amt').val(price.toFixed(8));
@@ -1192,7 +1182,6 @@
 				data		:	sendData,
 				dataType 	: 	'json',
 				success		:	function(json) {
-					console.log(json);
 					var table = "";
 					if (json.length > 0) {
 						for(var i = 0; i < json.length; i++) {
@@ -1230,7 +1219,7 @@
 		}
 		
 		function cancelOrder(trd_num) {
-			console.log('cancelOrder trd_num->'+trd_num);
+			//console.log('cancelOrder trd_num->'+trd_num);
 			sendData = "trd_num="+trd_num;
 			$.ajax({
 				type		:	'POST',
