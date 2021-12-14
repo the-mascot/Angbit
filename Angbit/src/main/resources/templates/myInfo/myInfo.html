@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>index</title>
+<title th:text="'내 정보 - '+${session.sessionNickName}"></title>
 <!-- Common meta tag, Bootstrap, js -->
 <th:block th:replace="common/commonHead"></th:block>
 

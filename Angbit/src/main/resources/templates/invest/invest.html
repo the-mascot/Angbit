@@ -648,11 +648,11 @@
 			
 			// 호가 클릭시 매수가격 업데이트
 			$('.orderbook-ap').on('click', function() {
-
 				var unit_price = $(this).text();
 				$('#order-unit_price').val(unit_price);
 				$('#order-trd_price').val(comma(uncomma(unit_price) * $('#order-trd_amt').val()));
-        $('#sell-unit_price').val($(this).text());
+        		$('#sell-unit_price').val(unit_price);
+				$('#sell-trd_price').val(comma(uncomma(unit_price) * $('#sell-trd_amt').val()));
 			});
 			
 			$('.orderbook-bp').on('click', function() {
@@ -660,7 +660,8 @@
 				$('#order-unit_price').val(unit_price);
 				//console.log("trd->"+$('#order-trd_amt').val())
 				$('#order-trd_price').val(comma(uncomma(unit_price) * $('#order-trd_amt').val()));
-        $('#sell-unit_price').val($(this).text());
+				$('#sell-unit_price').val(unit_price);
+				$('#sell-trd_price').val(comma(uncomma(unit_price) * $('#sell-trd_amt').val()));
 			});
 			
 			$('#sell-unit_price, #sell-trd_amt').on('keyup',function () {
