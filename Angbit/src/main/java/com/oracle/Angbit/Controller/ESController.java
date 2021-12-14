@@ -4,13 +4,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.NumberFormat;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.websocket.Session;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -23,19 +20,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
-
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.common.Trade;
 import com.oracle.Angbit.model.invest.OrderTrade;
@@ -50,10 +42,8 @@ public class ESController {
 	
 	@Autowired
 	private InvestService ivs;
-	@Autowired
-	private EchoHandler echo;
 	
-	@GetMapping("/")
+	@GetMapping("/test")
 	public String home() {
 		
 		System.out.println("ESController home Start...");
@@ -61,7 +51,7 @@ public class ESController {
 		return "index";
 	}
 	
-	@GetMapping("invest")
+	@GetMapping("/")
 	public String invest(Model model, HttpServletRequest request, HttpServletResponse response) {
 		
 		System.out.println("ESController invest Start...");
@@ -77,16 +67,6 @@ public class ESController {
 		model.addAttribute("coinInfoList", coinInfoList);
 		
 		return "/invest/invest";
-	}
-	
-	@GetMapping("estest")
-	public String estest(Model model, HttpServletRequest request, HttpServletResponse response) {
-		
-		System.out.println("ESController invest Start...");
-		List<CoinInfo> coinInfoList =  ivs.coinInfoList();
-		model.addAttribute("coinInfoList", coinInfoList);
-		
-		return "/invest/NewFile";
 	}
 	
 	@ResponseBody
