@@ -257,9 +257,15 @@ public class SHController {
         if (amount >= orderTrade.getTrd_amt()) {
             if (orderTrade.getTrd_method().equals("limits")) {
                 try {
-                    orderTrade.setTrd_stu(0); // 체결 상태 미체결 설정
-                    ivs.sellLimitsPrice(orderTrade);
-                    msg = "지정가 매도 주문을 하였습니다.";
+                    if (orderTrade.getTrd_price() < 5000) {
+                        msg = "주문 금액이 최소 주문 금액보다 낮습니다.";
+                    } else if (orderTrade.getTrd_amt() <= 0.0) {
+                        msg = "주문 수량이 없습니다.";
+                    } else {
+                        orderTrade.setTrd_stu(0); // 체결 상태 미체결 설정
+                        ivs.sellLimitsPrice(orderTrade);
+                        msg = "지정가 매도 주문을 하였습니다.";
+                    }
                 } catch (Exception e) {
                     System.out.println("limits! 지정가 매도 에러->" + e.getMessage());
                     msg = "매도 주문에 실패하였습니다.";
@@ -269,11 +275,17 @@ public class SHController {
                 try {
                     /* 시장가 SET */
                     orderTrade.setTrd_unit_price(tradePrice(coin));
-                    orderTrade.setTrd_price((int) (orderTrade.getTrd_unit_price() * orderTrade.getTrd_amt()));
+                    orderTrade.setTrd_price((long) (orderTrade.getTrd_unit_price() * orderTrade.getTrd_amt()));
                     /*  */
-                    orderTrade.setTrd_stu(1); // 체결 상태 체결 설정
-                    ivs.sellMarketPrice(orderTrade);
-                    msg = "매도 체결 되었습니다.";
+                    if (orderTrade.getTrd_price() < 5000) {
+                        msg = "주문 금액이 최소 주문 금액보다 낮습니다.";
+                    } else if (orderTrade.getTrd_amt() <= 0.0) {
+                        msg = "주문 수량이 없습니다.";
+                    } else {
+                        orderTrade.setTrd_stu(1); // 체결 상태 체결 설정
+                        ivs.sellMarketPrice(orderTrade);
+                        msg = "매도 체결 되었습니다.";
+                    }
                 } catch (Exception e) {
                     System.out.println("market! 시장가 매도 에러->" + e.getMessage());
                     msg = "매도 체결에 실패하였습니다.";
