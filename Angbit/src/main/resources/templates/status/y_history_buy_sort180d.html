@@ -101,10 +101,11 @@ $(document).ready(function(){
 	      </a>
 	    </li>
 	    <!-- 페이지 갯수 -->
-	    <li class="page-item" th:each="i:${#numbers.sequence(start, end)}">
-	    	<th:block th:if="${i} != 0">
-	    	<a class="pagenav_a page-link" id="pageNav${i}" th:href="@{status_y_history_buy_sort180d(currentPage=${i})}" th:text=${i}></a>
-	    </li>
+		<li class="page-item" th:each="i:${#numbers.sequence(start, end)}">
+			<th:block th:if="${i} != 0">
+				<a class="pagenav_a page-link activated" id="pageNav${i}" th:if="${pg.currentPage}==${i}" style="background-color: skyblue; color: white" th:href="@{status_y_history_buy_sort180d(currentPage=${i})}" th:text=${i}></a>
+				<a class="pagenav_a page-link" id="pageNav${i}" th:if="${pg.currentPage}!=${i}" th:href="@{status_y_history_buy_sort180d(currentPage=${i})}" th:text=${i}></a>
+		</li>
 	    <!-- 다음 -->
 	    <li class="page-item" th:if="${pg.endPage < pg.totalPage}">
 	      <a class="pagenav_a page-link" th:href="@{status_y_history_buy_sort180d(currentPage=${pg.startPage+pg.pageBlock})}" aria-label="Next">
