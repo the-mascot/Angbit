@@ -103,6 +103,7 @@ public class GMController {
 			model.addAttribute("yList", tradeList);
 			System.out.println("y_history tradeList.size() -> "+tradeList.size());
 			model.addAttribute("pg", pg);
+			System.out.println("currentPage -> "+pg.getCurrentPage());
 			System.out.println("startPage -> " +pg.getStartPage());
 			System.out.println("endPage -> " +pg.getEndPage());
 			System.out.println("pageBlock -> " +pg.getPageBlock());
