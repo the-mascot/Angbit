@@ -55,7 +55,6 @@ function makeChart(ctx, type, labels, myData){
 // 페이지 로딩 되면 실행되는 initial 함수
 function init() {
 	output = document.getElementById("output");
-	console.log('init() Start...');
  	testWebSocket();	// 웹소켓 실행
 	/*<![CDATA[*/ 
 	var statusList = /*[[ ${statusList} ]]*/;
@@ -66,7 +65,6 @@ function init() {
 		url: "statusListAjax",
 		dataType: "json",
 		success: function(data){
-			console.log(data);
 			
 			var labels = [];
 			var myData = [];
@@ -81,15 +79,11 @@ function init() {
 	            for (var i=0; i<Object.keys(data.list).length; i++){
 	               percent += data.list[i].tot_price;
 	            }
-	            console.log('percent-> '+percent);
 
 	            for(var i=0; i<Object.keys(data.list).length; i++) {
 	               labels.push(data.list[i].coinname+'('+((data.list[i].tot_price/percent)*100).toFixed(2)+' %)');
 	               myData.push(data.list[i].tot_price);
 	            }
-
-	            console.log('label?'+labels);
-	            console.log('myData?'+myData);
 
 	            var ctx = $('#myChart');
 	            makeChart(ctx, 'pie', labels, myData);
@@ -132,7 +126,6 @@ function onClose(evt) {
 }
 
 function onMessage(evt) {
-		console.log(evt.data);
 	var enc = new TextDecoder("utf-8");
 	var arr = new Uint8Array(evt.data);
 	var decode = enc.decode(arr);
@@ -150,7 +143,6 @@ function onMessage(evt) {
 			maximumFractionDigits: 2
 			}
 	
-	console.log('statusList.length->'+statusList.length);
 	statusList.forEach((statusList, i)=> {
 		let amt = statusList.coin_amt;
 		let coincode = statusList.coincode;
@@ -167,7 +159,6 @@ function onMessage(evt) {
 			document.getElementById(coincode).innerText = evPrice.toLocaleString('ko-KR', option);
 			var coinloss1 = evPrice-totPrice;	// css 입히기 위한 변수
 			var coinloss = document.getElementById(coincode+'-loss').innerText = (evPrice-totPrice).toLocaleString('ko-KR', option)+'\n'+(((evPrice/totPrice)-1)*100).toLocaleString('ko-KR', option1)+' %';
-			console.log('coinloss1 -> '+coinloss1);
 		}
 			// 평가손익 css
 			if(coinloss1 < 0) {
