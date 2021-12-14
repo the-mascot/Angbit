@@ -180,7 +180,6 @@
 						// contentType: 'application/text; charset=UTF-8',
 						dataType: 'text',
 						success: function (data) {
-							console.log("변경 완료 : "+data)
 							if (data==1) {
 								setNewNicknameToPage(data);
 								toggleBtns();
@@ -193,7 +192,6 @@
 
 						},
 						error: function (e) {
-							console.log("error : ", e);
 						}
 					});
 				}
@@ -204,7 +202,6 @@
 		}
 
 		function setNewNicknameToPage(newNickname){
-			console.log(newNickname);
 			const nicknameEditBtnContainer = document.querySelector(".u-p-nickname-btn-container");
 			nicknameEditBtnContainer.remove();
 		}
@@ -299,7 +296,6 @@
 					data: {"password" : password},
 					dataType: 'text',
 					success: function (data) {
-						console.log("변경 완료 : "+data)
 						if (data==1) {
 							pwchkInput.value = "";
 							passwordInput.value = "";
@@ -318,7 +314,6 @@
 						}
 					},
 					error: function (e) {
-						console.log("error : ", e);
 					}
 				});
 			}

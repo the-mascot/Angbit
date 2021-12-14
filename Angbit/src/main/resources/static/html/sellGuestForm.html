@@ -12,11 +12,11 @@
  <div class="d-flex justify-content-between mb-3 ">
   <div id="sell-unit_price-th">매도가격</div><input type="text" class="sell-form form-control" id="sell-unit_price" name="sell_unit_price" onkeyup="inUnitPrice(this), inputEvent(this)">
  </div>
- <div class="d-flex justify-content-between mb-3">
-  <div id="sell-trd_amt-th">매도수량</div>
+ <div class="d-flex justify-content-end mb-3">
+  <div id="sell-trd_amt-th" style="margin-right:auto;">매도수량</div>
   <div>
    <input type="text" class="sell-form form-control" id="sell-trd_amt" name="sell-trd_amt" value="0" onkeypress="return inSellAmt(event)" onkeyup="inputEvent(this)">
-   <div class="d-flex justify-content-between mt-1" id="sell-div-amt-butn">
+   <div class="d-flex justify-content-between mt-3" id="sell-div-amt-butn">
     <input type="button" class="sell-form-amt-butn form-control" value="10%" onclick="per(10)">
     <input type="button" class="sell-form-amt-butn form-control" value="25%" onclick="per(25)">
     <input type="button" class="sell-form-amt-butn form-control" value="50%" onclick="per(50)">
