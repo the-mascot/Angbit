@@ -34,7 +34,7 @@ public class QuartzConfig {
 		log.info("JobController start invoked");
 		try {
 			scheduler.scheduleJob(chkTradeJobDetail(), buildCronJobtrigger("0 0/1 * * * ?"));
-			scheduler.scheduleJob(rankUpdateJobDetail(), buildCronJobtrigger("0 0 0 * * ?"));
+			scheduler.scheduleJob(rankUpdateJobDetail(), buildCronJobtrigger("0 0 30 * * ?"));
 		} catch (SchedulerException e) {
 			System.out.println("QuartzConfig start() Exception->"+e.getMessage());
 			e.printStackTrace();
