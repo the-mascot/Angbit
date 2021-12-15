@@ -187,8 +187,7 @@ public class InvestDaoImpl implements InvestDao {
 
 		for(int i =0; i < coinList.size(); i++) {
 			try {
-				if(i == 8)
-					Thread.sleep(2000);	// UPBIT API 요청수 제한으로 1 초 대기(초당 10회만 요청 가능)
+				Thread.sleep(500);	// UPBIT API 요청수 제한으로 1 초 대기(초당 10회만 요청 가능)
 				String tickerUrl 	= "https://api.upbit.com/v1/candles/minutes/1?market=KRW-"+coinList.get(i).getCoincode()+"&to="+sdf.format(date)+"&count=1";
 				ResponseEntity<String> tickerResponse = restTemplate.exchange(tickerUrl, HttpMethod.GET, entity, String.class);
 				String tickerStr = tickerResponse.getBody();
