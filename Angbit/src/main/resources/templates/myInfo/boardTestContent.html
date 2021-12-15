@@ -133,7 +133,7 @@
 			location.href=context+'/sh/ComuContentDel.do?b_num='+b_num;
 		};
 
-		function commEdit(b_num,id,commcontent) {
+		function commEdit(b_num,id,content) {
 			event.preventDefault();
 			var htmls = "";
 			var str = "'commupform'"
@@ -148,7 +148,7 @@
 			htmls += '<input type="hidden" name="b_num" value="'+b_num+'">';
 			htmls += '<input type="hidden" name="con_num" value="'+con_num+'">';
 			htmls += '<textarea name="editContent" id="editContent'+b_num+'" class="form-control" rows="3" required="required">';
-			htmls += commcontent;
+			htmls += content;
 			htmls += '</textarea>';
 			htmls += '</div>';
 			htmls += '<div>';
@@ -266,11 +266,7 @@
 					<div class="col me-auto" th:text="'작성자 '+${board.nickname }">
 					</div>
 					<div class="col">
-						<div class="col mx-0 px-0 text-end" th:text="${board.views }">
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-								 fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-								<path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
-								<path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" /></svg>
+						<div class="col mx-0 px-0 text-end" th:text="'👁️ '+${board.views }">
 						</div>
 					</div>
 					<div class="col text-end mx-0 px-0" th:text="${#dates.format(board.uploaddate, 'yyyy-MM-dd hh:mm:ss')}+' 작성'"></div>
@@ -308,7 +304,7 @@
 							 style="border-bottom-style: groove;">
 <!--							<c:forEach var="comm" items="${list}" varStatus="status">-->
 								<div class="accordion-item" style="border: none;"
-									 th:id="'id'+${list.b_num}" th:each="comm, i:${list}">
+									 th:id="'id'+${comm.b_num}" th:each="comm, i:${list}">
 									<div class="d-flex justify-content-between mb-0"
 										 style="font-family: pretend">
 
@@ -317,7 +313,7 @@
 												<p class="mb-0" id="commid" th:if="${comm.re_level}>2 or ${comm.re_level}<2" th:text="'작성자 '+${comm.nickname}">
 												<p>
 
-										<p class="mb-0" id="commdate">${comm.uploaddate}</p>
+										<p class="mb-0" id="commdate" th:text="${comm.uploaddate}"></p>
 									</div>
 									<div class="d-flex justify-content-between pb-0">
 										<div>
@@ -329,13 +325,12 @@
 																  d="M1.5 1.5A.5.5 0 0 0 1 2v4.8a2.5 2.5 0 0 0 2.5 2.5h9.793l-3.347 3.346a.5.5 0 0 0 .708.708l4.2-4.2a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 8.3H3.5A1.5 1.5 0 0 1 2 6.8V2a.5.5 0 0 0-.5-.5z" />
 														</svg>
 													</p>
-													<p th:if="${comm.re_level}>2 or ${comm.re_level}<2" th:text="${comm.commcontent }"></p>
-											</c:choose>
+													<p th:if="${comm.re_level}>2 or ${comm.re_level}<2" th:text="${comm.content }"></p>
 										</div>
 										<div>
 												<a href="#"
-												   onclick="commEdit('${comm.b_num}','${comm.id}','${comm.commcontent}')"
-												   class="text-dark" style="text-decoration: none; color: black;" th:if="${session.sessionID} == ${board.id}">수정</a>
+<!--												   th:onclick="|javascript:commEdit(\''${comm.b_num})|"-->
+													 class="text-dark" style="text-decoration: none; color: black;" th:if="${session.sessionID} == ${board.id}">수정</a>
 												<a href="#" class="commDeleteBtn"
 												   onclick="commDeleteBtn('${comm.b_num}')" style="text-decoration: none; color=black;" th:if="${session.sessionID} == ${board.id}">삭제</a>
 											<a href="#" class="addComm text-secondary"

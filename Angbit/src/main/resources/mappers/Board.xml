@@ -140,6 +140,9 @@ WHERE (no between #{start} and #{end})					<!-- #{start} and #{end} -->
 		SELECT * FROM board bd LEFT OUTER JOIN  memberinfo mb ON bd.id = mb.id WHERE b_num=${b_num}
 	</select>
 	<select id="testBoardContentComm" parameterType="Integer" resultType="Board">
-		SELECT * FROM board START WITH ref=#{b_num} CONNECT BY PRIOR b_num = ref
+	SELECT a.*, b.nickname FROM
+	(SELECT * FROM board START WITH ref=10 CONNECT BY PRIOR b_num = ref) a,
+	memberinfo b
+	WHERE a.id = b.id
 	</select>
 </mapper>

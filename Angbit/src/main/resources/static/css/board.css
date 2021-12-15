@@ -7,6 +7,23 @@
  a:active {text-decoration:none; color:#000000; }
 
  a:hover { text-decoration:none; color:#EDA900;}
+
+
+html {
+	height: 100% !important;
+}
+
+body {
+	padding-top: 70px;
+	height: 100% !important;
+	flex-direction: column !important;
+	display: flex !important;
+	font-family: Noto Sans KR;
+	font-style: normal;
+	background-color: #f7fafc;
+	overflow: scroll;
+	overflow-x: hidden;
+}
 	
 textarea {
     
@@ -93,3 +110,5 @@ section {
 	border: 0.1px solid rgba(65, 75, 70, 0.06);
 	color: #6c757d;
 }
+
+
