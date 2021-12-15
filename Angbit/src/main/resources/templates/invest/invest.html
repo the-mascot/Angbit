@@ -763,7 +763,7 @@
 		async function chkBuy() {
 			var trd_price = uncomma($('#order-trd_price').val()) * 1;
 			var krw = await selectKRW() * 1;
-			if(krw * 1 < trd_price * 1) {
+			if(krw * 1 < trd_price) {
 				$('#modal-msg').text('주문가능 금액이 부족합니다')
 				$('#warmModal').modal('toggle');
 			} else if(uncomma($('#order-unit_price').val()) * 1 <= 0) {
@@ -772,9 +772,10 @@
 			} else if($('#order-trd_amt').val() <= 0) {
 				$('#modal-msg').text('주문수량을 입력하세요');
 				$('#warmModal').modal('toggle');
-			}
-
-			else {
+			} else if(trd_price < 5000) {
+				$('#modal-msg').text('최소주문금액은 5,000원 이상입니다');
+				$('#warmModal').modal('toggle');
+			} else {
 				if( $("input[name='trd_method']:checked").val() == 'market') {
 					$('#chkMarketModal-trdMethod').text('시장가 매수');
 					$('#chkModal-trdMethod').removeClass('text-primary');
