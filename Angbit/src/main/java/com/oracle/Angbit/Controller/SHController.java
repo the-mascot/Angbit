@@ -70,6 +70,7 @@ public class SHController {
         System.out.println("chartTest Called.");
         List<CoinInfo> coinInfoList = ivs.coinInfoList();
         model.addAttribute("coinInfoList", coinInfoList);
+        rs.updateAsset();
         return "myInfo/chartTest";
     }
 
