@@ -178,7 +178,6 @@ public class ESController {
 		HttpSession session = request.getSession();
 		System.out.println(orderTrade.getCoincode());
 		orderTrade.setId((String) session.getAttribute("sessionID"));
-
 		orderTrade.setTrd_div(0);
 		int result = 0;
 		String msg = null;
