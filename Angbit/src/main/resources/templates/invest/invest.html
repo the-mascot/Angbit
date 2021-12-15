@@ -752,7 +752,7 @@
 				var price =  Math.floor(uncomma($('#order-avaliableKRW').text()) * (percent * 0.01));
 				var unit_price =uncomma($('#order-unit_price').val());
 				var trd_amt = price / unit_price;
-	
+				
 				if(trd_amt >= 0 && unit_price != 0) {
 					$('#order-trd_amt').val(trd_amt.toFixed(8));
 					$('#order-trd_price').val(price.toLocaleString());
@@ -772,7 +772,7 @@
 			} else if($('#order-trd_amt').val() <= 0) {
 				$('#modal-msg').text('주문수량을 입력하세요');
 				$('#warmModal').modal('toggle');
-			} else if(trd_price < 5000) {
+			} else if(trd_price < 5000 || trd_price == null) {
 				$('#modal-msg').text('최소주문금액은 5,000원 이상입니다');
 				$('#warmModal').modal('toggle');
 			} else {
