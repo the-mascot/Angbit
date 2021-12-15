@@ -47,11 +47,11 @@ public class BoardServiceImpl implements BoardService {
 	
 	//detail,boardupdateForm
 	@Override
-	public Board detailBoard(int ref) {
+	public Board detailBoard(Board bd) {
 		System.out.println("BoardServiceImpl detailBoard ...");
 		Board board = null;
 		
-		board = bdao.detailBoard(ref); //dao에서 리턴받은값 여기로
+		board = bdao.detailBoard(bd); //dao에서 리턴받은값 여기로
 		
 		return board;//리턴 컨트롤러로
 	}
@@ -65,20 +65,19 @@ public class BoardServiceImpl implements BoardService {
 	}
 	//replyUpdateform
 	@Override
-	public Board detailReply(int ref) {
+	public Board detailReply(Board board) {
 		System.out.println("BoardServiceImpl detailReply ...");
-		Board board = null;
+		Board bd = null;
+		bd = bdao.detailReply(board);
 		
-		board = bdao.detailReply(ref);
-		return board;
+		return bd;
 	}
 	//reply update db
 	@Override
 	public int replyUpdate(Board board) {
 		System.out.println("BoardServiceImpl replyUpdate ...");
-		int result =  0;
-		result=bdao.replyUpdate(board);
-		
+		int result = bdao.replyUpdate(board);
+		System.out.println("service Impl result -> "+result);
 		return result;
 	}
 	
@@ -135,11 +134,25 @@ public class BoardServiceImpl implements BoardService {
 	}
 	//댓글 출력
 	@Override
-	public Board levone(int ref) {
+	public List<Board>levone(Board board) {
 		System.out.println("BoardServiceImpl levone start...");
-		Board levone = bdao.levone(ref);
+		List<Board> levone = bdao.levone(board);
 		
 		return levone;
+	}
+
+
+
+
+
+	@Override
+	public Board scdetailBd(Board bd) {
+		System.out.println("BoardServiceImpl scdetailBd ...");
+		Board board = null;
+		
+		board = bdao.scdetailBd(bd); //dao에서 리턴받은값 여기로
+		
+		return board;//리턴 컨트롤러로
 	}
 
 

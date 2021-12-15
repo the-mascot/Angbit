@@ -13,7 +13,7 @@ public interface BoardDao {
 	int Delete(int empno);
 	int total();
 	List<Board> pagingBd(Board board);
-	Board detailBoard(int b_num);
+	Board detailBoard(Board board);
 	int update(Board board);
 	
 	//Board writeBoard(int b_num);
@@ -21,11 +21,12 @@ public interface BoardDao {
 	int insert(Board board);
 	int viewCnt(int b_num);
 	int instResult(Board board);
-	Board levone(int ref);
+	List<Board> levone(Board board);
 	int replyDelete(Board board);
 	
-	Board detailReply(int ref);
+	Board detailReply(Board board);
 	int replyUpdate(Board board);
+	Board scdetailBd(Board bd);
 	
 	
 	
