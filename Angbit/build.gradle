@@ -5,21 +5,12 @@ plugins {
 	id 'war'
 }
 
-group = 'com.Angbit'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
-
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
 }
 
-bootWar {
-	archiveBaseName = 'web'
-	archiveFileName = 'web.war'
-	archiveVersion = "0.0.0"
-}
 
 repositories {
 	mavenCentral()
