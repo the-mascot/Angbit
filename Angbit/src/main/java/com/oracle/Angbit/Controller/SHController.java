@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.*;
 
 @Controller
@@ -118,10 +119,24 @@ public class SHController {
                 String repl = String.valueOf(timeconv);
                 String repl2 = repl.substring(0, 10); // 차트에서 Timestamp 10자리만 인식하므로 뒤 3자리 자름
                 Long timee = Long.parseLong(repl2); // 차트 인식용 Long Type 변환
+
+                DecimalFormat df = new DecimalFormat("###.#"); // 소수점 이하 제거
+
+
                 String open = String.valueOf(new BigDecimal((Double) conv.get("opening_price")));
                 String high = String.valueOf(new BigDecimal((Double) conv.get("high_price")));
                 String low = String.valueOf(new BigDecimal((Double) conv.get("low_price")));
                 String close = String.valueOf(new BigDecimal((Double) conv.get("trade_price")));
+
+                open = df.format(Double.parseDouble(open));
+                high = df.format(Double.parseDouble(high));
+                low = df.format(Double.parseDouble(low));
+                close = df.format(Double.parseDouble(close));
+
+                System.out.println("시가 : "+open);
+                System.out.println("고가 : "+high);
+                System.out.println("저가 : "+low);
+                System.out.println("종가 : "+close);
                 LinkedHashMap addJSON = new LinkedHashMap(); // 객체에 값 추가할 시 순서 유지용으로 LinkedHashmap 객체 사용
                 addJSON.put("time", timee);
                 addJSON.put("open", open);
