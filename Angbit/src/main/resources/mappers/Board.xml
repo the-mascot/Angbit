@@ -5,24 +5,35 @@
 	
 	<!-- getList -->
 	<select id="pagingbd" parameterType="Board" resultType="Board">
-
-select *
-from(select rownum no, b.*		
-			 FROM(Select rownum rn , a.*
-			      From   (SELECT           *
-						  FROM             board bd
-						  LEFT OUTER JOIN  memberinfo mb 
-						  ON               bd.id = mb.id
-				 		  WHERE            re_level=0 
-						  ORDER BY         ref asc
-						  ) a
-		   		  ) b
-	 ORDER BY b.rn desc)
-WHERE (no between #{start} and #{end})					<!-- #{start} and #{end} -->
+SELECT *
+FROM(SELECT rownum rn, a.*
+     FROM (select * 
+          from board b 
+          INNER JOIN memberinfo m on b.id=m.id 
+          where re_level=0 
+          order by REF asc) a)
+WHERE rn BETWEEN #{start} and #{end} 
+order by rn desc
+<!-- SELECT * -->
+<!-- 		FROM (SELECT rownum rn, a.* -->
+<!-- 			  FROM (select b.* from board b inner join memberinfo m on b.id=m.id where re_level=0 order by b_num desc) a) -->
+<!-- 		WHERE rn BETWEEN #{start} and #{end} -->
+<!-- select * -->
+<!-- from(select rownum no, b.*		 -->
+<!-- 			 FROM(Select rownum rn , a.* -->
+<!-- 			      From   (SELECT           * -->
+<!-- 						  FROM             board bd -->
+<!-- 						  LEFT OUTER JOIN  memberinfo mb  -->
+<!-- 						  ON               bd.id = mb.id -->
+<!-- 				 		  WHERE            re_level=0  -->
+<!-- 						  ORDER BY         ref asc -->
+<!-- 						  ) a -->
+<!-- 		   		  ) b -->
+<!-- 	 ORDER BY b.rn desc) -->
+<!-- WHERE (no between #{start} and #{end})					 -->
+<!-- #{start} and #{end} -->
 	
-	 				
-					
-					
+			
 	</select>
 	
 
@@ -59,15 +70,15 @@ WHERE (no between #{start} and #{end})					<!-- #{start} and #{end} -->
 	<update id="dyBoardUpdate" parameterType="Board">
 		 update board 
 		 set    title=#{title}, content=#{content}, uploaddate=sysdate
-		 where (b_num=#{b_num}) and re_level=0 
+		 where (ref=#{ref}) and re_level=0 
 	</update>
 	<!-- 상세게시판 댓글 리턴 -->
-	<select id="dyReplySelOne" parameterType="int" resultType="Board">
+	<select id="dyReplySelOne" parameterType="Board" resultType="Board">
 		SELECT * 
 		FROM Board bd
 		LEFT OUTER JOIN memberinfo mb
 		ON bd.id = mb.id
-		WHERE (ref = #{ref}) and bd.re_level=1
+		WHERE (ref = #{ref}) and (re_step = #{re_step}) and bd.re_level=1
 	</select>
 	
 	
@@ -82,11 +93,9 @@ WHERE (no between #{start} and #{end})					<!-- #{start} and #{end} -->
 	<!-- write insert -->
 	<insert id="dyBoardInsert" parameterType="Board">
 	     INSERT  
-	     INTO  board(B_NUM,ID,UPLOADDATE,TITLE,CONTENT,VIEWS,REF,RE_LEVEL,RE_STEP) b
-	     values(COINBD_SEQ.NEXTVAL,#{id},sysdate,#{title},#{content},#{views},REF_SEQ.NEXTVAL,#{re_level},#{re_step})
-	     WHERE b.id=(select id
-			    	 from   memberinfo m
-			    	 where  m.nickname = #{nickname}) 
+	     INTO  board(b_num,id,uploaddate,title,content,views,ref,re_level,re_step) 
+	     values(BNUM_SEQ.NEXTVAL,#{id},sysdate,#{title},#{content},#{views},REF_SEQ.NEXTVAL,#{re_level},#{re_step})
+	   
  	</insert>
 	
 	
@@ -107,25 +116,35 @@ WHERE (no between #{start} and #{end})					<!-- #{start} and #{end} -->
 	<!-- 댓글 입력 부분-->
 	<insert id="dyReplyResult" parameterType="Board">
 		INSERT
-		INTO   board(B_NUM,ID,UPLOADDATE,TITLE,CONTENT,VIEWS,REF,RE_LEVEL,RE_STEP)
-		values (#{b_num},#{id},to_date(sysdate,'YYYY-MM-DD HH24:mi:SS'),#{title},#{content},#{views},#{ref},#{re_level},RESTEP_SEQ.NEXTVAL)
+		INTO   board(b_num,id,uploaddate,title,content,views,ref,re_level,re_step)
+		values (BNUM_SEQ.NEXTVAL,#{id},sysdate,#{title},#{content},${views},${ref},${re_level},RESTEP_SEQ.NEXTVAL)
 	</insert>
 	
 	<!-- 댓글가져가기 -->	
 	<select id="dyLevOne" parameterType="int" resultType="Board">
-		SELECT * 
-		FROM Board bd
+		SELECT          * 
+		FROM            Board bd
 		LEFT OUTER JOIN memberinfo mb
-		ON bd.id = mb.id
-		WHERE  (bd.ref=#{ref} and bd.re_level=1) order by bd.re_step DESC
+		ON              bd.id = mb.id
+		WHERE           (bd.ref=#{ref} and bd.re_level=1) 
+		order by        bd.re_step DESC
 	</select>	
 
 	<!-- 댓글 수정부분 -->
 	<update id="dyReplyUpdate" parameterType="Board" >
 	UPDATE board 
-	SET    content=#{content} AND uploaddate=sysdate	 
-	WHERE  ref=#{ref} AND id=#{id} AND re_step=#{re_step} AND re_level=1
+	SET    content=#{content}, uploaddate = sysdate 
+	WHERE  ref=#{ref} AND re_step=#{re_step} AND re_level=1 
 	</update>
+	<!--reply update를 거쳐 detail갈때 가져갈 보드 데이터  -->
+	<select id="dyBoardForReply" parameterType="Board" resultType="Board">
+	SELECT * 
+	FROM Board bd
+	LEFT OUTER JOIN memberinfo mb
+	ON bd.id = mb.id
+	WHERE (ref = #{ref}) and bd.re_level=0 
+	
+	</select>
 	<select id="testBoardList" parameterType="HashMap" resultType="Board">
 		select * from (select rownum rn ,a.* from
 				(SELECT           *
@@ -145,4 +164,5 @@ WHERE (no between #{start} and #{end})					<!-- #{start} and #{end} -->
 	memberinfo b
 	WHERE a.id = b.id
 	</select>
+
 </mapper>

@@ -21,7 +21,7 @@
 		<h2>게시글 등록</h2>
 		<div th:if="${msg!=null}" th:text="${msg}"></div>
 		
-		<form action="board_writeProcess" method="post">
+		<form th:action="board_writeProcess" method="get">
 			<table class="table">
 				<tr>
 				 <th>작성자</th>
@@ -33,14 +33,14 @@
 					<th hidden="${session.sessionID}" id="id" name="id">
 						<span class="welcomemsg" th:text="${session.sessionNickName}"></span>
 						
-						<input type="hidden"  name="id"  value="${session.sessionID}">
-						<input type="hidden"  name="nickname"  value="${session.sessionNickName}">
-						<input type="hidden"  name="b_num"  value="40">
-						<input type="hidden"  name="uploaddate"  value="sysdate">
-						<input type="hidden"  name="views"  value="0">
-						<input type="hidden"  name="ref"  value="40">
-						<input type="hidden"  name="re_level"  value="0">
-						<input type="hidden"  name="re_step"  value="0">
+						<input type="hidden"  name="id"  th:value="${session.sessionID}">
+						<input type="hidden"  name="nickname"  th:value="${session.sessionNickName}">
+						<input type="hidden"  name="b_num"  th:value="0">
+						<input type="hidden"  name="uploaddate"  th:value=null>
+						<input type="hidden"  name="views"  th:value="0">
+						<input type="hidden"  name="ref"  th:value="0">
+						<input type="hidden"  name="re_level"  th:value="0">
+						<input type="hidden"  name="re_step"  th:value="0">
 						
 					</th>
 				</tr>
@@ -57,7 +57,7 @@
 				</tr>
 
 				<tr>
-					<td colspan="2"><button type="submit"> 확인 </button></td>
+					<td colspan="2"><button class="btn" type="submit"> 확인 </button></td>
 				</tr>	
 				
 			</table>
