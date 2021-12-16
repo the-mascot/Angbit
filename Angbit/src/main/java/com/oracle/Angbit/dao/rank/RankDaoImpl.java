@@ -65,7 +65,7 @@ public class RankDaoImpl implements RankDao{
                 "DOGE", "MANA", "LTC", "SAND", "VET", "AXS",
                 "SOL", "BCH", "XLM", "ETC"};
         String arrToString = String.join(",",coinlist); // 배열을 문자열로
-        int price = 0;
+        float price = 0f;
         int i = 0;
 
         RestTemplate restTemplate = new RestTemplate();
@@ -80,7 +80,7 @@ public class RankDaoImpl implements RankDao{
             JSONArray json = (JSONArray) parser.parse(candleResponse.getBody().toString());
             for (String coin : coincode) {
                 JSONObject conv = (JSONObject) json.get(i);
-                price = Integer.valueOf(String.valueOf(new BigDecimal((Double) conv.get("trade_price")))); // 지수표현 제거
+                price = Float.valueOf(String.valueOf(new BigDecimal((Double) conv.get("trade_price")))); // 지수표현 제거
                 obj.put(coin, price);
                 i++;
                 System.out.println("테스트용 KEY 호출 "+coin+" :"+obj.get(coin));
@@ -103,7 +103,7 @@ public class RankDaoImpl implements RankDao{
             List<Map> coinlist = mis.getAllCoincode(id.toString()); // id가 보유한 {COINCODE : 코인명, COIN_AMT : 코인량} 형태의 MAP
 
             for (Map coin : coinlist) { // 보유코인 합산
-                int coin_price = (int) trp.get(coin.get("COINCODE"));
+                float coin_price = (float) trp.get(coin.get("COINCODE"));
                 double coin_amt = (double) coin.get("COIN_AMT");
                 BigDecimal coin_totprice = new BigDecimal(coin_price * coin_amt);
                 System.out.println("totprice! : "+coin_totprice);

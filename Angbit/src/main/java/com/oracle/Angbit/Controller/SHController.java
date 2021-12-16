@@ -2,10 +2,12 @@ package com.oracle.Angbit.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oracle.Angbit.model.common.Board;
 import com.oracle.Angbit.model.status.CoinCoinInfo;
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.model.invest.OrderTrade;
+import com.oracle.Angbit.service.board.BoardService;
 import com.oracle.Angbit.service.invest.InvestService;
 import com.oracle.Angbit.service.myInfo.myInfoService;
 import com.oracle.Angbit.service.rank.RankService;
@@ -33,6 +35,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -46,6 +50,8 @@ public class SHController {
     private myInfoService mis;
     @Autowired
     private RankService rs;
+    @Autowired
+    private BoardService bs;
 
     @RequestMapping("/myInfo")
     public String myPageForm(Model model, HttpServletRequest request) {
@@ -70,6 +76,7 @@ public class SHController {
         System.out.println("chartTest Called.");
         List<CoinInfo> coinInfoList = ivs.coinInfoList();
         model.addAttribute("coinInfoList", coinInfoList);
+        rs.updateAsset();
         return "myInfo/chartTest";
     }
 
@@ -117,10 +124,24 @@ public class SHController {
                 String repl = String.valueOf(timeconv);
                 String repl2 = repl.substring(0, 10); // 차트에서 Timestamp 10자리만 인식하므로 뒤 3자리 자름
                 Long timee = Long.parseLong(repl2); // 차트 인식용 Long Type 변환
+
+                DecimalFormat df = new DecimalFormat("###.#"); // 소수점 이하 제거
+
+
                 String open = String.valueOf(new BigDecimal((Double) conv.get("opening_price")));
                 String high = String.valueOf(new BigDecimal((Double) conv.get("high_price")));
                 String low = String.valueOf(new BigDecimal((Double) conv.get("low_price")));
                 String close = String.valueOf(new BigDecimal((Double) conv.get("trade_price")));
+
+                open = df.format(Double.parseDouble(open));
+                high = df.format(Double.parseDouble(high));
+                low = df.format(Double.parseDouble(low));
+                close = df.format(Double.parseDouble(close));
+
+                System.out.println("시가 : "+open);
+                System.out.println("고가 : "+high);
+                System.out.println("저가 : "+low);
+                System.out.println("종가 : "+close);
                 LinkedHashMap addJSON = new LinkedHashMap(); // 객체에 값 추가할 시 순서 유지용으로 LinkedHashmap 객체 사용
                 addJSON.put("time", timee);
                 addJSON.put("open", open);
@@ -257,9 +278,15 @@ public class SHController {
         if (amount >= orderTrade.getTrd_amt()) {
             if (orderTrade.getTrd_method().equals("limits")) {
                 try {
-                    orderTrade.setTrd_stu(0); // 체결 상태 미체결 설정
-                    ivs.sellLimitsPrice(orderTrade);
-                    msg = "지정가 매도 주문을 하였습니다.";
+                    if (orderTrade.getTrd_price() < 5000) {
+                        msg = "주문 금액이 최소 주문 금액보다 낮습니다.";
+                    } else if (orderTrade.getTrd_amt() <= 0.0) {
+                        msg = "주문 수량이 없습니다.";
+                    } else {
+                        orderTrade.setTrd_stu(0); // 체결 상태 미체결 설정
+                        ivs.sellLimitsPrice(orderTrade);
+                        msg = "지정가 매도 주문을 하였습니다.";
+                    }
                 } catch (Exception e) {
                     System.out.println("limits! 지정가 매도 에러->" + e.getMessage());
                     msg = "매도 주문에 실패하였습니다.";
@@ -269,11 +296,17 @@ public class SHController {
                 try {
                     /* 시장가 SET */
                     orderTrade.setTrd_unit_price(tradePrice(coin));
-                    orderTrade.setTrd_price((int) (orderTrade.getTrd_unit_price() * orderTrade.getTrd_amt()));
+                    orderTrade.setTrd_price((long) (orderTrade.getTrd_unit_price() * orderTrade.getTrd_amt()));
                     /*  */
-                    orderTrade.setTrd_stu(1); // 체결 상태 체결 설정
-                    ivs.sellMarketPrice(orderTrade);
-                    msg = "매도 체결 되었습니다.";
+                    if (orderTrade.getTrd_price() < 5000) {
+                        msg = "주문 금액이 최소 주문 금액보다 낮습니다.";
+                    } else if (orderTrade.getTrd_amt() <= 0.0) {
+                        msg = "주문 수량이 없습니다.";
+                    } else {
+                        orderTrade.setTrd_stu(1); // 체결 상태 체결 설정
+                        ivs.sellMarketPrice(orderTrade);
+                        msg = "매도 체결 되었습니다.";
+                    }
                 } catch (Exception e) {
                     System.out.println("market! 시장가 매도 에러->" + e.getMessage());
                     msg = "매도 체결에 실패하였습니다.";
@@ -383,7 +416,80 @@ public class SHController {
         return json;
     }
 
+    @RequestMapping("boardTest")
+    public String testBoard(HttpServletRequest request) {
+        int totCnt = bs.total();
+
+        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+        String pageNum = request.getParameter("pageNum");
+        String keyWord = request.getParameter("keyWord");
+        if(pageNum==null||pageNum.equals("")) {
+            pageNum="1";
+        }
+        String pageSize=request.getParameter("pageSize");	// 10개씩 보기 받아오기
+        if(pageSize==null||pageSize.equals(""))
+            pageSize="10";
+        //초기 totCnt 5, currentPage 1
+        int currentPage=Integer.parseInt(pageNum);
+        int blockSize=10;
+        int startRow=(currentPage-1)*Integer.parseInt(pageSize)+1;
+        int endRow=startRow+Integer.parseInt(pageSize)-1;
+        int startNum=totCnt-startRow+1;
+        List<Board> list=bs.testBoardList(startRow, endRow);
+        int pageCnt=(int) Math.ceil((double)totCnt/Integer.parseInt(pageSize));
+        int StartPage=(int)(currentPage-1)/blockSize*blockSize+1;
+        int endPage=StartPage+blockSize-1;
+
+        if (endPage > pageCnt) endPage = pageCnt; //
+
+        System.out.println("startRow"+startRow);
+        System.out.println("endRow"+endRow);
+
+        HttpSession session=request.getSession();
+        session.setAttribute("page", 1);
+        request.setAttribute("keyWord", keyWord);
+        request.setAttribute("today", format.format(new Date()));
+        request.setAttribute("totCnt", totCnt);
+        request.setAttribute("pageNum", pageNum);
+        request.setAttribute("pageSize", pageSize);
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("startNum", startNum);
+        request.setAttribute("list", list);
+        request.setAttribute("blockSize", blockSize);
+        request.setAttribute("pageCnt", pageCnt);
+        request.setAttribute("startPage", StartPage);
+        request.setAttribute("endPage", endPage);
+
+        return "myInfo/boardTest";
+    }
+
+    @RequestMapping("content/{b_num}")
+    public String boardTestContent(HttpServletRequest request,
+                                   @PathVariable(value="b_num") int b_num) {
+
+        if (b_num == 0) {
+            return "myInfo/boardTestContent";
+        } else {
+            bs.viewCnt(b_num);
+            Board board = bs.testBoardContent(b_num);
+            List<Board> list = bs.testBoardContentComm(b_num);
+
+            if (board.getContent() == null || board.getContent() == "") {
+                return "myInfo/boardTestContent";
+            }
+
+//            request.setAttribute("pageNum", pageNum);
+//            request.setAttribute("pageSize", pageSize);
+            request.setAttribute("board", board);
+            request.setAttribute("list", list);
+            request.setAttribute("b_num", b_num);
+
+            return "myInfo/boardTestContent";
+        }
+    }
 }
+
+
 
 
 // AJAX String 리턴시 한글 깨짐 방지(PrintWriter 객체보다 상위로 선언)

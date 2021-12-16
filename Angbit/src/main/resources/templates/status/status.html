@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Insert title here</title>
+<title>투자 현황</title>
 <!-- Common meta tag, Bootstrap, js -->
 <th:block th:replace="common/commonHead"></th:block>
 <!-- Jquery -->
@@ -55,7 +55,6 @@ function makeChart(ctx, type, labels, myData){
 // 페이지 로딩 되면 실행되는 initial 함수
 function init() {
 	output = document.getElementById("output");
-	console.log('init() Start...');
  	testWebSocket();	// 웹소켓 실행
 	/*<![CDATA[*/ 
 	var statusList = /*[[ ${statusList} ]]*/;
@@ -66,7 +65,6 @@ function init() {
 		url: "statusListAjax",
 		dataType: "json",
 		success: function(data){
-			console.log(data);
 			
 			var labels = [];
 			var myData = [];
@@ -81,15 +79,11 @@ function init() {
 	            for (var i=0; i<Object.keys(data.list).length; i++){
 	               percent += data.list[i].tot_price;
 	            }
-	            console.log('percent-> '+percent);
 
 	            for(var i=0; i<Object.keys(data.list).length; i++) {
 	               labels.push(data.list[i].coinname+'('+((data.list[i].tot_price/percent)*100).toFixed(2)+' %)');
 	               myData.push(data.list[i].tot_price);
 	            }
-
-	            console.log('label?'+labels);
-	            console.log('myData?'+myData);
 
 	            var ctx = $('#myChart');
 	            makeChart(ctx, 'pie', labels, myData);
@@ -132,7 +126,6 @@ function onClose(evt) {
 }
 
 function onMessage(evt) {
-		console.log(evt.data);
 	var enc = new TextDecoder("utf-8");
 	var arr = new Uint8Array(evt.data);
 	var decode = enc.decode(arr);
@@ -150,7 +143,6 @@ function onMessage(evt) {
 			maximumFractionDigits: 2
 			}
 	
-	console.log('statusList.length->'+statusList.length);
 	statusList.forEach((statusList, i)=> {
 		let amt = statusList.coin_amt;
 		let coincode = statusList.coincode;
@@ -167,7 +159,6 @@ function onMessage(evt) {
 			document.getElementById(coincode).innerText = evPrice.toLocaleString('ko-KR', option);
 			var coinloss1 = evPrice-totPrice;	// css 입히기 위한 변수
 			var coinloss = document.getElementById(coincode+'-loss').innerText = (evPrice-totPrice).toLocaleString('ko-KR', option)+'\n'+(((evPrice/totPrice)-1)*100).toLocaleString('ko-KR', option1)+' %';
-			console.log('coinloss1 -> '+coinloss1);
 		}
 			// 평가손익 css
 			if(coinloss1 < 0) {
@@ -360,21 +351,21 @@ window.addEventListener("load", init, false);
   	<th:block data-th-if="${totPrice != null}">
 	    <tr th:each="slist:${statusList}">
 	      <th scope="row" th:switch="${slist.coincode}">
-	      	<span th:case="ADA"><img class="table_images" alt="" th:src="@{images/status/ada.png}"></span>
-	      	<span th:case="AXS"><img class="table_images" alt="" th:src="@{images/status/axs.png}"></span>
-	      	<span th:case="BCH"><img class="table_images" alt="" th:src="@{images/status/bch.png}"></span>
-	      	<span th:case="BTC"><img class="table_images" alt="" th:src="@{images/status/btc.png}"></span>
-	      	<span th:case="DOGE"><img class="table_images" alt="" th:src="@{images/status/doge.png}"></span>
-	      	<span th:case="DOT"><img class="table_images" alt="" th:src="@{images/status/dot.png}"></span>
-	      	<span th:case="ETC"><img class="table_images" alt="" th:src="@{images/status/etc.png}"></span>
-	      	<span th:case="ETH"><img class="table_images" alt="" th:src="@{images/status/eth.png}"></span>
-	      	<span th:case="LTC"><img class="table_images" alt="" th:src="@{images/status/ltc.png}"></span>
-	      	<span th:case="MANA"><img class="table_images" alt="" th:src="@{images/status/mana.png}"></span>
-	      	<span th:case="SAND"><img class="table_images" alt="" th:src="@{images/status/sand.png}"></span>
-	      	<span th:case="SOL"><img class="table_images" alt="" th:src="@{images/status/sol.png}"></span>
-	      	<span th:case="VET"><img class="table_images" alt="" th:src="@{images/status/vet.png}"></span>
-	      	<span th:case="XLM"><img class="table_images" alt="" th:src="@{images/status/xlm.png}"></span>
-	      	<span th:case="XRP"><img class="table_images" alt="" th:src="@{images/status/xrp.png}"></span>
+	      	<span th:case="ADA"><img class="table_images" alt="" th:src="@{images/status/ADA.png}"></span>
+	      	<span th:case="AXS"><img class="table_images" alt="" th:src="@{images/status/AXS.png}"></span>
+	      	<span th:case="BCH"><img class="table_images" alt="" th:src="@{images/status/BCH.png}"></span>
+	      	<span th:case="BTC"><img class="table_images" alt="" th:src="@{images/status/BTC.png}"></span>
+	      	<span th:case="DOGE"><img class="table_images" alt="" th:src="@{images/status/DOGE.png}"></span>
+	      	<span th:case="DOT"><img class="table_images" alt="" th:src="@{images/status/DOT.png}"></span>
+	      	<span th:case="ETC"><img class="table_images" alt="" th:src="@{images/status/ETC.png}"></span>
+	      	<span th:case="ETH"><img class="table_images" alt="" th:src="@{images/status/ETH.png}"></span>
+	      	<span th:case="LTC"><img class="table_images" alt="" th:src="@{images/status/LTC.png}"></span>
+	      	<span th:case="MANA"><img class="table_images" alt="" th:src="@{images/status/MANA.png}"></span>
+	      	<span th:case="SAND"><img class="table_images" alt="" th:src="@{images/status/SAND.png}"></span>
+	      	<span th:case="SOL"><img class="table_images" alt="" th:src="@{images/status/SOL.png}"></span>
+	      	<span th:case="VET"><img class="table_images" alt="" th:src="@{images/status/VET.png}"></span>
+	      	<span th:case="XLM"><img class="table_images" alt="" th:src="@{images/status/XLM.png}"></span>
+	      	<span th:case="XRP"><img class="table_images" alt="" th:src="@{images/status/XRP.png}"></span>
 	      </th>
 	      <td th:text="${slist.coinname}+'('+${slist.coincode}+')'"></td>
 	      <td th:text="${#numbers.formatDecimal(slist.coin_amt,1,'COMMA',8,'POINT')}"></td>

@@ -1,16 +1,11 @@
 package com.oracle.Angbit.configuration;
 
-import java.util.ArrayList;
 
 import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 
 import com.oracle.Angbit.service.LoginInterceptor;
-import com.oracle.Angbit.service.myInfo.WidrawInterceptor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -34,6 +29,8 @@ public class SpringConfig implements WebMvcConfigurer {
 		// 거래 요청시 인터셉터
 		registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/invest/buyCoin");
 		registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/invest/sellCoin");
+		registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/invest/cancelOrder");
+		
 		// 회원 상태 확인 인터셉터(로그인 시)
 //		registry.addInterceptor(new WidrawInterceptor()).addPathPatterns("/LoginProcess");
 	}

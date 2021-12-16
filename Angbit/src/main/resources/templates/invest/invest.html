@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>index</title>
+<title>모의투자</title>
 
 <!-- Common meta tag, Bootstrap, js -->
 <th:block th:replace="common/commonHead"></th:block>
 
 <!-- Custom styles for this page -->
 <link th:href="@{css/invest.css}" rel="stylesheet">
-
-<!-- choose a theme file -->
-<link rel="stylesheet" th:href="@{tablesorter/css/theme.default.min.css}">
 
 <!-- lightweight-chart -->
 <script th:src="@{https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js}"></script>
@@ -755,7 +752,7 @@
 				var price =  Math.floor(uncomma($('#order-avaliableKRW').text()) * (percent * 0.01));
 				var unit_price =uncomma($('#order-unit_price').val());
 				var trd_amt = price / unit_price;
-	
+				
 				if(trd_amt >= 0 && unit_price != 0) {
 					$('#order-trd_amt').val(trd_amt.toFixed(8));
 					$('#order-trd_price').val(price.toLocaleString());
@@ -766,7 +763,7 @@
 		async function chkBuy() {
 			var trd_price = uncomma($('#order-trd_price').val()) * 1;
 			var krw = await selectKRW() * 1;
-			if(krw * 1 < trd_price * 1) {
+			if(krw * 1 < trd_price) {
 				$('#modal-msg').text('주문가능 금액이 부족합니다')
 				$('#warmModal').modal('toggle');
 			} else if(uncomma($('#order-unit_price').val()) * 1 <= 0) {
@@ -775,9 +772,10 @@
 			} else if($('#order-trd_amt').val() <= 0) {
 				$('#modal-msg').text('주문수량을 입력하세요');
 				$('#warmModal').modal('toggle');
-			}
-
-			else {
+			} else if(trd_price < 5000 || trd_price == null) {
+				$('#modal-msg').text('최소주문금액은 5,000원 이상입니다');
+				$('#warmModal').modal('toggle');
+			} else {
 				if( $("input[name='trd_method']:checked").val() == 'market') {
 					$('#chkMarketModal-trdMethod').text('시장가 매수');
 					$('#chkModal-trdMethod').removeClass('text-primary');
@@ -856,7 +854,7 @@
 							textColor: 'rgba(33, 56, 77, 1)',
 						},
 						localization: { // 현지화, 원화 표기
-							locale: 'cn-CN',
+							locale: 'ko-KR',
 							priceFormatter: price =>
 									 price + '₩'
 							,
@@ -1230,6 +1228,8 @@
 					$('#modal-msg').text(data);
 					$('#warmModal').modal('toggle');
 					tradeList();
+					selectKRW();
+					availableQunatity();
 				},
 				error		:	function(e) {
 					console.log("error : ",e);

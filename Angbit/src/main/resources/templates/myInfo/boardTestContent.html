@@ -1,0 +1,469 @@
+
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>index</title>
+	<!-- Common meta tag, Bootstrap, js -->
+	<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+	<!--BITCOIN FAVICON-->
+	<link rel="shortcut icon" href="../images/favicon2.ico" type="image/x-icon">
+	<link rel="icon" href="../images/favicon2.ico" type="image/x-icon">
+
+	<!-- Common CSS -->
+	<link href="../css/common.css" rel="stylesheet" type="text/css">
+	<link href="../css/status.css" rel="stylesheet" type="text/css">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
+
+	<!-- SockJS -->
+	<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+	<!-- STOMP -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+	<!-- Jquery -->
+	<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
+
+	<!-- Toastr -->
+	<link th:href="@{https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css}" rel="stylesheet">
+	<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js}"></script>
+
+	<script type="text/javascript">
+		window.addEventListener("load", commonHeadInit, false);
+
+		/*<![CDATA[*/
+		var sessionID = "[[${session.sessionID}]]"
+		/*]]>*/
+
+		toastr.options = {
+			positionClass: "toast-bottom-right"
+		};
+
+		function toastrBtn(msg) {
+			Command: toastr["success"](msg, "매매알람")
+			toastr.options = {
+				"closeButton": true,
+				"debug": false,
+				"newestOnTop": false,
+				"progressBar": true,
+				"positionClass": "toast-bottom-right",
+				"preventDuplicates": false,
+				"onclick": null,
+				"showDuration": "300",
+				"hideDuration": "1000",
+				"timeOut": "5000",
+				"extendedTimeOut": "1000",
+				"showEasing": "swing",
+				"hideEasing": "linear",
+				"showMethod": "fadeIn",
+				"hideMethod": "fadeOut"
+			}
+		}
+
+		function commonHeadInit() {
+			console.log('commonHeadInit() Start...');
+			if(sessionID != null)
+				alarmWebSocket();
+		}
+		var sock = null;
+		function alarmWebSocket() {
+			sock = new SockJS("ws/chat");
+			var stomp = Stomp.over(sock);
+			stomp.connect({}, function(frame) {
+				console.log('Alarm WebSock Connected!');
+				stomp.subscribe("/topic/"+sessionID, function(frame) {
+					toastrBtn(frame.body);
+				})
+			})
+		};
+	</script>
+
+	</html>
+
+
+	<!-- Custom styles for this page -->
+	<link th:href="@{../css/board.css}" rel="stylesheet">
+
+	<!-- Jquery -->
+	<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
+
+	<script type="text/javascript">
+
+		$(document).ready(function(){
+			$('.addComm').on("click", function(event) {
+				event.preventDefault();
+			});
+
+		});
+
+		var con_num = "";
+		var context = "<%=context%>";
+
+		function commDeleteBtn(b_num) {
+			event.preventDefault();
+			$('#exampleModal').modal('show');
+			con_num = document.getElementById("con_num").value;
+			document.getElementById("delBtn").setAttribute("onClick", "commDel("+b_num+","+con_num+")");
+		};
+
+		function ContentDeleteBtn(b_num) {
+			event.preventDefault();
+			$('#exampleModal').modal('show');
+			document.getElementById("delBtn").setAttribute("onClick", "contentDel("+b_num+")");
+		};
+
+		function commDel(b_num,con_num) {
+			location.href=context+'/sh/ComuCommDel.do?b_num='+b_num+"&con_num="+con_num;
+		};
+
+		function contentDel(b_num) {
+			location.href=context+'/sh/ComuContentDel.do?b_num='+b_num;
+		};
+
+		function commEdit(b_num,id,content) {
+			event.preventDefault();
+			var htmls = "";
+			var str = "'commupform'"
+			con_num = document.getElementById("con_num").value;
+			htmls += '<div class="accordion-item" style="border: none;" id="id'+b_num+'">';
+			htmls += '<div class="d-flex justify-content-between mb-0" style="font-family: pretend">';
+			htmls += '<p class="mb-0" id="'+id+'">작성자 '+id+'<p>';
+			htmls += '<p class="mb-0" id="commdate"> </p>';
+			htmls += '</div>';
+			htmls += '<form action="<%=context%>/sh/commUpdate.do" method="post" id="commupform">';
+			htmls += '<div class="d-flex justify-content-between pb-0">';
+			htmls += '<input type="hidden" name="b_num" value="'+b_num+'">';
+			htmls += '<input type="hidden" name="con_num" value="'+con_num+'">';
+			htmls += '<textarea name="editContent" id="editContent'+b_num+'" class="form-control" rows="3" required="required">';
+			htmls += content;
+			htmls += '</textarea>';
+			htmls += '</div>';
+			htmls += '<div>';
+			htmls += '</form>';
+			htmls += '<a href="#" onclick="document.getElementById('+str+').submit();" class="text-dark">[완료]</a>';
+			htmls += '<a href="javascript:void(0)" onclick="location.reload();">[취소]</a>';
+			htmls += '</div>';
+			htmls += '</div>';
+			$('#id' + b_num).replaceWith(htmls);
+
+		};
+
+	</script>
+	<style type="text/css">
+		.th {
+			font-size : 16px;
+		}
+		.replyboard {
+			color: black;
+			font-size: 15px;
+		}
+		.content {
+			color: black;
+			font-size: 16px;
+			min-height : 500px;
+			/* max-width: 40%; */
+			white-space: pre-line;
+		}
+
+		.modal {
+			text-align: center;
+		}
+
+		@media screen and (min-width: 768px) {
+			.modal:before {
+				display: inline-block;
+				vertical-align: middle;
+				content: " ";
+				height: 100%;
+			}
+		}
+
+		.modal-dialog {
+			display: inline-block;
+			text-align: left;
+			vertical-align: middle;
+		}
+	</style>
+</head>
+<body>
+<!-- Common header -->
+<header th:fragment="header">
+	<div class="container-fluid pt-1">
+		<div class="d-flex flex-wrap justify-content-start align-items-center">
+			<a href="/">
+				<img alt="Angbit_logo" src="../images/Angbit_logo.png">
+			</a>
+			<ul class="nav col-12 col-lg-auto me-lg-auto justify-content-center ms-5">
+				<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+					<div class="container-fluid">
+						<a class="navbar-brand" href="/">모의투자</a>
+						<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
+							<span class="navbar-toggler-icon"></span>
+						</button>
+						<div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+							<ul class="navbar-nav">
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: white ">
+										투자내역
+									</a>
+									<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+										<li><a class="dropdown-item" href="/statusList">투자현황</a></li>
+										<li><a class="dropdown-item" href="/status_y_history">체결내역</a></li>
+										<li><a class="dropdown-item" href="/status_n_history">미체결내역</a></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<a class="navbar-brand" href="rank" style="padding-left: 15px">랭킹</a>
+						<a class="navbar-brand" href="board_list" style="padding-left: 15px">게시판</a>
+						<a class="navbar-brand" href="myInfo" style="padding-left: 15px">마이페이지</a>
+					</div>
+				</nav>
+			</ul>
+			<div th:if="${session.sessionID!=null}"><span class="welcomemsg" style="color:white;" th:text="'환영합니다. '+ ${session.sessionNickName} + ' 님 '"></span></div> &nbsp&nbsp
+			<div>
+				<button type="button" class="header-btn btn btn-outline-light me-2" onclick="location.href='/loginForm'" th:if="${session.sessionID==null}">로그인</button>
+				<button type="button" class="header-btn btn btn-outline-light me-2" onclick="location.href='/LogOutProcess'" th:if="${session.sessionID!=null}">로그아웃</button>
+				<button type="button" class="header-btn btn btn-outline-light me-2" onclick="location.href='/joinForm'" th:if="${session.sessionID==null}">회원가입</button>
+			</div>
+		</div>
+	</div>
+</header>
+
+<main>
+	<section>
+		<!-- 게시판 설명 -->
+		<div>
+			<div>
+				<h2 class="mt-5 mb-3 mx-5 fw-bold"
+					style="font-family: pretend; color: #5798D7">커뮤니티 게시판</h2>
+			</div>
+			<div>
+				<p class="mt-2 mx-5 fs-6 text-muted fst-italic"
+				   style="font-family: pretend">- 커뮤니티 게시판입니다.</p>
+			</div>
+
+			<!-- 게시물 테이블 -->
+			<!-- 본문 영역 -->
+			<input type="hidden" id="con_num" th:value="${board.b_num}">
+			<div class="col-md-10 my-5 board container">
+				<div class="row align-items-start mb-3 pb-2 th"
+					 style="border-bottom: 1px solid #dee2e6;">
+					<p class="fs-4 text-start" th:text="${board.title }"></p>
+					<div class="col me-auto" th:text="'작성자 '+${board.nickname }">
+					</div>
+					<div class="col">
+						<div class="col mx-0 px-0 text-end" th:text="'👁️ '+${board.views }">
+						</div>
+					</div>
+					<div class="col text-end mx-0 px-0" th:text="${#dates.format(board.uploaddate, 'yyyy-MM-dd hh:mm:ss')}+' 작성'"></div>
+				</div>
+				<div>
+					<p>
+						<img th:src="${board.imagepath}" class="image"
+							 style="max-width: 100%; height: auto;">
+					</p>
+					<pre class="content" th:text="${board.content}">
+
+						</pre>
+				</div>
+				<div class="d-flex justify-content-between border-bottom mb-3">
+					<div class="justify-content-left">
+						<table>
+							<tr>
+								<td style="color: #5798D7;" th:text="${#lists.size(list)}+' comments'"></td>
+							</tr>
+						</table>
+					</div>
+					<div class="justify-content-right mb-3">
+							<a class="btn btn-light btn-xs" th:href="@{../testBoardContentUpdate/{b_num}(b_num=${board.b_num})}" th:if="${session.sessionID} == ${board.id}">수정</a>
+							<button type="button" class="btn btn-light btn-xs"
+									onclick="ContentDeleteBtn(${board.b_num})" th:if="${session.sessionID} == ${board.id}">삭제</button>
+						<a th:href="@{../boardTest}"><button type="button" class="btn btn-secondary">목록</button></a>
+					</div>
+
+				</div>
+
+				<div class="card">
+					<div class="card-header bg-light">댓글</div>
+					<div class="card-body">
+						<div class="accordion py-1" id="accordionExample"
+							 style="border-bottom-style: groove;">
+<!--							<c:forEach var="comm" items="${list}" varStatus="status">-->
+								<div class="accordion-item" style="border: none;"
+									 th:id="'id'+${comm.b_num}" th:each="comm, i:${list}">
+									<div class="d-flex justify-content-between mb-0"
+										 style="font-family: pretend">
+
+												<p class="mb-0 ms-4" id="commid" th:if="${comm.re_level}==2" th:text="'작성자 '+${comm.nickname}"></p>
+
+												<p class="mb-0" id="commid" th:if="${comm.re_level}>2 or ${comm.re_level}<2" th:text="'작성자 '+${comm.nickname}">
+												<p>
+
+										<p class="mb-0" id="commdate" th:text="${comm.uploaddate}"></p>
+									</div>
+									<div class="d-flex justify-content-between pb-0">
+										<div>
+													<p id="p_commcontent" th:if="${comm.re_level} == 2" th:text="${comm.content}">
+														<svg xmlns="http://www.w3.org/2000/svg" width="16"
+															 height="16" fill="currentColor"
+															 class="bi bi-arrow-return-right" viewBox="0 0 16 16">
+															<path fill-rule="evenodd"
+																  d="M1.5 1.5A.5.5 0 0 0 1 2v4.8a2.5 2.5 0 0 0 2.5 2.5h9.793l-3.347 3.346a.5.5 0 0 0 .708.708l4.2-4.2a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 8.3H3.5A1.5 1.5 0 0 1 2 6.8V2a.5.5 0 0 0-.5-.5z" />
+														</svg>
+													</p>
+													<p th:if="${comm.re_level}>2 or ${comm.re_level}<2" th:text="${comm.content }"></p>
+										</div>
+										<div>
+												<a href="#"
+<!--												   th:onclick="|javascript:commEdit(\''${comm.b_num})|"-->
+													 class="text-dark" style="text-decoration: none; color: black;" th:if="${session.sessionID} == ${board.id}">수정</a>
+												<a href="#" class="commDeleteBtn"
+												   onclick="commDeleteBtn('${comm.b_num}')" style="text-decoration: none; color=black;" th:if="${session.sessionID} == ${board.id}">삭제</a>
+											<a href="#" class="addComm text-secondary"
+											   style="text-decoration: none;" data-bs-toggle="collapse"
+											   data-bs-target="#collapse${status.count }"
+											   aria-expanded="true" aria-controls="collapseOne">답글 달기</a>
+										</div>
+									</div>
+
+											<div class="accordion-body py-0" th:if="${session.sessionID}!=null">
+												<div th:id="'collapse'+${i.count}"
+													 class="accordion-collapse collapse"
+													 aria-labelledby="headingOne"
+													 data-bs-parent="#accordionExample">
+													<div class="form-control">
+														<form
+																action="<%=context%>/sh/comuCommAddRe.do?b_num=${comm.b_num}&bnum=${b_num}"
+																method="post">
+															<input type="hidden" th:value="${b_num}"> <input
+																type="hidden" th:value="${b_type}">
+															<div>
+															<textarea class="form-control" name="commcontent"
+																	  placeholder="답글을 남겨보세요"
+																	  style="min-height: 13px; width: 100%; border: none;"
+																	  required="required"></textarea>
+															</div>
+															<div class="clearfix mt-2">
+																<input type="submit"
+																	   class="btn float-end bg-primary text-white bg-opacity-75"
+																	   value="답글 쓰기">
+															</div>
+														</form>
+													</div>
+												</div>
+											</div>
+											<div class="accordion-body py-0" th:if="${session.sessionID}==null">
+												<div id="collapse${status.count }"
+													 class="accordion-collapse collapse"
+													 aria-labelledby="headingOne"
+													 data-bs-parent="#accordionExample">
+													<div class="form-control">
+														<form
+																action="<%=context%>/sh/comuCommAddRe.do?b_num=${comm.b_num}&bnum=${b_num}"
+																method="post">
+															<input type="hidden" th:value="${b_num}"> <input
+																type="hidden" th:value="${b_type}">
+															<div>
+															<textarea class="form-control" name="commcontent"
+																	  placeholder="답글을 남기려면 로그인해주세요"
+																	  style="min-height: 13px; width: 100%; border: none;"
+																	  required="required" disabled="disabled"></textarea>
+															</div>
+															<div class="clearfix mt-2">
+																<input type="submit"
+																	   class="btn float-end bg-primary text-white bg-opacity-75"
+																	   value="답글 쓰기" disabled="disabled">
+															</div>
+														</form>
+													</div>
+												</div>
+											</div>
+
+								</div>
+						</div>
+
+
+								<div class="form-control mt-2" th:if="${session.sessionID}!=null">
+									<form action="<%=context%>/sh/comuCommAdd.do?b_num=${b_num}"
+										  method="post">
+										<input type="hidden" th:value="${b_num}" th:id="${b_num}">
+										<div>
+										<textarea class="form-control" id="commcontent"
+												  name="commcontent" placeholder="댓글을 남겨보세요"
+												  style="min-height: 13px; width: 100%; border: none;" required="required"></textarea>
+										</div>
+										<div class="clearfix mt-2">
+											<input type="submit"
+												   class="btn float-end bg-primary text-white bg-opacity-75"
+												   value="댓글 쓰기">
+										</div>
+									</form>
+								</div>
+								<div class="form-control mt-2" th:if="${session.sessionID}==null">
+									<form action="<%=context%>/sh/comuCommAdd.do?b_num=${b_num}"
+										  method="post">
+										<input type="hidden" th:value="${b_num}" th:id="${b_num}">
+										<div>
+										<textarea class="form-control" id="commcontent"
+												  name="commcontent" placeholder="댓글을 남기려면 로그인이 필요합니다."
+												  style="min-height: 13px; width: 100%; border: none;" disabled="disabled"></textarea>
+										</div>
+										<div class="clearfix mt-2">
+											<input type="submit"
+												   class="btn float-end bg-primary text-white bg-opacity-75"
+												   value="댓글 쓰기" disabled="disabled">
+										</div>
+									</form>
+								</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- 본문 영역 -->
+			<!-- 댓글 -->
+
+			<!-- Modal -->
+			<div class="modal fade" id="exampleModal" tabindex="-1"
+				 aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-body">
+							<div class="form-group">
+								<label for="reply_text">정말 삭제하시겠습니까?</label>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default pull-left"
+									data-dismiss="modal">취소</button>
+							<button type="button" class="btn btn-danger modalDelBtn" id="delBtn" onclick="">삭제</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</main>
+
+<footer th:replace="common/footer :: footer"></footer>
+
+
+
+<!--&lt;!&ndash; Bootstrap Bundle with Popper &ndash;&gt;-->
+<script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js}" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+</body>
+</html>
