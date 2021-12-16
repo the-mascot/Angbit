@@ -26,7 +26,10 @@ public interface BoardDao {
 	
 	Board detailReply(int ref);
 	int replyUpdate(Board board);
-	
-	
-	
+
+    List<Board> testBoardList(int startRow, int endRow);
+
+    Board testBoardContent(int b_num);
+
+	List<Board> testBoardContentComm(int b_num);
 }

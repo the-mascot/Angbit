@@ -126,6 +126,23 @@ WHERE (no between #{start} and #{end})					<!-- #{start} and #{end} -->
 	SET    content=#{content} AND uploaddate=sysdate	 
 	WHERE  ref=#{ref} AND id=#{id} AND re_step=#{re_step} AND re_level=1
 	</update>
-
-	
+	<select id="testBoardList" parameterType="HashMap" resultType="Board">
+		select * from (select rownum rn ,a.* from
+				(SELECT           *
+				 FROM             board bd
+									  LEFT OUTER JOIN  memberinfo mb
+													   ON               bd.id = mb.id
+				 WHERE            re_level=0
+				 ORDER BY         b_num desc) a )
+				where rn between #{startRow} and #{endRow}
+	</select>
+	<select id="testBoardContent" parameterType="Integer" resultType="Board">
+		SELECT * FROM board bd LEFT OUTER JOIN  memberinfo mb ON bd.id = mb.id WHERE b_num=${b_num}
+	</select>
+	<select id="testBoardContentComm" parameterType="Integer" resultType="Board">
+	SELECT a.*, b.nickname FROM
+	(SELECT * FROM board START WITH ref=10 CONNECT BY PRIOR b_num = ref) a,
+	memberinfo b
+	WHERE a.id = b.id
+	</select>
 </mapper>

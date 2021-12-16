@@ -142,31 +142,18 @@ public class BoardServiceImpl implements BoardService {
 		return levone;
 	}
 
+	@Override
+	public List<Board> testBoardList(int startRow, int endRow) {
+		return bdao.testBoardList(startRow, endRow);
+	}
 
+	@Override
+	public Board testBoardContent(int b_num) {
+		return bdao.testBoardContent(b_num);
+	}
 
-
-
-	
-
-	
-
-
-
-
-	
-
-
-
-
-	
-
-	
-	
-	
-
-	
-	
-	
-	
-	
+	@Override
+	public List<Board> testBoardContentComm(int b_num) {
+		return bdao.testBoardContentComm(b_num);
+	}
 }
