@@ -860,6 +860,10 @@
 							,
 							dateFormat : 'yyyy/MM/dd' ,
 						},
+						scaleMargins: {
+							top: 0.8,
+							bottom: 0,
+						},
 						priceScale : {
 							autoScale : true ,
 							invertScale : false ,
@@ -1047,8 +1051,8 @@
 			console.log('sellMarkets 시작')
 			document.getElementById('sell-unit_price-th').style.display ='none'; // 매도 가격 텍스트
 			document.getElementById('sell-unit_price').style.display ='none'; // 매도 가격
-			document.getElementById('sell-trd_amt-th').style.display ='none'; // ?
-			document.getElementById('sell-trd_amt').style.display =''; // 주문 수량
+			// document.getElementById('sell-trd_amt-th').style.display ='none'; // ?
+			// document.getElementById('sell-trd_amt').style.display =''; // 주문 수량
 			document.getElementById('sell-trd_price').style.display = 'none'; //  주문 총액
 			document.getElementById('sell-trd_amt').value = 0; // 주문 수량 value
 			document.getElementById('sell-trd_price').value = 0; // 주문 총액

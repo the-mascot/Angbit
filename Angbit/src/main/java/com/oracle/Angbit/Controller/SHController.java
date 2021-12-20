@@ -138,10 +138,6 @@ public class SHController {
                 low = df.format(Double.parseDouble(low));
                 close = df.format(Double.parseDouble(close));
 
-                System.out.println("시가 : "+open);
-                System.out.println("고가 : "+high);
-                System.out.println("저가 : "+low);
-                System.out.println("종가 : "+close);
                 LinkedHashMap addJSON = new LinkedHashMap(); // 객체에 값 추가할 시 순서 유지용으로 LinkedHashmap 객체 사용
                 addJSON.put("time", timee);
                 addJSON.put("open", open);
