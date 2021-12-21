@@ -55,9 +55,9 @@ public class DYController {
 	@GetMapping(value = "jpa_list")
 	public String listBoard(@RequestParam String schword, HttpServletRequest request) {
 		System.out.println("BoardJpaController listBoard start.. ");
-		List<Board> jpaBoardList = boardJpaService.getListAllBoard(schword);
-		System.out.println(
-				"BoardJpaController listBoard jpaBoardList.get(0).getTitle())->" + jpaBoardList.get(0).getTitle());
+		List<Board> jpaBoardList = bs.schBoard(schword);
+//		System.out.println(
+//				"BoardJpaController listBoard jpaBoardList.get(0).getTitle())->");
 
 		System.out.println("DYController schlist Start...");
 		/* int totCnt = bs.schTotal(); */

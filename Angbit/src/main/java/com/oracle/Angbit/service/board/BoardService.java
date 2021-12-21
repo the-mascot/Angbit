@@ -37,4 +37,5 @@ public interface BoardService {
 
 	List<Board> testBoardContentComm(int b_num);
 
+    List<Board> schBoard(String schword);
 }

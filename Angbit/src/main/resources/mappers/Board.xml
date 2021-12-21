@@ -145,5 +145,10 @@ WHERE rn BETWEEN #{start} and #{end}
 	memberinfo b
 	WHERE a.id = b.id
 	</select>
-
+	<select id="schBoard" parameterType="String" resultType="Board">
+		SELECT b.*, m.nickname
+		FROM board b
+		LEFT OUTER JOIN memberinfo m ON b.id=m.id
+		WHERE content like '%' || #{schword} || '%' or title like '%' ||  #{schword} || '%'  or nickname like '%' ||  #{schword} || '%'
+	</select>
 </mapper>

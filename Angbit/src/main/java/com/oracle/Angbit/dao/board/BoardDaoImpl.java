@@ -255,4 +255,11 @@ public class BoardDaoImpl implements BoardDao {
 	public List<Board> testBoardContentComm(int b_num) {
 		return session.selectList("testBoardContentComm", b_num);
 	}
+
+	@Override
+	public List<Board> schBoard(String schword) {
+		System.out.println("검색값 : "+schword);
+		List<Board> list = session.selectList("schBoard", schword);
+		return list;
+	}
 }

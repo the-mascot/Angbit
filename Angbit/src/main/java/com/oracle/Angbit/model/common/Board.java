@@ -38,7 +38,7 @@ public class Board {
 	
 	
 	
-	@Transient
+
 	private String nickname;
 	@Transient
 	private int rn;

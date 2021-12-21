@@ -172,4 +172,8 @@ public class BoardServiceImpl implements BoardService {
 		return bdao.testBoardContentComm(b_num);
 	}
 
+	@Override
+	public List<Board> schBoard(String schword) {
+		return bdao.schBoard(schword);
+	}
 }

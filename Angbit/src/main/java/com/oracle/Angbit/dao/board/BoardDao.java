@@ -36,4 +36,5 @@ public interface BoardDao {
 
 	List<Board> testBoardContentComm(int b_num);
 
+    List<Board> schBoard(String schword);
 }
