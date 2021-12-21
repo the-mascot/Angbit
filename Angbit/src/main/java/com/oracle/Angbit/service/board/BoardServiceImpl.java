@@ -41,7 +41,13 @@ public class BoardServiceImpl implements BoardService {
 		return totCnt;
 	}
 
-
+	/*
+	 * @Override public int schTotal() {
+	 * System.out.println("BoardServiceImpl Start schTotal..." ); int totCnt =
+	 * bdao.schTotal();
+	 * System.out.println("BoardServiceImpl schTotal totCnt->"+totCnt ); return
+	 * totCnt; }
+	 */
 	
 
 	
@@ -154,6 +160,12 @@ public class BoardServiceImpl implements BoardService {
 		
 		return board;//리턴 컨트롤러로
 	}
+
+
+
+
+
+	
 
 
 

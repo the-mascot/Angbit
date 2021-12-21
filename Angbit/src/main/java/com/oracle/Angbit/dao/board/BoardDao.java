@@ -27,6 +27,7 @@ public interface BoardDao {
 	Board detailReply(Board board);
 	int replyUpdate(Board board);
 	Board scdetailBd(Board bd);
+//	int schTotal();
 	
 	
 	

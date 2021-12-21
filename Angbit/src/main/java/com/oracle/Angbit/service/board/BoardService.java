@@ -26,6 +26,7 @@ public interface BoardService {
 	Board detailReply(Board board);
 	int replyUpdate(Board board);
 	Board scdetailBd(Board board);
+//	int schTotal();
 	
 	
 	
