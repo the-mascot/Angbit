@@ -1,6 +1,8 @@
 package com.oracle.Angbit.dao.board;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +53,10 @@ public class BoardDaoImpl implements BoardDao {
 	
 	//detail,updateForm
 	@Override
-	public Board detailBoard(int ref) {
+	public Board detailBoard(Board bd) {
 		System.out.println("BoardDaoImpl detail start..");
-		Board board = new Board();
+		Board board = null;
+		int ref = bd.getRef();
 		try {
 			//                       mapper ID   ,    Parameter
 			board = session.selectOne("dyBoardSelOne",    ref);
@@ -109,18 +112,18 @@ public class BoardDaoImpl implements BoardDao {
 		}
 
 		@Override
-		public Board detailReply(int ref) {
+		public Board detailReply(Board board) {
 			System.out.println("BoardDaoImpl detailReply start..");
-			Board board = new Board();
+			Board bd = null;
 			try {
 				//                       mapper ID   ,    Parameter
-				board = session.selectOne("dyReplySelOne",    ref);
+				bd = session.selectOne("dyReplySelOne",   board);
 				
 				System.out.println("BoardDaoImpl detailReply getRef->"+board.getRef());
 			} catch (Exception e) {
 				System.out.println("BoardDaoImpl detailReply Exception->"+e.getMessage());
 			}
-			return board;
+			return bd;
 		}
 		
 		//reply update db
@@ -133,6 +136,7 @@ public class BoardDaoImpl implements BoardDao {
 
 			try {
 				result  = session.update("dyReplyUpdate", board);
+				System.out.println("업데이트 result -> "+result);
 			} catch (Exception e) {
 				System.out.println("BoardDaoImpl update Exception->"+e.getMessage());
 			}
@@ -189,38 +193,55 @@ public class BoardDaoImpl implements BoardDao {
 		}
 
 		@Override
-		public Board levone(int ref) {
+		public List<Board> levone(Board board) {
 			System.out.println("BoardDaoImpl levone start..");	
-			Board board = new Board();
+			List <Board> levone = null;
+			int ref = board.getRef();
 			try {
 				//                       mapper ID   
-				board = session.selectOne("dyLevOne");
+				levone = session.selectList("dyLevOne", ref);
+				
+//				System.out.println("BoardDaoImpl levone getRef->"+levone.get(0).getRef());
+			} catch (Exception e) {
+				System.out.println("BoardDaoImpl levone Exception->"+e.getMessage());
+			}
+			
+			return levone;
+		}
+
+
+		@Override
+		public Board scdetailBd(Board bd) {
+			System.out.println("BoardDaoImpl detail start..");
+			Board board = null;
+			
+			try {
+				//                       mapper ID   ,    Parameter
+				board = session.selectOne("dyBoardForReply",   bd);
 				
 				System.out.println("BoardDaoImpl detail getTitle->"+board.getB_num());
 			} catch (Exception e) {
 				System.out.println("BoardDaoImpl detail Exception->"+e.getMessage());
 			}
-			
 			return board;
 		}
 
+	@Override
+	public List<Board> testBoardList(int startRow, int endRow) {
+			Map vo = new HashMap();
+			vo.put("startRow", startRow);
+			vo.put("endRow", endRow);
+			List<Board> list = session.selectList("testBoardList", vo);
+		return list;
+	}
 
-		
-		
+	@Override
+	public Board testBoardContent(int b_num) {
+		return session.selectOne("testBoardContent", b_num);
+	}
 
-
-
-	
-
-
-
-
-		
-
-
-		
-
-		
-		
-	
+	@Override
+	public List<Board> testBoardContentComm(int b_num) {
+		return session.selectList("testBoardContentComm", b_num);
+	}
 }

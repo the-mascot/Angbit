@@ -29,7 +29,7 @@ function chkJoin() {
 	
 	var pw = $("#password").val();
 	var num = pw.search(/[0-9]/g);
-	var eng = pw.search(/[a-z]/ig);
+	var eng = pw.search(/[a-zA-Z]/ig);
 	var spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
 	
 	if(pw.length < 8 || pw.length > 20){
@@ -40,7 +40,7 @@ function chkJoin() {
 		 alert("비밀번호는 공백 없이 입력해주세요.");
 		 return false;
 		}else if(num < 0 || eng < 0 || spe < 0 ){
-		 alert("영문,숫자,특수문자를 최소 1개 이상 혼합하여 입력해주세요.");
+		 alert("영문 대/소문자,숫자,특수문자를 최소 1개 이상 혼합하여 입력해주세요.");
 		 return false;
 		}else {
 		   return true;
@@ -134,7 +134,7 @@ $(function () {
 				  <input type="password" class="form-control input-sm" id="checkpassword" name="checkpassword" placeholder="Check Password">
 				  <label for="floatingInput">비밀번호 재확인</label>
 				  
-				  <button class="tooltip-link" data-tooltip="비밀번호는 공백없이 8~20자리로 영문,숫자,특수문자를 각각 1개 이상 씩 혼합하여 입력하여 주십시오." disabled="disabled">비밀번호 규칙</button>
+				  <button class="tooltip-link" data-tooltip="비밀번호는 공백없이 8~20자리로 영문 대/소문자,숫자,특수문자를 각각 1개 이상 씩 혼합하여 입력하여 주십시오." disabled="disabled">비밀번호 규칙</button>
 			</div>
 			
 			<div class="form-floating mb-1">

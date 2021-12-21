@@ -2,10 +2,12 @@ package com.oracle.Angbit.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oracle.Angbit.model.common.Board;
 import com.oracle.Angbit.model.status.CoinCoinInfo;
 import com.oracle.Angbit.model.common.CoinInfo;
 import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.model.invest.OrderTrade;
+import com.oracle.Angbit.service.board.BoardService;
 import com.oracle.Angbit.service.invest.InvestService;
 import com.oracle.Angbit.service.myInfo.myInfoService;
 import com.oracle.Angbit.service.rank.RankService;
@@ -34,6 +36,7 @@ import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -47,6 +50,8 @@ public class SHController {
     private myInfoService mis;
     @Autowired
     private RankService rs;
+    @Autowired
+    private BoardService bs;
 
     @RequestMapping("/myInfo")
     public String myPageForm(Model model, HttpServletRequest request) {
@@ -133,10 +138,6 @@ public class SHController {
                 low = df.format(Double.parseDouble(low));
                 close = df.format(Double.parseDouble(close));
 
-                System.out.println("시가 : "+open);
-                System.out.println("고가 : "+high);
-                System.out.println("저가 : "+low);
-                System.out.println("종가 : "+close);
                 LinkedHashMap addJSON = new LinkedHashMap(); // 객체에 값 추가할 시 순서 유지용으로 LinkedHashmap 객체 사용
                 addJSON.put("time", timee);
                 addJSON.put("open", open);
@@ -411,7 +412,80 @@ public class SHController {
         return json;
     }
 
+    @RequestMapping("boardTest")
+    public String testBoard(HttpServletRequest request) {
+        int totCnt = bs.total();
+
+        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+        String pageNum = request.getParameter("pageNum");
+        String keyWord = request.getParameter("keyWord");
+        if(pageNum==null||pageNum.equals("")) {
+            pageNum="1";
+        }
+        String pageSize=request.getParameter("pageSize");	// 10개씩 보기 받아오기
+        if(pageSize==null||pageSize.equals(""))
+            pageSize="10";
+        //초기 totCnt 5, currentPage 1
+        int currentPage=Integer.parseInt(pageNum);
+        int blockSize=10;
+        int startRow=(currentPage-1)*Integer.parseInt(pageSize)+1;
+        int endRow=startRow+Integer.parseInt(pageSize)-1;
+        int startNum=totCnt-startRow+1;
+        List<Board> list=bs.testBoardList(startRow, endRow);
+        int pageCnt=(int) Math.ceil((double)totCnt/Integer.parseInt(pageSize));
+        int StartPage=(int)(currentPage-1)/blockSize*blockSize+1;
+        int endPage=StartPage+blockSize-1;
+
+        if (endPage > pageCnt) endPage = pageCnt; //
+
+        System.out.println("startRow"+startRow);
+        System.out.println("endRow"+endRow);
+
+        HttpSession session=request.getSession();
+        session.setAttribute("page", 1);
+        request.setAttribute("keyWord", keyWord);
+        request.setAttribute("today", format.format(new Date()));
+        request.setAttribute("totCnt", totCnt);
+        request.setAttribute("pageNum", pageNum);
+        request.setAttribute("pageSize", pageSize);
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("startNum", startNum);
+        request.setAttribute("list", list);
+        request.setAttribute("blockSize", blockSize);
+        request.setAttribute("pageCnt", pageCnt);
+        request.setAttribute("startPage", StartPage);
+        request.setAttribute("endPage", endPage);
+
+        return "myInfo/boardTest";
+    }
+
+    @RequestMapping("content/{b_num}")
+    public String boardTestContent(HttpServletRequest request,
+                                   @PathVariable(value="b_num") int b_num) {
+
+        if (b_num == 0) {
+            return "myInfo/boardTestContent";
+        } else {
+            bs.viewCnt(b_num);
+            Board board = bs.testBoardContent(b_num);
+            List<Board> list = bs.testBoardContentComm(b_num);
+
+            if (board.getContent() == null || board.getContent() == "") {
+                return "myInfo/boardTestContent";
+            }
+
+//            request.setAttribute("pageNum", pageNum);
+//            request.setAttribute("pageSize", pageSize);
+            request.setAttribute("board", board);
+            request.setAttribute("list", list);
+            request.setAttribute("b_num", b_num);
+
+            return "myInfo/boardTestContent";
+        }
+    }
 }
+
+
 
 
 // AJAX String 리턴시 한글 깨짐 방지(PrintWriter 객체보다 상위로 선언)
