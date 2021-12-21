@@ -1,7 +1,8 @@
 package com.oracle.Angbit.dao.board;
 
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -235,25 +236,23 @@ public class BoardDaoImpl implements BoardDao {
 			return board;
 		}
 
+	@Override
+	public List<Board> testBoardList(int startRow, int endRow) {
+			Map vo = new HashMap();
+			vo.put("startRow", startRow);
+			vo.put("endRow", endRow);
+			List<Board> list = session.selectList("testBoardList", vo);
+		return list;
+	}
 
-		
-
-		
-		
-
-
-
-	
+	@Override
+	public Board testBoardContent(int b_num) {
+		return session.selectOne("testBoardContent", b_num);
+	}
 
 
-
-
-		
-
-
-		
-
-		
-		
-	
+	@Override
+	public List<Board> testBoardContentComm(int b_num) {
+		return session.selectList("testBoardContentComm", b_num);
+	}
 }

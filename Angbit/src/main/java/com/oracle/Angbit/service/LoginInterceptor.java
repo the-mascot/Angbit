@@ -30,8 +30,10 @@ public class LoginInterceptor implements HandlerInterceptor {
 //        System.out.println("Method : "+methodObj);
         String id = (String) request.getSession().getAttribute("sessionID");
         if (id != null) {
+        	System.out.println("Interceptor 실행 (Session = Not Null) ...");
             return true;
         } else {
+        	System.out.println("Interceptor 실행 (Session = Null) ...");
             response.sendRedirect("loginForm");
             return false;
         }

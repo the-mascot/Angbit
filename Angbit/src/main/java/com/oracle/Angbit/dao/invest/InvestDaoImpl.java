@@ -173,6 +173,7 @@ public class InvestDaoImpl implements InvestDao {
 	}
 
 	@Override
+	@Transactional
 	public void checkBuyLimits() {
 		System.out.println("InvestDaoImpl checkBuyLimits Start...");
 		Date date = new Date();
@@ -187,8 +188,7 @@ public class InvestDaoImpl implements InvestDao {
 
 		for(int i =0; i < coinList.size(); i++) {
 			try {
-				if(i == 8)
-					Thread.sleep(1000);	// UPBIT API 요청수 제한으로 1 초 대기(초당 10회만 요청 가능)
+				Thread.sleep(500);	// UPBIT API 요청수 제한으로 1 초 대기(초당 10회만 요청 가능)
 				String tickerUrl 	= "https://api.upbit.com/v1/candles/minutes/1?market=KRW-"+coinList.get(i).getCoincode()+"&to="+sdf.format(date)+"&count=1";
 				ResponseEntity<String> tickerResponse = restTemplate.exchange(tickerUrl, HttpMethod.GET, entity, String.class);
 				String tickerStr = tickerResponse.getBody();
@@ -205,30 +205,18 @@ public class InvestDaoImpl implements InvestDao {
 				List<OrderTrade> buyOrderList = seesion.selectList("checkBuyLimits", map);
 				if (buyOrderList.size() > 0) {
 					for(OrderTrade orderTrade : buyOrderList) {
-						int result1 = seesion.update("upBuyCoin", orderTrade);
-						int result2 = seesion.update("updateTrdStu", orderTrade);
-						System.out.println("coincode : "+orderTrade.getCoincode()+"id : "+orderTrade.getId()+" result1 : "+result1+" result2 : "+result2);
-						if(result1 > 0 && result2 > 0) {
+						int result = updateBuyLimits(orderTrade);
+						if(result > 0) {
 							template.convertAndSend("/topic/"+orderTrade.getId(), orderTrade.getTrd_num()+"번 거래가 체결 되었습니다!");
 						}
 					}
 				}
 				if (sellOrderList.size() > 0) {
 					for(OrderTrade orderTrade : sellOrderList) {
-						int result1 = seesion.update("upSellCoin", orderTrade);
-						int result2 = seesion.update("updateTrdStu", orderTrade);
-						// 매도 후 보유 코인량 0개일 시 해당 ROW 초기화
-						float result3 = seesion.selectOne("chkZero", orderTrade);
-						if (result3 == 0) {
-							seesion.delete("delCoinRow", orderTrade);
-							System.out.println("전량 매도 코인 ROW삭제");
-						}
-						int result4 = seesion.update("increaseKRW", orderTrade);
-						if(result1 > 0 && result2 > 0 && result4 > 0) {
+						int result = updateSellLimits(orderTrade);
+						if(result > 0) {
 							template.convertAndSend("/topic/"+orderTrade.getId(), orderTrade.getTrd_num()+"번 거래가 체결 되었습니다!");
 						}
-						System.out.println("코인명 : "+orderTrade.getCoincode()+"\nid : "+orderTrade.getId()+" 지정가 매도 성공? : "+result1);
-						System.out.println("지정가 매도 성공?->"+result2);
 					}
 				}
 
@@ -239,8 +227,33 @@ public class InvestDaoImpl implements InvestDao {
 		}
 
 	}
-
-
+	
+	@Transactional
+	private int updateBuyLimits(OrderTrade orderTrade) {
+		
+		int result1 = seesion.update("upBuyCoin", orderTrade);
+		int result2 = seesion.update("updateTrdStu", orderTrade);
+		System.out.println("coincode : "+orderTrade.getCoincode()+"id : "+orderTrade.getId()+" result1 : "+result1+" result2 : "+result2);
+		
+		return result1 * result2;
+	}
+	
+	@Transactional
+	private int updateSellLimits(OrderTrade orderTrade) {
+		
+		int result1 = seesion.update("upSellCoin", orderTrade);
+		int result2 = seesion.update("updateTrdStu", orderTrade);
+		// 매도 후 보유 코인량 0개일 시 해당 ROW 초기화
+		float result3 = seesion.selectOne("chkZero", orderTrade);
+		if (result3 <= 0) {
+			seesion.delete("delCoinRow", orderTrade);
+			System.out.println("전량 매도 코인 ROW삭제");
+		}
+		int result4 = seesion.update("increaseKRW", orderTrade);
+		
+		return result1 * result2 * result4;
+	}
+	
 	public int sellLimitsPrice(OrderTrade orderTrade) {
 		//지정가 매도(trade)
 		System.out.println("InvestDao sellLimitsPrice() Called.");
@@ -258,7 +271,7 @@ public class InvestDaoImpl implements InvestDao {
 
 		// 매도 후 보유 코인량 0개일 시 해당 ROW 초기화
 		float result = seesion.selectOne("chkZero", orderTrade);
-		if (result == 0) {
+		if (result <= 0) {
 			seesion.delete("delCoinRow", orderTrade);
 		}
 	}

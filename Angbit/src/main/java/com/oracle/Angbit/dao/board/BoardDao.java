@@ -26,9 +26,14 @@ public interface BoardDao {
 	
 	Board detailReply(Board board);
 	int replyUpdate(Board board);
+
 	Board scdetailBd(Board bd);
-//	int schTotal();
-	
-	
-	
+
+
+    List<Board> testBoardList(int startRow, int endRow);
+
+    Board testBoardContent(int b_num);
+
+	List<Board> testBoardContentComm(int b_num);
+
 }

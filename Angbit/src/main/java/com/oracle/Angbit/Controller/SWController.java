@@ -1,5 +1,6 @@
 package com.oracle.Angbit.Controller;
 
+import com.oracle.Angbit.service.myInfo.myInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -44,6 +45,8 @@ public class SWController {
 	private LoginService ls;
 	@Autowired
 	private JavaMailSender mailSender;
+	@Autowired
+	private myInfoService mis;
 	
 	// 메인 페이지에서 오른쪽 위 '회원가입' 버튼을 누르면 회원가입 창으로 이동하는 기능을 하는 컨트롤러
 	@RequestMapping("/joinForm")
@@ -125,16 +128,21 @@ public class SWController {
 		System.out.println("SWController - LoginProcess 시작");
         String id = memberinfo.getId();
         String pw = memberinfo.getPassword();
-		
+
+		boolean chk = mis.chkWidraw(id);
         MemberInfo memberinfo1 = ls.LoginChk(id, pw);
-        
-        if (memberinfo1 != null) {
-            HttpSession session = request.getSession();
-            session.setAttribute("sessionID", id);
-            session.setAttribute("sessionNickName", memberinfo1.getNickname());
-        } else {
-            return "lg/loginFail";
-        }
+		System.out.println("chk는?"+chk);
+
+		if (chk == true) {
+			System.out.println("회원탈퇴 페이지 리턴");
+			return "lg/loginWidraw";
+		} else if (memberinfo1 != null) {
+			HttpSession session = request.getSession();
+			session.setAttribute("sessionID", id);
+			session.setAttribute("sessionNickName", memberinfo1.getNickname());
+		} else {
+			return "lg/loginFail";
+		}
         return "lg/loginSuccess";
     }
 	
@@ -145,7 +153,7 @@ public class SWController {
         session.removeAttribute("id");
         
         session.invalidate();
-        return "/index";
+        return "redirect:/";
     }
     
     // 로그인 페이지에서 '비밀번호 찾기' 버튼을 누르면 비밀번호 찾기 페이지로 이동하는 컨트롤러
@@ -205,15 +213,5 @@ public class SWController {
 	@RequestMapping(value = "RankPage")
 	public void RankPage(Model model, HttpServletRequest request,  HttpServletResponse response) {
     	
-    	
-    	
     }
-    
-
-    
-    
-    
-    
-	
-	
 }

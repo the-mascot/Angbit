@@ -117,7 +117,6 @@ WHERE rn BETWEEN #{start} and #{end}
 	SET    content=#{content}, uploaddate = sysdate 
 	WHERE  ref=#{ref} AND re_step=#{re_step} AND re_level=1 
 	</update>
-	
 	<!--reply update를 거쳐 detail갈때 가져갈 보드 데이터  -->
 	<select id="dyBoardForReply" parameterType="Board" resultType="Board">
 	SELECT * 
@@ -127,7 +126,24 @@ WHERE rn BETWEEN #{start} and #{end}
 	WHERE (ref = #{ref}) and bd.re_level=0 
 	
 	</select>
+	<select id="testBoardList" parameterType="HashMap" resultType="Board">
+		select * from (select rownum rn ,a.* from
+				(SELECT           *
+				 FROM             board bd
+									  LEFT OUTER JOIN  memberinfo mb
+													   ON               bd.id = mb.id
+				 WHERE            re_level=0
+				 ORDER BY         b_num desc) a )
+				where rn between #{startRow} and #{endRow}
+	</select>
+	<select id="testBoardContent" parameterType="Integer" resultType="Board">
+		SELECT * FROM board bd LEFT OUTER JOIN  memberinfo mb ON bd.id = mb.id WHERE b_num=${b_num}
+	</select>
+	<select id="testBoardContentComm" parameterType="Integer" resultType="Board">
+	SELECT a.*, b.nickname FROM
+	(SELECT * FROM board START WITH ref=10 CONNECT BY PRIOR b_num = ref) a,
+	memberinfo b
+	WHERE a.id = b.id
+	</select>
 
-
-	
 </mapper>

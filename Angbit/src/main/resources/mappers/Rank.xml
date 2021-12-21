@@ -5,7 +5,7 @@
 	<select id="getRank" parameterType="hashmap" resultType="MemberInfo">
 		SELECT *
 		FROM (SELECT rownum rn, rank.*
-			  FROM (SELECT nickname, asset, round(((asset/30000000)*100-100), 1) as yield FROM memberinfo ORDER BY yield DESC) rank)
+			  FROM (SELECT nickname, asset, round(((asset/30000000)*100-100), 1) as yield FROM memberinfo ORDER BY asset DESC) rank)
 		WHERE rn BETWEEN #{startRow} and #{endRow}
 	</select>
 	<select id="getTotCntMember" resultType="int">
