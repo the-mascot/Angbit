@@ -47,7 +47,7 @@ history.pushState(null, null, 'board_list'); //data, title, url 의 값이 들�
 	
 	
 	<table class="table">
-		<tr><th style="text-align:center">순번</th><td th:text="${board.b_num }"></td>
+		<tr><th style="text-align:center">순번</th><td th:text="${board.ref }"></td>
 			<th style="text-align:center">제목</th><td th:text="${board.title }"></td>
 			<th style="text-align:center">작성일</th><td th:text="${#dates.format(board.uploaddate, 'yyyy-MM-dd')}"></td>
 			<th style="text-align:center">조회수</th><td th:text="${board.views }"></td>
