@@ -30,25 +30,38 @@ history.pushState(null, null, 'board_list'); //data, title, url 의 값이 들�
 <main>
 <div class="container">
 	<div class="row bg-warning">
-		<div class="col-lg-1"></div>
-		<div class="col-lg-10">
+		
+		<div class="col-lg-12">
 			<div class="row">
-				<div class="col-lg-2 bg-warning"><div align="center" class="textbox text-dark fs-3 fw-bold">상세게시글</div></div>
+				<div class="col-lg-2 bg-warning"><div class="textbox text-dark fs-3 fw-bold">상세게시글</div></div>
 				<div class="col-lg-10"></div>
 			</div>
+			
 		</div>	
-		<div class="col-lg-1"></div>
+	
 	</div>
+	<div class="row bg-warning"><div class="col-lg-12">&nbsp</div></div>
+	
+	
+		<div class="row"><div class="col-lg-12">&nbsp</div></div>  <!--한줄 띄기  -->
+	
 	
 	<table class="table">
-		<tr><th>순번</th><td th:text="${board.b_num }"></td>
-			<th>제목</th><td th:text="${board.title }"></td>
-			<th>작성일</th><td th:text="${#dates.format(board.uploaddate, 'yyyy-MM-dd')}"></td>
-			<th>조회수</th><td th:text="${board.views }"></td>
-			<th>닉네임</th><td th:text="${board.nickname }"></td>
+		<tr><th style="text-align:center">순번</th><td th:text="${board.b_num }"></td>
+			<th style="text-align:center">제목</th><td th:text="${board.title }"></td>
+			<th style="text-align:center">작성일</th><td th:text="${#dates.format(board.uploaddate, 'yyyy-MM-dd')}"></td>
+			<th style="text-align:center">조회수</th><td th:text="${board.views }"></td>
+			<th style="text-align:center">닉네임</th><td th:text="${board.nickname }"></td>
 		</tr>
 			<table class="table">
-				<tr><th>내용</th><td th:text="${board.content}"></td></tr>
+				<tr>
+					<th style="width:100px">
+						<div style="min-height:100px; text-align:center">
+							내용
+						</div>
+					</th>
+					<td style="background-color:white" th:text="${board.content}"></td>
+				</tr>
 			</table>
 	</table>
 	
@@ -113,14 +126,6 @@ history.pushState(null, null, 'board_list'); //data, title, url 의 값이 들�
 
 
 <div class="row"><div class="col-lg-12">&nbsp</div></div> <!--한줄 띄기  -->
-
-
-	<div class=row>
-		<div class="col-lg-10"></div>
-		<div class="col-lg-2"></div>
-	</div>
-	
-	
 <div class="row"><div class="col-lg-12">&nbsp</div></div> <!--한줄 띄기  -->
 
 
@@ -153,9 +158,9 @@ history.pushState(null, null, 'board_list'); //data, title, url 의 값이 들�
 				<td th:text="|${reply.content}|" class="text-center"></td>
 				<td></td>
 				<td></td>
-				<td th:text="|${reply.uploaddate}|" class="text-center"></td>
+				<td th:text="${#dates.format(reply.uploaddate, 'yyyy-MM-dd')}" class="text-center"></td>
 				
-				<td th:if="${session.sessionID} !=null and ${session.sessionNickName} == ${reply.nickname}">
+				<td style="text-align: right" th:if="${session.sessionID} !=null and ${session.sessionNickName} == ${reply.nickname}">
 					<input type="button" class="btn btn-outline-dark" th:value="댓글수정" 
 						th:onclick="|location.href='@{reply_updateForm(ref=${reply.ref}, re_step=${reply.re_step})}'|"></td>
 				
