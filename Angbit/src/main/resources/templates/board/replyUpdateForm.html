@@ -19,17 +19,15 @@
 
 <main>
 	<h2>댓글 수정</h2>
-	<form action="reply_update" method="POST">
-		<!-- detailBd넘기는법 ??-->
-		<input type="hidden" name="detailBd" th:value="${detailBd}">
+	<form action="reply_update" method="GET">
 		
-<!-- 		<input type="hidden" name="b_num" th:value="${board.b_num}"> -->
-<!-- 		<input type="hidden" name="id" th:value="${session.sessionID}"> -->
-<!-- 		<input type="hidden" name="uploaddate" th:value="${board.uploaddate}"> -->
-<!-- 		<input type="hidden" name="title" th:value="${board.title}"> -->
-<!-- 		<input type="hidden" name="views" th:value="${board.views}"> -->
+			<!-- <input type="hidden" name="detailBd" th:value="${detailBd}"> -->
+			<!-- <input type="hidden" name="b_num" th:value="${board.b_num}"> -->
+			<!-- <input type="hidden" name="id" th:value="${session.sessionID}"> -->
+			<!-- <input type="hidden" name="title" th:value="${board.title}"> -->	
+			<!-- <input type="hidden" name="views" th:value="${board.views}"> -->
+
 		<input type="hidden" name="ref" th:value="${board.ref}">
-<!-- 		<input type="hidden" name="re_level" th:value="${board.re_level}"> -->
 		<input type="hidden" name="re_step" th:value="${board.re_step}">  
   		     
 		  	<table class="table">   

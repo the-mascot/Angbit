@@ -25,6 +25,10 @@ body {
 	overflow-x: hidden;
 }
 	
+input:-ms-input-placeholder {color:#a8a8a8; }
+input::-webkit-input-placeholder {color:#a8a8a8; }
+input::-moz-placeholder {color:#a8a8a8; }	
+	
 textarea {
     
     border: none;

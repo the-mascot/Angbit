@@ -59,9 +59,9 @@ history.pushState(null, null, 'board_list'); //data, title, url 의 값이 들�
 	<div class=row>
 		<div class="col-lg-10"></div>
 		<div class="col-lg-2">
-			<div class="btn-group" role="group" aria-label="Basic outlined example">
-				<input type="button" class="btn btn-outline-dark" th:value="목록" 
-					th:onclick="|location.href='@{board_list}'|">
+			<input type="button" class="btn btn-outline-dark" th:value="목록" 
+					th:onclick="|location.href='@{board_list}'|">	
+			<div class="btn-group" role="group" aria-label="Basic outlined example" th:if="${session.sessionID} !=null and ${session.sessionNickName} == ${board.nickname}">
 				<input type="button" class="btn btn-outline-dark" th:value="수정" 
 					th:onclick="|location.href='@{board_updateForm(ref=${board.ref})}'|"> 		<!-- updateform으로b_num을 넘겨줌 -->
 				<input type="button" class="btn btn-outline-dark" th:value="삭제" 
@@ -84,24 +84,25 @@ history.pushState(null, null, 'board_list'); //data, title, url 의 값이 들�
 <!-- DB 댓글 추가 -->
 <form th:action="board_detailBoard" method="get">
 		
-		<input type="hidden"  name="b_num"       th:value="${board.b_num}">
-		<input type="hidden"  name="id"          th:value="${session.sessionID}">
-		<input type="hidden"  name="uploaddate"  th:value="${board.uploaddate}">
-		<input type="hidden"  name="title"       th:value="${board.title}">
-		<input type="hidden"  name="views"       th:value="${board.views}">
-		<input type="hidden"  name="ref"         th:value="${board.ref}">
-		<input type="hidden"  name="re_level"    th:value=1>	
-		<input type="hidden"  name="re_step"     th:value=0>	
-		<input type="hidden"  name="nickname"    th:value="${session.sessionNickName}">
+		<input type="hidden"  name="b_num"       th:value="${board.b_num}">        		<!-- 댓글달린 게시글 정보 -->
+		<input type="hidden"  name="id"          th:value="${session.sessionID}">  		<!-- 댓글쓴사람  -->
+		<input type="hidden"  name="title"       th:value="${board.title}">				<!-- 댓글달린 게시글 정보-->
+		<input type="hidden"  name="views"       th:value="${board.views}">				<!-- 댓글달린 게시글 정보-->
+		<input type="hidden"  name="ref"         th:value="${board.ref}">				<!-- 댓글달린 게시글 정보-->
+		<input type="hidden"  name="re_level"    th:value="1">								<!-- 댓글==1 -->
+		<input type="hidden"  name="re_step"     th:value="0">								<!-- 댓글 고유번호 -->		
+		<input type="hidden"  name="nickname"    th:value="${session.sessionNickName}"> <!-- 닉네임 -->
 		
-	<!-- textarea -->
+			<!-- textarea -->
 		<label for="exampleFormControlTextarea1" class="form-label fs-5 fw-bold" th:if="${session.sessionID!=null}">댓글작성</label>
 		<div class="form-floating">
 		<textarea class="form-control h-25" rows="5" name="content" required="required" th:if="${session.sessionID!=null}"></textarea>
 		 <label for="floatingTextarea">Comments</label>
 		</div>
+	
 													
 	<div class="row"><div class="col-lg-12">&nbsp</div></div> <!--한줄 띄기  -->
+	
 	
 	<!-- 입력버튼 -->
 	<div class="row">
@@ -110,26 +111,24 @@ history.pushState(null, null, 'board_list'); //data, title, url 의 값이 들�
 	</div>
 </form>
 
+
 <div class="row"><div class="col-lg-12">&nbsp</div></div> <!--한줄 띄기  -->
+
 
 	<div class=row>
 		<div class="col-lg-10"></div>
 		<div class="col-lg-2"></div>
 	</div>
 	
+	
 <div class="row"><div class="col-lg-12">&nbsp</div></div> <!--한줄 띄기  -->
 
 
 
 
-
-
-
 <!-- 댓글 보이는곳 -->
-		
 	
-	<div class="row"><div class="col-lg-12">&nbsp</div></div> 
-	
+	<div class="row"><div class="col-lg-12">&nbsp</div></div> <!--한줄 띄기  -->
 		
 		<table class="table">  <!--  border-bottom -->
 			<tr>
@@ -156,13 +155,13 @@ history.pushState(null, null, 'board_list'); //data, title, url 의 값이 들�
 				<td></td>
 				<td th:text="|${reply.uploaddate}|" class="text-center"></td>
 				
-				<td>			<!-- th:if="session.sessionNickName==${reply.nickname}" -->
+				<td th:if="${session.sessionID} !=null and ${session.sessionNickName} == ${reply.nickname}">
 					<input type="button" class="btn btn-outline-dark" th:value="댓글수정" 
-						th:onclick="|location.href='@{reply_updateForm(ref=${board.ref}, re_step=${reply.re_step})}'|"></td>
+						th:onclick="|location.href='@{reply_updateForm(ref=${reply.ref}, re_step=${reply.re_step})}'|"></td>
 				
-				<td th:if="session.sessionID!=null and session.sessionNickName==${reply.nickname}">
+				<td th:if="${session.sessionID} !=null and ${session.sessionNickName} == ${reply.nickname}">
 					<input type="button" class="btn btn-outline-dark" th:value="댓글삭제" 
-						th:onclick="|location.href='@{reply_delete(ref=${board.ref}, re_step=${reply.re_step})}'|"></td>
+						th:onclick="|location.href='@{reply_delete(ref=${reply.ref}, re_step=${reply.re_step})}'|"></td>
 			</tr>
 		</table>
 			

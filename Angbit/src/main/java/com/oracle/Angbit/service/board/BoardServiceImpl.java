@@ -41,7 +41,13 @@ public class BoardServiceImpl implements BoardService {
 		return totCnt;
 	}
 
-
+	/*
+	 * @Override public int schTotal() {
+	 * System.out.println("BoardServiceImpl Start schTotal..." ); int totCnt =
+	 * bdao.schTotal();
+	 * System.out.println("BoardServiceImpl schTotal totCnt->"+totCnt ); return
+	 * totCnt; }
+	 */
 	
 
 	
@@ -166,4 +172,8 @@ public class BoardServiceImpl implements BoardService {
 		return bdao.testBoardContentComm(b_num);
 	}
 
+	@Override
+	public List<Board> schBoard(String schword) {
+		return bdao.schBoard(schword);
+	}
 }

@@ -21,8 +21,6 @@
 
 <!-- 몸통 -->
 <main>
-
-
 <div class="container">
 	
 	<div class="row bg-warning">
@@ -32,11 +30,24 @@
 	<div class="row bg-warning">
 		<div class="col-lg-12">&nbsp</div>
 	</div>
-	<div class="row">
-		<div class="col-lg-10"></div>
-		<div class="col-lg-2">검색창</div>
-	</div>
-
+	
+	<div class="row"><div class="col-lg-12">&nbsp</div></div> <!--한줄 띄기  -->
+	
+	<!-- @@ 검색창 @@ -->
+	<form th:action="jpa_list" method="get">	
+		<div class="row">
+			<div class="col-lg-8"></div>
+	
+			<div class="col-lg-3" style="border: 1px solid #1b5ac2; background: #ffffff; padding:0px" > 
+				<input name="schword" type="text" placeholder="검색어 입력" style="border:0px; outline:none; float: left; padding:10px">
+				<button style="border:0px; float: right; height:100%; width:70px; background:#1b5ac2; color:#ffffff">검색</button>
+			</div>
+			
+			<div class="col-lg-1"></div>
+		</div>
+	</form>
+		
+	<!-- @@ 보드리스트 @@-->	
 	<div class="wrapper_table pt-5">
 		<table class="table table-bordered">
 		       <thead>
@@ -49,9 +60,9 @@
 		           </tr>
 		       </thead>
 		       <tbody>
-		          	<th:block th:each="blist : ${boardList}">
-				          	<tr>
-			          		   <td class="text-center" th:text="${blist.rn}"></td>   
+		          	<th:block th:each="blist : ${boardList}" th:with="nums=${startNum}-${blistStat.index}">
+				          	<tr> 
+			          		   <td class="text-center" th:text="${nums}"></td>   
 				               <td><a th:href="@{board_detailBoard(ref=${blist.ref})}" th:text="${blist.title}" class="text-decoration-none"></a></td>
 				               <td class="text-center" th:text="${#dates.format(blist.uploaddate, 'yyyy-MM-dd')}"></td>  
 				               <td class="text-center" th:text="${blist.views}"></td>
@@ -61,32 +72,7 @@
 		       </tbody>
 		</table>
 		
-		
-		
-		
-<!-- 페이지 단락 넘김 -->
-		<!-- <nav aria-label="Page navigation example">
-		<div th:with="start=${pg.startPage}, end=${pg.endPage}">
-		  <ul class="pagination justify-content-center mt-4">
-		  	이전
-		    <li class="page-item" th:if="${pg.startPage>pg.pageBlock}">
-		      <a class="pagenav_a page-link" th:href="@{board_list(currentPage=${pg.startPage-pg.pageBlock})}" aria-label="previous">
-		        <span aria-hidden="true">&laquo;</span>
-		      </a>
-		    </li>
-		    페이지 갯수
-		    <li class="page-item" th:each="i:${#numbers.sequence(start, end)}">
-		    	<a class="pagenav_a page-link" id="pageNav${i}" th:href="@{board_list(currentPage=${i})}" th:text=${i}></a>
-		    </li>
-		    다음
-		    <li class="page-item" th:if="${pg.endPage < pg.totalPage}">
-		      <a class="pagenav_a page-link" th:href="@{board_list(currentPage=${pg.startPage+pg.pageBlock})}" aria-label="Next">
-		        <span aria-hidden="true">&raquo;</span>
-		      </a>
-		    </li>
-		  </ul>
-	  </div>
-	</nav> -->
+				<!--@@ 페이징 @@ -->
 					<nav aria-label="Paging">
 						<div th:with="start=${startPage}, end=${endPage}">
 							<ul class="pagination justify-content-center mt-4">

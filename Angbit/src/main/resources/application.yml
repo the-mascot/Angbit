@@ -12,10 +12,11 @@ spring:
 
 
 # ORM JPA
-  jpa:  
+  jpa:
     hibernate:
       ddl-auto : none
-      
+     
+    
 # gmail Transfer, smtp(샌드 메일 트랜스퍼 프로토콜)
   mail:
     host: smtp.gmail.com

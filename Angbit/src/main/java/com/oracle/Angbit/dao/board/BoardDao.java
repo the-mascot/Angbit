@@ -29,9 +29,12 @@ public interface BoardDao {
 
 	Board scdetailBd(Board bd);
 
+
     List<Board> testBoardList(int startRow, int endRow);
 
     Board testBoardContent(int b_num);
 
 	List<Board> testBoardContentComm(int b_num);
+
+    List<Board> schBoard(String schword);
 }

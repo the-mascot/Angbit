@@ -1,32 +1,30 @@
-package com.oracle.Angbit.model.common;
+package com.oracle.Angbit.domain;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
 import javax.persistence.Transient;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
 
 
 @Data
-@Entity
-public class Board {
 
+
+public class Board {
 	
+	// private int rn;
+	
+	// @Column(name="b_num")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Id
 	private int b_num;
+	
 	private String id;
 	
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date uploaddate;
-	
 	private String title;
 	private String content;
 	private String imagepath;
@@ -35,22 +33,14 @@ public class Board {
 	private int re_level;
 	private int re_step;
 	
-	
-	
+	@Transient
+	private String nickname;
 	
 
-	private String nickname;
-	@Transient
-	private int rn;
+	
 	// 조회용
-	@Transient
-	private String search;   
-	@Transient
-	private String keyword;
-	@Transient
-	private String pageNum;
-	@Transient
-	private int start; 		 
-	@Transient
-	private int end;
+//	private String search;   private String keyword;
+//	private String pageNum;  
+//	private int start; 		 private int end;
 }
+

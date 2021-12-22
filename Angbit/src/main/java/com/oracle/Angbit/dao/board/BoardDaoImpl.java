@@ -48,15 +48,25 @@ public class BoardDaoImpl implements BoardDao {
 		return tot;
 	}
 
-	
+	/*
+	 * @Override public int schTotal() { int tot = 0;
+	 * System.out.println("BoardDaoImpl schTotal Start ..." ); try { tot =
+	 * session.selectOne("dySchTotal"); } catch (Exception e) {
+	 * System.out.println("BoardDaoImpl schTotal Exception->"+e.getMessage()); }
+	 * 
+	 * return tot; }
+	 */
+
 
 	
 	//detail,updateForm
 	@Override
 	public Board detailBoard(Board bd) {
-		System.out.println("BoardDaoImpl detail start..");
+		System.out.println("BoardDaoImpl detailBoard start..");
 		Board board = null;
 		int ref = bd.getRef();
+		System.out.println("detailBoard bd.getRef->"+ref);
+		
 		try {
 			//                       mapper ID   ,    Parameter
 			board = session.selectOne("dyBoardSelOne",    ref);
@@ -100,9 +110,9 @@ public class BoardDaoImpl implements BoardDao {
 		public int update(Board board) {
 			System.out.println("BoardDaoImpl update start..");
 			int result = 0;
-			System.out.println(board.getB_num());
-			System.out.println(board.getContent());
-			System.out.println(board.getTitle());
+			System.out.println("update bnum ->"+board.getB_num());
+			System.out.println("update content ->"+board.getContent());
+			System.out.println("update title ->"+board.getTitle());
 			try {
 				result  = session.update("dyBoardUpdate", board);
 			} catch (Exception e) {
@@ -201,7 +211,7 @@ public class BoardDaoImpl implements BoardDao {
 				//                       mapper ID   
 				levone = session.selectList("dyLevOne", ref);
 				
-//				System.out.println("BoardDaoImpl levone getRef->"+levone.get(0).getRef());
+//			
 			} catch (Exception e) {
 				System.out.println("BoardDaoImpl levone Exception->"+e.getMessage());
 			}
@@ -240,8 +250,16 @@ public class BoardDaoImpl implements BoardDao {
 		return session.selectOne("testBoardContent", b_num);
 	}
 
+
 	@Override
 	public List<Board> testBoardContentComm(int b_num) {
 		return session.selectList("testBoardContentComm", b_num);
+	}
+
+	@Override
+	public List<Board> schBoard(String schword) {
+		System.out.println("검색값 : "+schword);
+		List<Board> list = session.selectList("schBoard", schword);
+		return list;
 	}
 }
