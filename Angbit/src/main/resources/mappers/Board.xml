@@ -149,6 +149,6 @@ WHERE rn BETWEEN #{start} and #{end}
 		SELECT b.*, m.nickname
 		FROM board b
 		LEFT OUTER JOIN memberinfo m ON b.id=m.id
-		WHERE content like '%' || #{schword} || '%' or title like '%' ||  #{schword} || '%'  or nickname like '%' ||  #{schword} || '%'
+		WHERE content like '%' || #{schword} || '%' or title like '%' ||  #{schword} || '%'  or nickname like '%' ||  #{schword} || '%' and re_level = 0
 	</select>
 </mapper>

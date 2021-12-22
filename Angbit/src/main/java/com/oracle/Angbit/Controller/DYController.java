@@ -106,49 +106,7 @@ public class DYController {
 
 		return "board/coinBoard";
 	}
-	// ----------------------------------------------------------------------------------------------
-
-	/*
-	 * //검색값 전개하기
-	 * 
-	 * @GetMapping("jpa_schlist") public String schlist(HttpServletRequest request )
-	 * { System.out.println("DYController schlist Start..."); int totCnt =
-	 * bs.schTotal();
-	 * 
-	 * int totCnt = bdsch.size(); System.out.println("멤버 총 합"+totCnt);
-	 * 
-	 * String pageNum = request.getParameter("pageNum");
-	 * if(pageNum==null||pageNum.equals("")) pageNum="1";
-	 * 
-	 * String pageSize=request.getParameter("pageSize"); // 10개씩 보기 받아오기
-	 * if(pageSize==null||pageSize.equals("")) pageSize="10";
-	 * 
-	 * int currentPage=Integer.parseInt(pageNum); int blockSize=10; int
-	 * startRow=(currentPage-1)*Integer.parseInt(pageSize)+1; int
-	 * endRow=startRow+Integer.parseInt(pageSize)-1; int startNum=totCnt-startRow+1;
-	 * Board bd = new Board(); bd.setStart(startRow); bd.setEnd(endRow);
-	 * 
-	 * 
-	 * 
-	 * int pageCnt=(int) Math.ceil((double)totCnt/Integer.parseInt(pageSize)); //반올림
-	 * int StartPage=(int)(currentPage-1)/blockSize*blockSize+1; int
-	 * endPage=StartPage+blockSize-1;
-	 * 
-	 * if (endPage > pageCnt) endPage = pageCnt;
-	 * 
-	 * System.out.println("startRow"+startRow); System.out.println("endRow"+endRow);
-	 * 
-	 * request.setAttribute("totCnt", totCnt); request.setAttribute("pageNum",
-	 * pageNum); request.setAttribute("pageSize", pageSize);
-	 * request.setAttribute("currentPage", currentPage);
-	 * request.setAttribute("startNum", startNum); request.setAttribute("boardList",
-	 * bdsch); request.setAttribute("blockSize", blockSize);
-	 * request.setAttribute("pageCnt", pageCnt); request.setAttribute("startPage",
-	 * StartPage); request.setAttribute("endPage", endPage);
-	 * 
-	 * 
-	 * return "board/coinBoard"; }
-	 */
+	
 
 	// 보드값가져오기
 	@GetMapping("board_list")
@@ -264,21 +222,12 @@ public class DYController {
 		return "redirect:board_list"; // 갱신시에 계속 수정해줘야돼서 포워드로 반복
 	}
 
+	
+	
 	// 댓글수정폼
 	@GetMapping(value = "reply_updateForm")
-	public String replyUpdateForm(Board board, Model model) {
-		System.out.println("DYController Start replyUpdateForm...");
-
-		Board replybd = bs.detailReply(board); // 댓글 가져올 부분replybd
-		System.out.println("reply updateForm bd ->" + replybd);
-
-		Board detailbd = bs.scdetailBd(board); // 보드 가져올 부분
-
-		HashMap<String, Board> map = new HashMap<String, Board>();
-		map.put("replybd", replybd); // 댓글창
-		map.put("detailbd", detailbd); // detail창
-
-		model.addAttribute("map", map);
+	public String replyUpdateForm(Board board) {  
+		System.out.println("replyUpdateForm start...");
 
 		return "board/replyUpdateForm";
 	}
@@ -288,13 +237,15 @@ public class DYController {
 	public String replyUpdate(Board board, Model model, HttpServletRequest request) {
 		System.out.println("DYController replyUpdate start...");
 		int result = bs.replyUpdate(board);
-		System.out.println("REF? ??? ? ? ? : " + board.getRef());
+		System.out.println("REF? ??? ? ? ? : " + board);
 		System.out.println("DYController replyUpdate result->" + result);
 		request.setAttribute("b_num", board.getRef());
 
 		return "forward:board_detailBoard";
 	}
 
+	
+	
 	// 작성폼 - 로그인시에만 할수있어 세션으로 정보받을거 쿼리문 거칠 필요 x
 	@GetMapping(value = "board_writeForm")
 	public String writeForm(Model model) {
@@ -308,8 +259,6 @@ public class DYController {
 	public String writeProcess(Board board, Model model, HttpServletRequest request) {
 		System.out.println("DYController Start writeProcess...");
 		System.out.println("board.getTitle() -> " + board.getTitle());
-		System.out.println("board.getContent() -> " + board.getContent());
-		System.out.println("board.getId() -> " + board.getId()); // 로그인시
 
 		String returnStr = null;
 		int result = bs.insert(board);
