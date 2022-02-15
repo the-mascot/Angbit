@@ -4,7 +4,7 @@ import com.oracle.Angbit.model.common.MemberInfo;
 
 import java.util.List;
 
-public interface myInfoDao {
+public interface MyInfoDao {
 
     int loginTest(MemberInfo mi);
     MemberInfo getMyInfo(String id);

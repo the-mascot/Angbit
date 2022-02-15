@@ -1,6 +1,6 @@
 package com.oracle.Angbit.Controller;
 
-import com.oracle.Angbit.service.myInfo.myInfoService;
+import com.oracle.Angbit.service.myInfo.MyInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -46,7 +46,7 @@ public class SWController {
 	@Autowired
 	private JavaMailSender mailSender;
 	@Autowired
-	private myInfoService mis;
+	private MyInfoService mis;
 	
 	// 메인 페이지에서 오른쪽 위 '회원가입' 버튼을 누르면 회원가입 창으로 이동하는 기능을 하는 컨트롤러
 	@RequestMapping("/joinForm")

@@ -1,6 +1,6 @@
 package com.oracle.Angbit.service.myInfo;
 
-import com.oracle.Angbit.dao.myInfo.myInfoDao;
+import com.oracle.Angbit.dao.myInfo.MyInfoDao;
 import com.oracle.Angbit.model.common.MemberInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class myInfoServiceImpl implements myInfoService {
+public class MyInfoServiceImpl implements MyInfoService {
 	
 	@Autowired
-	private myInfoDao midao;
+	private MyInfoDao midao;
 
 	@Override
 	public int loginTest(String id, String pw) {

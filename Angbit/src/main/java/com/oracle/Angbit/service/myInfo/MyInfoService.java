@@ -5,7 +5,7 @@ import com.oracle.Angbit.model.common.MemberInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface myInfoService {
+public interface MyInfoService {
 	int loginTest(String id, String pw);
     MemberInfo getMyInfo(String id);
     int nickChange(MemberInfo mi);

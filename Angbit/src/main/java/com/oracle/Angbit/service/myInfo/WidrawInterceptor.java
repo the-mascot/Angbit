@@ -1,7 +1,5 @@
 package com.oracle.Angbit.service.myInfo;
 
-import com.oracle.Angbit.dao.myInfo.myInfoDao;
-import com.oracle.Angbit.model.common.MemberInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,7 +11,7 @@ import java.io.IOException;
 public class WidrawInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private myInfoService mis;
+    private MyInfoService mis;
 
     public WidrawInterceptor() {
     }

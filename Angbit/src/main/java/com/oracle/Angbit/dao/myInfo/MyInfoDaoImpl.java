@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class myInfoDaoImpl implements myInfoDao {
+public class MyInfoDaoImpl implements MyInfoDao {
 	
 	@Autowired
 	private SqlSession session;
