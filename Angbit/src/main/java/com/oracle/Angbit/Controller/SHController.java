@@ -9,7 +9,7 @@ import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.model.invest.OrderTrade;
 import com.oracle.Angbit.service.board.BoardService;
 import com.oracle.Angbit.service.invest.InvestService;
-import com.oracle.Angbit.service.myInfo.MyInfoService;
+import com.oracle.Angbit.service.myInfo.myInfoService;
 import com.oracle.Angbit.service.rank.RankService;
 
 import org.json.simple.JSONArray;
@@ -47,7 +47,7 @@ public class SHController {
     @Autowired
     private InvestService ivs;
     @Autowired
-    private MyInfoService mis;
+    private myInfoService mis;
     @Autowired
     private RankService rs;
     @Autowired

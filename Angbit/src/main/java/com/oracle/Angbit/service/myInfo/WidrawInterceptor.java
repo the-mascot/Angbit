@@ -11,7 +11,7 @@ import java.io.IOException;
 public class WidrawInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private MyInfoService mis;
+    private myInfoService mis;
 
     public WidrawInterceptor() {
     }

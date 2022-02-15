@@ -3,7 +3,7 @@ package com.oracle.Angbit.dao.rank;
 import com.oracle.Angbit.model.common.MemberInfo;
 import com.oracle.Angbit.model.status.CoinCoinInfo;
 import com.oracle.Angbit.service.invest.InvestService;
-import com.oracle.Angbit.service.myInfo.MyInfoService;
+import com.oracle.Angbit.service.myInfo.myInfoService;
 
 import org.apache.ibatis.session.SqlSession;
 import org.json.simple.JSONArray;
@@ -31,7 +31,7 @@ public class RankDaoImpl implements RankDao{
     @Autowired
     private InvestService ivs;
     @Autowired
-    private MyInfoService mis;
+    private myInfoService mis;
 
     @Override
     public ArrayList<MemberInfo> getRank(int startRow, int endRow) {

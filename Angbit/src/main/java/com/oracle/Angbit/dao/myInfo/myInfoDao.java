@@ -1,12 +1,12 @@
-package com.oracle.Angbit.service.myInfo;
+package com.oracle.Angbit.dao.myInfo;
 
 import com.oracle.Angbit.model.common.MemberInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public interface MyInfoService {
-	int loginTest(String id, String pw);
+public interface myInfoDao {
+
+    int loginTest(MemberInfo mi);
     MemberInfo getMyInfo(String id);
     int nickChange(MemberInfo mi);
     boolean chkNick(MemberInfo mi);
@@ -15,6 +15,6 @@ public interface MyInfoService {
     void widraw(String id);
     boolean chkWidraw(String id);
     List getAllId();
-    List getAllCoincode(String toString);
+    List getAllCoincode(String id);
     String getId(String nickname);
 }

@@ -5,8 +5,8 @@ server:
 # Oracle Connect
 spring:
   datasource:
-    url: jdbc:oracle:thin:@localhost:1521/xe
-    username: angbit
+    url: jdbc:oracle:thin:@localhost:1521/orcl
+    username: Angbit
     password: tiger
     driver-class-name: oracle.jdbc.driver.OracleDriver
 
