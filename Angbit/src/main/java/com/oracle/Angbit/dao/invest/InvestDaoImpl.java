@@ -202,7 +202,8 @@ public class InvestDaoImpl implements InvestDao {
 					for(OrderTrade orderTrade : buyOrderList) {
 						int result = updateBuyLimits(orderTrade);
 						if(result > 0) {
-							template.convertAndSend("/topic/"+orderTrade.getId(), orderTrade.getTrd_num()+"번 거래가 체결 되었습니다!");
+							template.convertAndSend("/topic/"+orderTrade.getId(), orderTrade.getTrd_num()+"번 거래가 체결 되었습니다!"+
+									"\n코인 : "+orderTrade.getCoincode()+" 수량 : "+orderTrade.getTrd_amt()+" 매수");
 						}
 					}
 				}
@@ -210,7 +211,8 @@ public class InvestDaoImpl implements InvestDao {
 					for(OrderTrade orderTrade : sellOrderList) {
 						int result = updateSellLimits(orderTrade);
 						if(result > 0) {
-							template.convertAndSend("/topic/"+orderTrade.getId(), orderTrade.getTrd_num()+"번 거래가 체결 되었습니다!");
+							template.convertAndSend("/topic/"+orderTrade.getId(), orderTrade.getTrd_num()+"번 거래가 체결 되었습니다!"+
+									"\n코인 : "+orderTrade.getCoincode()+" 수량 : "+orderTrade.getTrd_amt()+" 매도");
 						}
 					}
 				}

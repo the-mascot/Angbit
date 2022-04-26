@@ -55,7 +55,6 @@ public class LoginDaoImpl implements LoginDao {
 		MemberInfo mi = null;
 		try {
 			mi = session.selectOne("findById", id);
-			System.out.println("DB PW : "+mi.getPassword());
 		} catch (Exception e) {
 			System.out.println("find by Id Exception : " + e.getMessage());
 		}

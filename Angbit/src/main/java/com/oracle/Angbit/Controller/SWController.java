@@ -136,22 +136,24 @@ public class SWController {
         String id = memberinfo.getId();
         String pw = memberinfo.getPassword();
 
-		boolean chk = mis.chkWidraw(id);
-		System.out.println("chk는?"+chk);
-
-		if (chk == true) {
-			logger.info("미가입 ID : "+id+"\n회원탈퇴 페이지 리턴");
-			return "lg/loginWidraw";
-		}
-
 		MemberInfo mi = ls.findById(id);
-		logger.info("DB PW와 일치 여부 : "+passwordEncoder.matches(pw, mi.getPassword()));
-		if(passwordEncoder.matches(pw, mi.getPassword())) {
-			HttpSession session = request.getSession();
-			session.setAttribute("sessionID", id);
-			session.setAttribute("sessionNickName", mi.getNickname());
-		} else {
+		if (mi == null) { // ID가 없음
 			return "lg/loginFail";
+		} else { // ID가 있을 경우
+			if (mis.chkWidraw(id)) { // 회원 탈퇴 검사
+				logger.info("회원탈퇴 ID : "+id+"\n회원탈퇴 페이지 리턴");
+				return "lg/loginWidraw";
+			}
+
+			logger.info("DB PW와 일치 여부 : "+passwordEncoder.matches(pw, mi.getPassword()));
+			// DB 저장된 PW값에 Encoder 타입이 정의되어 있어야함, 없을 시 Null 에러
+			if(passwordEncoder.matches(pw, mi.getPassword())) {
+				HttpSession session = request.getSession();
+				session.setAttribute("sessionID", id);
+				session.setAttribute("sessionNickName", mi.getNickname());
+			} else {
+				return "lg/loginFail";
+			}
 		}
         return "lg/loginSuccess";
     }
