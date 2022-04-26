@@ -45,7 +45,10 @@
 		set password = #{password}
 		where id = #{id}
 	</update>
-	
+
+	<select id="findById" parameterType="String" resultType="memberinfo">
+		SELECT PASSWORD, NICKNAME FROM MEMBERINFO WHERE ID=#{id}
+	</select>
 	
 </mapper>
 

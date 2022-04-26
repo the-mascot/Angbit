@@ -8,6 +8,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +49,8 @@ public class SWController {
 	private JavaMailSender mailSender;
 	@Autowired
 	private myInfoService mis;
+	@Autowired
+	PasswordEncoder passwordEncoder;
 	
 	// 메인 페이지에서 오른쪽 위 '회원가입' 버튼을 누르면 회원가입 창으로 이동하는 기능을 하는 컨트롤러
 	@RequestMapping("/joinForm")
@@ -60,7 +64,10 @@ public class SWController {
 	@RequestMapping(value = "/JoinProcess", method = RequestMethod.POST)
 	public String JoinProcess(Model model, MemberInfo memberinfo) {
 		System.out.println("SWController - JoinProcess 시작");
-		
+		// 패스워드 암호화
+		memberinfo.setPassword(passwordEncoder.encode(memberinfo.getPassword()));
+		System.out.println("암호화 된 패스워드" + memberinfo.getPassword());
+
 		String returnStr = "";
 		int result = js.JoinProcess(memberinfo);
 		if(result == 1) {
@@ -130,16 +137,19 @@ public class SWController {
         String pw = memberinfo.getPassword();
 
 		boolean chk = mis.chkWidraw(id);
-        MemberInfo memberinfo1 = ls.LoginChk(id, pw);
 		System.out.println("chk는?"+chk);
 
 		if (chk == true) {
-			System.out.println("회원탈퇴 페이지 리턴");
+			logger.info("미가입 ID : "+id+"\n회원탈퇴 페이지 리턴");
 			return "lg/loginWidraw";
-		} else if (memberinfo1 != null) {
+		}
+
+		MemberInfo mi = ls.findById(id);
+		logger.info("DB PW와 일치 여부 : "+passwordEncoder.matches(pw, mi.getPassword()));
+		if(passwordEncoder.matches(pw, mi.getPassword())) {
 			HttpSession session = request.getSession();
 			session.setAttribute("sessionID", id);
-			session.setAttribute("sessionNickName", memberinfo1.getNickname());
+			session.setAttribute("sessionNickName", mi.getNickname());
 		} else {
 			return "lg/loginFail";
 		}

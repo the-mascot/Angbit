@@ -42,7 +42,7 @@ import java.util.*;
 @Controller
 public class SHController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ESController.class);
+    private static final Logger logger = LoggerFactory.getLogger(SHController.class);
 
     @Autowired
     private InvestService ivs;
@@ -66,7 +66,6 @@ public class SHController {
         System.out.println("mi NICK" + mi.getNickname());
         System.out.println("mi JOIN" + mi.getJoindate());
         System.out.println("mi FINAL" + mi.getFinaldate());
-
         model.addAttribute("mi", mi);
         return "myInfo/myInfo";
     }

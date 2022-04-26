@@ -10,4 +10,5 @@ public interface LoginDao {
 
 	void tempPw(MemberInfo memberinfo2);
 
+	MemberInfo findById(String id);
 }

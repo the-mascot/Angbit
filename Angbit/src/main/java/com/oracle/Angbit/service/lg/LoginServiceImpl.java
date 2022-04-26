@@ -18,9 +18,6 @@ public class LoginServiceImpl implements LoginService {
 		MemberInfo memberinfo = new MemberInfo();
 		memberinfo.setId(id);
 		memberinfo.setPassword(pw);
-		
-		System.out.println("service id" + memberinfo.getId());
-		System.out.println("service id" + memberinfo.getPassword());
 
 		MemberInfo memberinfo1 = ld.LoginChk(memberinfo);
 		return memberinfo1;
@@ -45,5 +42,9 @@ public class LoginServiceImpl implements LoginService {
 		ld.tempPw(memberinfo2);
 	}
 
+	@Override
+	public MemberInfo findById(String id) {
+		return ld.findById(id);
+	}
 
 }

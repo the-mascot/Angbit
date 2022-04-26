@@ -10,4 +10,5 @@ public interface LoginService {
 
 	void tempPw(String id, String tempPassword);
 
+	MemberInfo findById(String id);
 }

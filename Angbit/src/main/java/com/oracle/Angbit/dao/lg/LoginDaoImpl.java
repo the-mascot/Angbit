@@ -2,15 +2,20 @@ package com.oracle.Angbit.dao.lg;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.oracle.Angbit.model.common.MemberInfo;
+
+import java.lang.reflect.Member;
 
 @Repository
 public class LoginDaoImpl implements LoginDao {
 	
 	@Autowired
 	private SqlSession session;
+	@Autowired
+	PasswordEncoder passwordEncoder;
 	
 	@Override
 	public MemberInfo LoginChk(MemberInfo memberinfo) {
@@ -45,7 +50,17 @@ public class LoginDaoImpl implements LoginDao {
 		}
 	}
 
-
+	@Override
+	public MemberInfo findById(String id) {
+		MemberInfo mi = null;
+		try {
+			mi = session.selectOne("findById", id);
+			System.out.println("DB PW : "+mi.getPassword());
+		} catch (Exception e) {
+			System.out.println("find by Id Exception : " + e.getMessage());
+		}
+		return mi;
+	}
 	
 	
 	
