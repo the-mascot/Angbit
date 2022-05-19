@@ -5,13 +5,13 @@
 	<select id="getRank" parameterType="hashmap" resultType="MemberInfo">
 		SELECT *
 		FROM (SELECT rownum rn, rank.*
-			  FROM (SELECT nickname, asset, round(((asset/30000000)*100-100), 1) as yield FROM memberinfo ORDER BY asset DESC) rank)
+			  FROM (SELECT nickname, asset, round(((asset/30000000)*100-100), 1) as yield FROM memberinfo WHERE MEMBER_STU=0 ORDER BY asset DESC) rank)
 		WHERE rn BETWEEN #{startRow} and #{endRow}
 	</select>
 	<select id="getTotCntMember" resultType="int">
 		SELECT count(*) FROM memberinfo
 	</select>
 	<select id="getChart" parameterType="String" resultType="CoinCoinInfo">
-		SELECT c.*, ci.coinname FROM coin c inner join coininfo ci on c.coincode=ci.coincode WHERE id=#{id} AND coin_amt != 0 ORDER BY c.coincode ASC
+		SELECT c.*, ci.coinname FROM coin c INNER JOIN coininfo ci ON c.coincode=ci.coincode WHERE id=#{id} AND coin_amt != 0 ORDER BY c.coincode ASC
 	</select>
 </mapper>

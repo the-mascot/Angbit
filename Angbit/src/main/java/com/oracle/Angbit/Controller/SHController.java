@@ -12,6 +12,8 @@ import com.oracle.Angbit.service.invest.InvestService;
 import com.oracle.Angbit.service.myInfo.myInfoService;
 import com.oracle.Angbit.service.rank.RankService;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -23,6 +25,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -52,20 +55,15 @@ public class SHController {
     private RankService rs;
     @Autowired
     private BoardService bs;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @RequestMapping("/myInfo")
     public String myPageForm(Model model, HttpServletRequest request) {
-        System.out.println("myPageForm Called.");
-        HttpSession session = request.getSession();
-        String id = (String) session.getAttribute("sessionID");
-        System.out.println("myInfo ID? " + id);
+        String id = (String) request.getSession()
+                .getAttribute("sessionID");
 
         MemberInfo mi = mis.getMyInfo(id);
-        System.out.println("mi ID" + mi.getId());
-        System.out.println("mi PW" + mi.getPassword());
-        System.out.println("mi NICK" + mi.getNickname());
-        System.out.println("mi JOIN" + mi.getJoindate());
-        System.out.println("mi FINAL" + mi.getFinaldate());
         model.addAttribute("mi", mi);
         return "myInfo/myInfo";
     }
@@ -75,7 +73,9 @@ public class SHController {
         System.out.println("chartTest Called.");
         List<CoinInfo> coinInfoList = ivs.coinInfoList();
         model.addAttribute("coinInfoList", coinInfoList);
+        // 자산 업데이트 TEST
         rs.updateAsset();
+
         return "myInfo/chartTest";
     }
 
@@ -210,7 +210,7 @@ public class SHController {
         System.out.println("API pwChange called.");
         int result;
         MemberInfo mi = new MemberInfo();
-        mi.setPassword(request.getParameter("password"));
+        mi.setPassword(passwordEncoder.encode(request.getParameter("password")));
         mi.setId((String) request.getSession().getAttribute("sessionID"));
 
         if (mis.chkPw(mi) == true) {
@@ -418,6 +418,8 @@ public class SHController {
         SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
         String pageNum = request.getParameter("pageNum");
         String keyWord = request.getParameter("keyWord");
+//        String condition = request.getParameter("condition");
+
         if(pageNum==null||pageNum.equals("")) {
             pageNum="1";
         }
@@ -440,8 +442,6 @@ public class SHController {
         System.out.println("startRow"+startRow);
         System.out.println("endRow"+endRow);
 
-        HttpSession session=request.getSession();
-        session.setAttribute("page", 1);
         request.setAttribute("keyWord", keyWord);
         request.setAttribute("today", format.format(new Date()));
         request.setAttribute("totCnt", totCnt);
@@ -482,6 +482,24 @@ public class SHController {
             return "myInfo/boardTestContent";
         }
     }
+
+    @RequestMapping("testBoard/search")
+    @ResponseBody
+    public List<Board> boardTestContent(HttpServletRequest request,
+                                   @RequestParam(value="keyWord") String keyWord,
+                                        @RequestParam(value="condition") String condition) {
+        System.out.println("search : "+keyWord);
+        System.out.println("condition : "+condition);
+        List<Board> list=bs.testBoardSearch(keyWord, condition);
+        for (Board b : list) {
+            int i = 0;
+            System.out.println(i+"번 BNUM : "+b.getB_num());
+            i++;
+        }
+
+        return list;
+    }
+
 }
 
 

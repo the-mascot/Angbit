@@ -88,8 +88,8 @@
 								<!-- 페이지 갯수 -->
 								<li class="page-item" th:each="i:${#numbers.sequence(start, end)}">
 									<th:block th:if="${i} != 0">
-										<a class="pagenav_a page-link activated" id="pageNav${i}" th:if="${currentPage}==${i}" th:href="@{rank(pageNum=${i})}" th:text=${i}></a>
-										<a class="pagenav_a page-link" id="pageNav${i}" th:if="${currentPage}!=${i}" th:href="@{rank(pageNum=${i})}" th:text=${i}></a>
+										<a class="pagenav_a page-link activated" th:if="${currentPage}==${i}" th:href="@{rank(pageNum=${i})}" th:text=${i}></a>
+										<a class="pagenav_a page-link" th:if="${currentPage}!=${i}" th:href="@{rank(pageNum=${i})}" th:text=${i}></a>
 								</li>
 
 							</ul>

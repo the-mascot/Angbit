@@ -33,8 +33,9 @@ public class QuartzConfig {
 	public void start() {
 		log.info("JobController start invoked");
 		try {
-			scheduler.scheduleJob(chkTradeJobDetail(), buildCronJobtrigger("0 0/1 * * * ?"));
-			scheduler.scheduleJob(rankUpdateJobDetail(), buildCronJobtrigger("0 0 3 * * ?"));
+			// 크론 표기
+			scheduler.scheduleJob(chkTradeJobDetail(), buildCronJobtrigger("0 0/1 * * * ?")); // 매 1분마다
+			scheduler.scheduleJob(rankUpdateJobDetail(), buildCronJobtrigger("0 0 3 * * ?")); // 매일 오전 3시
 		} catch (SchedulerException e) {
 			System.out.println("QuartzConfig start() Exception->"+e.getMessage());
 			e.printStackTrace();

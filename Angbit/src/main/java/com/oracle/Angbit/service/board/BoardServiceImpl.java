@@ -176,4 +176,9 @@ public class BoardServiceImpl implements BoardService {
 	public List<Board> schBoard(String schword) {
 		return bdao.schBoard(schword);
 	}
+
+	@Override
+	public List<Board> testBoardSearch(String keyWord, String condition) {
+		return bdao.testBoardSearch(keyWord, condition);
+	}
 }

@@ -2,100 +2,13 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>index</title>
+	<title>게시판</title>
 	<!-- Common meta tag, Bootstrap, js -->
-	<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
-	<!-- Required meta tags -->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-	<!-- Bootstrap CSS -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
-	<!--BITCOIN FAVICON-->
-	<link rel="shortcut icon" href="../images/favicon2.ico" type="image/x-icon">
-	<link rel="icon" href="../images/favicon2.ico" type="image/x-icon">
-
-	<!-- Common CSS -->
-	<link href="../css/common.css" rel="stylesheet" type="text/css">
-	<link href="../css/status.css" rel="stylesheet" type="text/css">
-
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
-
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
-
-	<!-- SockJS -->
-	<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-	<!-- STOMP -->
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-
-	<!-- Jquery -->
-	<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
-
-	<!-- Toastr -->
-	<link th:href="@{https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css}" rel="stylesheet">
-	<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js}"></script>
-
-	<script type="text/javascript">
-		window.addEventListener("load", commonHeadInit, false);
-
-		/*<![CDATA[*/
-		var sessionID = "[[${session.sessionID}]]"
-		/*]]>*/
-
-		toastr.options = {
-			positionClass: "toast-bottom-right"
-		};
-
-		function toastrBtn(msg) {
-			Command: toastr["success"](msg, "매매알람")
-			toastr.options = {
-				"closeButton": true,
-				"debug": false,
-				"newestOnTop": false,
-				"progressBar": true,
-				"positionClass": "toast-bottom-right",
-				"preventDuplicates": false,
-				"onclick": null,
-				"showDuration": "300",
-				"hideDuration": "1000",
-				"timeOut": "5000",
-				"extendedTimeOut": "1000",
-				"showEasing": "swing",
-				"hideEasing": "linear",
-				"showMethod": "fadeIn",
-				"hideMethod": "fadeOut"
-			}
-		}
-
-		function commonHeadInit() {
-			console.log('commonHeadInit() Start...');
-			if(sessionID != null)
-				alarmWebSocket();
-		}
-		var sock = null;
-		function alarmWebSocket() {
-			sock = new SockJS("ws/chat");
-			var stomp = Stomp.over(sock);
-			stomp.connect({}, function(frame) {
-				console.log('Alarm WebSock Connected!');
-				stomp.subscribe("/topic/"+sessionID, function(frame) {
-					toastrBtn(frame.body);
-				})
-			})
-		};
-	</script>
-
-	</html>
+	<th:block th:replace="./common/commonHead"></th:block>
 
 
 	<!-- Custom styles for this page -->
-	<link th:href="@{../css/board.css}" rel="stylesheet">
+	<link th:href="@{/css/boardTest.css}" rel="stylesheet">
 
 	<!-- Jquery -->
 	<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
@@ -200,48 +113,12 @@
 </head>
 <body>
 <!-- Common header -->
-<header th:fragment="header">
-	<div class="container-fluid pt-1">
-		<div class="d-flex flex-wrap justify-content-start align-items-center">
-			<a href="/">
-				<img alt="Angbit_logo" src="../images/Angbit_logo.png">
-			</a>
-			<ul class="nav col-12 col-lg-auto me-lg-auto justify-content-center ms-5">
-				<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-					<div class="container-fluid">
-						<a class="navbar-brand" href="/">모의투자</a>
-						<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
-							<span class="navbar-toggler-icon"></span>
-						</button>
-						<div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
-							<ul class="navbar-nav">
-								<li class="nav-item dropdown">
-									<a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: white ">
-										투자내역
-									</a>
-									<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-										<li><a class="dropdown-item" href="/statusList">투자현황</a></li>
-										<li><a class="dropdown-item" href="/status_y_history">체결내역</a></li>
-										<li><a class="dropdown-item" href="/status_n_history">미체결내역</a></li>
-									</ul>
-								</li>
-							</ul>
-						</div>
-						<a class="navbar-brand" href="rank" style="padding-left: 15px">랭킹</a>
-						<a class="navbar-brand" href="board_list" style="padding-left: 15px">게시판</a>
-						<a class="navbar-brand" href="myInfo" style="padding-left: 15px">마이페이지</a>
-					</div>
-				</nav>
-			</ul>
-			<div th:if="${session.sessionID!=null}"><span class="welcomemsg" style="color:white;" th:text="'환영합니다. '+ ${session.sessionNickName} + ' 님 '"></span></div> &nbsp&nbsp
-			<div>
-				<button type="button" class="header-btn btn btn-outline-light me-2" onclick="location.href='/loginForm'" th:if="${session.sessionID==null}">로그인</button>
-				<button type="button" class="header-btn btn btn-outline-light me-2" onclick="location.href='/LogOutProcess'" th:if="${session.sessionID!=null}">로그아웃</button>
-				<button type="button" class="header-btn btn btn-outline-light me-2" onclick="location.href='/joinForm'" th:if="${session.sessionID==null}">회원가입</button>
-			</div>
-		</div>
-	</div>
-</header>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<header th:replace="~{/common/header :: header}"></header>
+
+</html>
 
 <main>
 	<section>

@@ -1,6 +1,6 @@
 # http port set
 server:
-  port: 8586
+  port: 8585
 
 # Oracle Connect
 spring:
@@ -43,3 +43,8 @@ mybatis:
   # XML Location
   config-location: classpath:configuration.xml
   mapper-locations: classpath:mappers/*.xml
+
+#Jasypt
+jasypt:
+  encryptor:
+    bean: encryptorBean

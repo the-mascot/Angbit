@@ -262,4 +262,13 @@ public class BoardDaoImpl implements BoardDao {
 		List<Board> list = session.selectList("schBoard", schword);
 		return list;
 	}
+
+	@Override
+	public List<Board> testBoardSearch(String keyWord, String condition) {
+		Map vo = new HashMap();
+		vo.put("keyWord", keyWord);
+		vo.put("condition", condition);
+		List<Board> list = session.selectList("testBoardSearch", vo);
+		return list;
+	}
 }

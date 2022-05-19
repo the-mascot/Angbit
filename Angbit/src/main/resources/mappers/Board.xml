@@ -127,14 +127,14 @@ WHERE rn BETWEEN #{start} and #{end}
 	
 	</select>
 	<select id="testBoardList" parameterType="HashMap" resultType="Board">
-		select * from (select rownum rn ,a.* from
+		SELECT * FROM (SELECT rownum rn ,a.* FROM
 				(SELECT           *
 				 FROM             board bd
 									  LEFT OUTER JOIN  memberinfo mb
 													   ON               bd.id = mb.id
 				 WHERE            re_level=0
-				 ORDER BY         b_num desc) a )
-				where rn between #{startRow} and #{endRow}
+				 ORDER BY         b_num DESC) a )
+				WHERE rn BETWEEN #{startRow} AND #{endRow}
 	</select>
 	<select id="testBoardContent" parameterType="Integer" resultType="Board">
 		SELECT * FROM board bd LEFT OUTER JOIN  memberinfo mb ON bd.id = mb.id WHERE b_num=${b_num}
@@ -150,5 +150,22 @@ WHERE rn BETWEEN #{start} and #{end}
 		FROM board b
 		LEFT OUTER JOIN memberinfo m ON b.id=m.id
 		WHERE content like '%' || #{schword} || '%' or title like '%' ||  #{schword} || '%'  or nickname like '%' ||  #{schword} || '%' and re_level = 0
+	</select>
+	<select id="testBoardSearch" parameterType="HashMap" resultType="Board">
+		SELECT b.*, m.nickname
+		FROM board b
+				 LEFT OUTER JOIN memberinfo m ON b.id=m.id
+		WHERE
+		<choose>
+			<when test="condition == 'WRITER'">
+				m.NICKNAME LIKE '%' || #{keyWord} || '%'
+		    </when>
+			<when test="condition == 'TITLE'">
+				b.TITLE LIKE '%' || #{keyWord} || '%'
+			</when>
+			<when test="condition == 'CONTENT'">
+				b.CONTENT LIKE '%' || #{keyWord} || '%'
+			</when>
+		</choose>
 	</select>
 </mapper>

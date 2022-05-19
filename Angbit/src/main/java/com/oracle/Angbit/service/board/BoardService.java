@@ -38,4 +38,6 @@ public interface BoardService {
 	List<Board> testBoardContentComm(int b_num);
 
     List<Board> schBoard(String schword);
+
+    List<Board> testBoardSearch(String keyWord, String condition);
 }

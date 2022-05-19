@@ -27,9 +27,9 @@ dependencies {
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
 	// lombok
 	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
 	// Oracle Driver
-	runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
+	runtimeOnly 'com.oracle.database.jdbc:ojdbc8:21.5.0.0'
     // Devtools
     developmentOnly("org.springframework.boot:spring-boot-devtools")
   	// Spring Start Test
@@ -48,6 +48,11 @@ dependencies {
 	implementation group: 'org.springframework', name: 'spring-messaging', version: '5.3.13'
 	// Spring Security
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.4.5'
+	// JSON (CHAT TEST)
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.3'
+	// 암호화, 복호화
+	implementation group: 'org.jasypt', name: 'jasypt-spring31', version: '1.9.2'
+	implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
 }
 
 test {

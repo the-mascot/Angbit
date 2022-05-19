@@ -1,14 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>index</title>
+	<title>게시판</title>
 	<!-- Common meta tag, Bootstrap, js -->
 	<th:block th:replace="common/commonHead"></th:block>
 
 
 	<!-- Custom styles for this page -->
-	<link th:href="@{css/board.css}" rel="stylesheet">
+	<link th:href="@{css/boardTest.css}" rel="stylesheet">
 
 	<!-- Jquery -->
 	<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}"></script>
@@ -18,44 +17,7 @@
 			border-radius: 5px;
 		}
 	</style>
-	<script type="text/javascript">
-		function chk() {
-			if(!frm.keyWord.value) {
-				alert("검색어를 입력하세요");
-				frm.keyWord.focus();
-				return false;
-			}
-			var blank_pattern = /^\s+|\s+$/g;
-			if(frm.keyWord.value.replace( blank_pattern, '' ) == "" ){
-				alert(' 공백만 입력되었습니다 ');
-				frm.keyWord.focus();
-				return false;
-			}
-			return true;
 
-		}
-		$(document).ready(function(){
-			$("#viewCount").change(function() {
-				var pageSize=$(this).val();
-				location.href="<%=context %>/sh/comuBoardList.do?pageSize="+pageSize;
-			});
-
-			if ($(keyWord!=null)) {
-				var keyWord = '${keyWord}';
-				var text = $(".btitle").html();
-				$(".btitle").each(function(){
-					$(this).html($(this).html().replace(eval("/"+keyWord+"/gi"), "<span class='highlight'>"+keyWord+"</span>"));
-				});
-				$(".writer").each(function(){
-					$(this).html($(this).html().replace(eval("/"+keyWord+"/gi"), "<span class='highlight'>"+keyWord+"</span>"));
-				});
-			}
-
-			$("#pageNav${pageNum}").css("color", "red");
-
-
-		});
-	</script>
 </head>
 <body>
 <!-- Common header -->
@@ -63,156 +25,80 @@
 
 <main>
 	<section>
-		<!-- 게시판 설명 -->
+	<div class="container">
+		<div class="banner pt-2 mb-5 text-center">
+			<h2>커뮤니티 게시판</h2><br>
+			<span>※ 유저 간 의견을 교환하는 곳 입니다. 바르고 고운말을 씁시다.</span>
+		</div>
+
+		<!--여기서부터 출력-->
+
 		<div>
-			<div>
-				<h2 class="mt-5 mb-3 mx-5 fw-bold"
-					style="font-family: pretend; color: #5798D7">커뮤니티 게시판</h2>
+			<div style="float:right; margin:auto;">
+				<select id="searchCondition">
+					<option value="WRITER"> 작성자</option>
+					<option value="TITLE"> 제목</option>
+					<option value="CONTENT"> 내용</option>
+				</select>
+				<input type="text" class="search" id="keyWord">
+				<button type="button" class="searchBtn btn btn-outline-dark" id="searchBtn">검색</button><br>
+				<select class="dataPerPage" id="dataPerPage">
+					<option value="10" th:selected="${pageSize}==10"> 10개씩</option>
+					<option value="15" th:selected="${pageSize}==15"> 15개씩</option>
+					<option value="20" th:selected="${pageSize}==20"> 20개씩</option>
+					<option value="30" th:selected="${pageSize}==30"> 30개씩</option>
+				</select>
+				<button type="button" onclick="alert(ajaxData)">확인용 버튼</button>
 			</div>
-			<div>
-				<p class="mt-2 mx-5 fs-6 text-muted fst-italic"
-				   style="font-family: pretend">- 커뮤니티 게시판입니다.</p>
-			</div>
-		</div>
-		<div class="board_search_parent">
-			<form action="#" id="frm" onsubmit="return chk()">
-				<div class="board_search d-flex">
-					<div>
-						<input type="text" class="form-control" name="keyWord" placeholder="Search" maxlength="255">
-					</div>
-					<div>
-						<input type="submit" class="board_search_button btn" value="검 색" style="margin-left: 5px">
-					</div>
-				</div>
-			</form>
-		</div>
-		<!-- 10개씩 보기 -->
-		<div class="view_count_parent">
-			<select class="view_count form-select" id="viewCount" name="viewCount">
-				<option value="10" th:if="${pageSize=='10'}" selected='selected'>10개씩</option>
-				<option value="15" th:if="${pageSize=='15'}" selected='selected'>15개씩</option>
-				<option value="20" th:if="${pageSize=='20'}" selected='selected'>20개씩</option>
-				<option value="30" th:if="${pageSize=='30'}" selected='selected'>30개씩</option>
-			</select>
-		</div>
-		<!-- 게시판 테이블 -->
-		<div class="mx-auto my-5">
-			<table class="board_table table mx-auto table-hover table-responsive text-center" style="font-size: 14px;">
-				<thead style="background-color: rgba(13, 110, 253, 0.1)">
-
+			<table class="table table-hover">
+				<colgroup>
+					<col width="10%">
+					<col width="20%">
+					<col width="50%">
+					<col width="10%">
+					<col>
+				</colgroup>
+				<thead align="center">
 				<tr>
-					<th>번호</th>
-					<th style="width: 40%;">제목</th>
-					<th>작성자</th>
-					<th>작성일</th>
-					<th>조회수</th>
-
+					<th scope="col"><h5><b>번호</b></h5></th>
+					<th scope="col"><h5><b>닉네임</b></h5></th>
+					<th scope="col"><h5><b>제목</b></h5></th>
+					<th scope="col"><h5><b>작성일</b></h5></th>
+					<th scope="col"><h5><b>조회수</b></h5></th>
 				</tr>
 				</thead>
-<!--				<c:if test="${totCnt>0}">-->
-				<th:block data-th-if="${totCnt}>0">
-<!--					<c:forEach var="board" items="${list}">-->
-						<tr th:each="board, i:${list}">
-							<td th:text="${board.rn}"></td>
-<!--							<td>${startNum }</td>-->
-							<td class="btitle text-start text-truncate" style="max-width: 400px">
-								<a th:href="@{content/{b_num}(b_num=${board.b_num})}" style="text-decoration: none; color: black;" class="title" th:text="${board.title}"></a>
-<!--								<c:if test="${not empty board.imagepath}">-->
-									<th:block data-th-if="${board.imagepath} != null">
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-images" viewBox="0 0 16 16">
-										<path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
-										<path d="M14.002 13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2V5A2 2 0 0 1 2 3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-1.998 2zM14 2H4a1 1 0 0 0-1 1h9.002a2 2 0 0 1 2 2v7A1 1 0 0 0 15 11V3a1 1 0 0 0-1-1zM2.002 4a1 1 0 0 0-1 1v8l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094l1.777 1.947V5a1 1 0 0 0-1-1h-10z"/>
-									</svg><!-- 이미지가 있을 경우 제목 앞 이미지 추가 -->
-									</th:block>
-<!--								</c:if>-->
-<!--								<c:if test="${board.uploaddate eq today}">-->
-								<th:block data-th-if="${board.uploaddate} == ${today}">
-								<span>오늘 쓴 글임</span>
-								</th:block></td>
-							<td class="writer" th:text="${board.nickname}"></td>
-							<td th:text="${#dates.format(board.uploaddate, 'yyyy-MM-dd')}"></td>
-							<td th:text="${board.views}"></td>
-						</tr>
-<!--						<c:set var="startNum" value="${startNum - 1 }" />-->
-<!--					</c:forEach>-->
-				</th:block>
-<!--				</c:if>-->
-				<th:block data-th-if="${totCnt == 0 }">
+				<tbody align="center" id="boardBody">
+				<tr th:each="board : ${list}">
+					<td th:text="${board.b_num}"></td>
+					<td th:text="${board.nickname}"></td>
+					<td><a th:href="@{'/content/'+${board.b_num}}" th:text="${board.title}" style="text-decoration: none;"></a></td>
+					<td th:text="${#dates.format(board.uploaddate, 'yyyy-MM-dd')}"></td>
+					<td th:text="${board.views}"></td>
+				</tr>
+				<th:block data-th-if="${list.size() == 0}">
 					<tr>
-						<td colspan=7>데이터가 없네</td>
+						<td colspan="5">데이터가 없습니다.</td>
 					</tr>
 				</th:block>
-
 				</tbody>
 			</table>
-		</div>
-
-			<div class="write_btn_parent" th:if="${session.sessionID!=null}">
-				<div class="write_btn">
-					<a href="#" class="write_btn btn btn-outline-primary"
-					   style="border: 1px solid rgba(65, 75, 70, 0.5); color: black; margin-right: 50px;">
-						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-							 fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
-							<path
-									d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
-						</svg>글쓰기
-					</a>
+			<nav aria-label="Paging">
+				<div th:with="start=${startPage}, end=${endPage}">
+					<ul class="pagination justify-content-center mt-4" id="paging">
+						<!-- 페이지 갯수 -->
+						<li class="page-item" th:each="i:${#numbers.sequence(start, end)}" th:classappend="${currentPage} == i ? 'activated'">
+							<th:block th:if="${i} != 0">
+								<a class="pagenav_a page-link" th:href="@{boardTest(pageNum=${i})}" th:text=${i}></a>
+							</th:block>
+						</li>
+					</ul>
 				</div>
-			</div>
-
-		<nav aria-label="Page navigation example">
-			<ul class="pagination justify-content-center mt-5">
-				<!-- 이전 10개 페이지 -->
-						<li class="page-item" th:if="${startPage}>${blockSize}">
-<!--							<a class="pagenav_a page-link" href="<%=context%>/sh/comuBoardList.do?pageNum=${startPage-blockSize }&pageSize=${pageSize }&keyWord=${keyWord}" aria-label="Previous">-->
-							<a class="pagenav_a page-link" href="#" aria-label="Previous">
-								<span aria-hidden="true">&laquo;</span></a>
-						</li>
-
-						<li class="page-item" style="visibility: hidden;" th:if="${startPage}<=${blockSize}">
-							<a class="pagenav_a page-link" href="#" aria-label="Previous">
-								<span aria-hidden="true">&laquo;</span></a>
-						</li>
-				<!-- 이전 페이지 -->
-						<li class="page-item" style="visibility: hidden;" th:if="${pageNum}==1">
-							<a class="pagenav_a page-link" href="#" aria-label="Previous">
-								<span aria-hidden="true">&lt;</span></a>
-						</li>
-						<li class="page-item" th:if="${pageNum}>1 or ${pageNum}<1">
-							<a class="pagenav_a page-link" href="#" aria-label="Previous">
-								<span aria-hidden="true">&lt;</span></a>
-						</li>
-
-				<!-- 페이지 목록 -->
-
-					<li class="page-item" th:each="num : ${#numbers.sequence(startPage, endPage)}">
-						<a class="pagenav_a page-link" id="pageNav${i}" href="#" th:text="${num}"></a></li>
-
-				<!-- 다음 페이지 -->
-						<li class="page-item" style="visibility: hidden;" th:if="${pageNum}==${pageCnt}">
-							<a class="pagenav_a page-link" href="#" aria-label="Previous">
-								<span aria-hidden="true">&gt;</span></a>
-						</li>
-
-						<li class="page-item" th:if="${pageNum}>${pageCnt} or ${pageNum}<${pageCnt}">
-							<a class="pagenav_a page-link" href="#" aria-label="Previous">
-								<span aria-hidden="true">&gt;</span></a>
-						</li>
-
-				<!-- 다음 10개 페이지 -->
-						<li class="page-item" th:if="${endPage}<${pageCnt}">
-							<a class="pagenav_a page-link" href="#" aria-label="Next">
-								<span aria-hidden="true">&raquo;</span></a>
-						</li>
-
-						<li class="page-item" style="visibility: hidden;" th:if="${endPage}>=${pageCnt}">
-							<a class="pagenav_a page-link" href="#" aria-label="Next">
-								<span aria-hidden="true">&raquo;</span></a>
-						</li>
-			</ul>
-		</nav>
+			</nav>
+		</div>
+	</div>
 	</section>
 </main>
+
 
 <footer th:replace="common/footer :: footer"></footer>
 
@@ -220,6 +106,135 @@
 
 <!--&lt;!&ndash; Bootstrap Bundle with Popper &ndash;&gt;-->
 <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js}" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script type="text/javascript">
 
+	let totalData;
+	let	pageCount = 10;
+	let globalCurrentPage = 1;
+	let ajaxData;
+
+	$(document).ready(function(){
+		dataPerPage = $("#dataPerPage").val();
+
+		$("#viewCount").change(function() {
+			var pageSize=$(this).val();
+			location.href="/boardTest?pageSize="+pageSize;
+		});
+	});
+
+	$('#searchBtn').on('click', function () {
+		var keyWord =  'keyWord='+$('#keyWord').val()+'&condition='+$('#searchCondition').val();
+		$.ajax({
+			type		:	'POST',
+			url			:	'testBoard/search',
+			data		:	keyWord,
+			success		:	function(data) {
+				ajaxData = data;
+				totalData = data.length;
+				globalCurrentPage = 1; // 검색 후 초기 페이지 1 설정
+				pagingData();
+			},
+			error		:	function(e) {
+				console.log("error : ",e);
+			}
+		});
+	});
+
+	function gridData (data, startRow, endRow, pageFigures) {
+		let gridHTML = "";
+		alert("gridData"+data)
+
+		//전역 ajaxData에 대한 처리
+		//-인덱스
+		//1페이지면 1~PageCount까지
+		//2페이지면 PageCount+1~PageCount*2까지.
+		//3페이지면 (PageCount*2)+1~PageCount*3까지.
+		//ajaxData.length에서 이만큼 뿌려주고.
+
+		//페이징 nav-btn은????
+		//(ajaxData.length / pageCount) 실수(real number)로 형변환. = 내비버튼 갯수
+		//nav-bar 클릭시
+
+		if (endRow > data.length) {
+			endRow = data.length;
+		}
+
+
+		if (data == '') {
+			gridHTML += "<tr><td colspan='5'>검색 결과가 없습니다.</td></tr>"
+		} else {
+			for (var i=startRow-1; i<=endRow-1; i++) {
+				gridHTML += "<tr><td>" +
+						data[i].b_num +
+						"</td><td>" +
+						data[i].nickname +
+						"</td><td><a href='/content/"+data[i].b_num + "'>" +
+						data[i].title +
+						"</a></td><td>" +
+						convertDateFormat(new Date(data[i].uploaddate)) +
+						"</td><td>" +
+						data[i].views +
+						"</td></tr>"
+			}
+		}
+
+		let pagingHtml = "";
+
+		for (var i=1; i<=pageFigures; i++) {
+					if (i == globalCurrentPage) {
+						pagingHtml +=
+						"<li class='page-item activated'>"
+						+"<a class='page-link' href='javascript:goPage("+i+")'>"
+						+(i)+"</a></li>";
+					} else {
+						pagingHtml +=
+						"<li class='page-item'>"
+						+"<a class='page-link' href='javascript:goPage("+i+")'>"
+						+(i)+"</a></li>";
+					}
+
+
+		}
+
+		$('#boardBody').html(gridHTML);
+		$('#paging').html(pagingHtml);
+
+	}
+
+	function pagingData () {
+		alert('선택된 페이지 : '+globalCurrentPage)
+		let pageNum;
+		let totalCount;
+		pageNum = globalCurrentPage;
+		totalCount = ajaxData.length;
+		let startRow=(globalCurrentPage-1)*(pageCount)+1;
+		let pageFigures = Math.ceil(totalCount/pageCount);
+		alert('페이지 갯수 : '+pageFigures)
+
+		if (pageNum == 1 || pageNum == null) {
+			startRow = 1;
+		} else {
+			startRow = (pageNum-1 * pageCount) + 1;
+		}
+		let endRow = startRow + pageCount - 1;
+
+		gridData(ajaxData, startRow, endRow, pageFigures);
+	}
+
+	function convertDateFormat(date) {
+		var year = date.getFullYear();
+		var month = date.getMonth() + 1;
+		month = month >= 10 ? month : '0' + month;
+		var day = date.getDate();
+		day = day >= 10 ? day : '0' + day;
+		return [year, month, day].join('-');
+	}
+
+	function goPage(pageNum) {
+		globalCurrentPage = pageNum;
+		pagingData();
+	}
+
+</script>
 </body>
 </html>
